@@ -1,0 +1,756 @@
+--- physical page 409 ---
+Chapter 12
+Multivariate time series
+Objectives
+•
+12.1 Background
+12.1.1 Preliminaries 1: Sequences and functions
+Suppose the sequence a = (. . . , a , a , a , a , . . .) satisfies the property that (cid:107)a(cid:107)2 = (cid:80) |a |2 <
+−2 −1 0 1 2 j∈Z j
+∞. Using a we define the function
+(cid:88)
+A(ω) = a exp(ijω).
+j
+j∈Z
+A(ω) is defined on [0, 2π) and has wrapping. In the sense A(0) = A(2π). Further A(ω) = A(−ω) =
+A(2π − ω). We can extract a from A(ω) using the inverse Fourier transform:
+r
+1 (cid:90) 2π
+a = A(ω)e−irωdω.
+r
+2π
+0
+To understand why use (12.1) below.
+408
+
+--- physical page 410 ---
+12.1.2 Preliminaries 2: Convolution
+We state some well known results on the convolution of sequences, which will be very useful when
+analysing multivariate time series.
+Let (cid:96) denote the space of square summable sequences. This means if the sequence a =
+2
+(. . . , a , a , a , a , . . .) is such that (cid:107)a(cid:107)2 = (cid:80) |a |2 < ∞, then a ∈ (cid:96) . Examples of sequences
+−2 −1 0 1 2 j∈Z j 2
+(cid:80)
+in (cid:96) is the short memory autocovariance function which is absolutely summable ( |c(r)| < ∞)
+2 r∈Z
+Suppose a, b ∈ (cid:96) , and define the convolution
+2
+(cid:88)
+a b .
+j j−k
+j∈Z
+The convolution can be represented in the Fourier domain. Define
+(cid:88) (cid:88)
+A(λ) = a exp(−ijλ) and B(λ) = b exp(−ijλ).
+j j
+j∈Z j∈Z
+Then
+(cid:88) 1 (cid:90) 2π
+a b = A(λ)B(λ) exp(−ikλ)dλ.
+j j−k
+2π
+j∈Z 0
+Proof of identity We use the property
+
+1 (cid:90) 2π  1 j = 0
+exp(ijλ)dλ = . (12.1)
+2π 0  0 j ∈ Z/{0}
+Expanding the integral gives
+1 (cid:90) 2π (cid:88) (cid:88) 1 (cid:90) 2π
+A(λ)B(λ) exp(−ikλ)dλ = a b e−i(−j1+j2+k)λdλ
+2π
+j1 j2
+2π
+0 j1∈Z j2∈Z
+(cid:124)
+0
+(cid:123)(cid:122) (cid:125)
+=0 unless j2=j1−k
+(cid:88)
+= a b ,
+j j−k
+j∈Z
+this proves the identity.
+409
+
+--- physical page 411 ---
+12.1.3 Preliminaries 3: Spectral representations and mean squared
+errors
+Univariate times series
+We state some useful identities for mean squared errors, first in the univariate case, then in the
+multivariate case. First we recall the spectral representation of a second order stationary time
+series (described in Section 10.3.1). Suppose that {X } is a second order stationary time series.
+t
+Then it has the representation
+1 (cid:90) 2π
+X = exp(itω)dZ(ω),
+t
+2π
+0
+where {Z(ω); ω ∈ [0, 2π]} is a complex random function that satisfies the orthogonal increment
+property. We will use the follow properties. If A and B are zero mean, complex random variables,
+then cov[A, B] = E[AB] and var[A] = cov(A, A) = E[AA] = E|A|2. Using this we have
+• If (ω , ω ) and (ω , ω ) are non-intersection intervals, then cov[Z(ω )−Z(ω ), Z(ω )−Z(ω )] =
+1 2 3 4 2 1 4 3
+0.
+• Thus var[Z(ω)] = E[|Z(ω)|2] = F (ω), where F is the spectral distribution function (positive
+non-decreasing function). If {X } is purely non-deterministic and its autocovariance belongs
+t
+to (cid:96) , then F (cid:48) = f (ω), where f (ω) = (2π)−1 (cid:80) c(r)eirω.
+2 r∈Z
+• Using the above E[|dZ(ω)|2] = E[dZ(ω)dZ(ω)] = dF (ω) = f (ω)dω and E[dZ(ω )dZ(ω )] = 0
+1 2
+if ω (cid:54)= ω .
+1 2
+Mean squared errors Our aim is to rewrite the mean squared error
+ 2
+(cid:88)
+E X t − a j X t−j
+j(cid:54)=0
+using the spectral representation. To do so, we replace X in the above with
+t−j
+1 (cid:90) 2π
+X = exp(i(t − j)ω)dZ(ω).
+t−j
+2π
+0
+We will use the fact that if A is a real random variables then E(A) = E(AA), which will simplify
+410
+
+--- physical page 412 ---
+the calculations. This gives
+ 2 (cid:12) (cid:12)2
+(cid:88) (cid:12) (cid:12) 1 (cid:90) 2π (cid:88) 1 (cid:90) 2π (cid:12) (cid:12)
+E X t − a j X t−j = E (cid:12) exp(itω)dZ(ω) − a j exp(i(t − j)ω)dZ(ω)(cid:12)
+(cid:12) 2π 2π (cid:12)
+j(cid:54)=0 (cid:12) 0 j(cid:54)=0 0 (cid:12)
+(cid:12) (cid:12)2
+(cid:12) (cid:12) 1 (cid:90) 2π (cid:88) 1 (cid:90) 2π (cid:12) (cid:12)
+= E (cid:12) exp(itω)dZ(ω) − a j exp(i(t − j)ω)dZ(ω)(cid:12)
+(cid:12) 2π 2π (cid:12)
+(cid:12) 0 j(cid:54)=0 0 (cid:12)
+(cid:12)   (cid:12)2
+= E (cid:12) (cid:12) (cid:12) 1 (cid:90) 2π eitω 1 − (cid:88) a j e−ijω  dZ(ω) (cid:12) (cid:12) (cid:12)
+(cid:12) 2π (cid:12)
+(cid:12) 0 j(cid:54)=0 (cid:12)
+(cid:18) 1 (cid:90) 2π (cid:90) 2π (cid:19)
+= E A(ω )A(ω )dZ(ω )dZ(ω )
+(2π)2 1 2 1 2
+0 0
+where we set A(ω) = 1− (cid:80) a e−ijω. Now we use the property that E[|dZ(ω)|2] = E[dZ(ω)dZ(ω)] ==
+j(cid:54)=0 j
+dF (ω) = f (ω)dω and E[dZ(ω )dZ(ω )] = 0 if ω (cid:54)= ω this gives
+1 2 1 2
+ 2
+(cid:88) 1 (cid:90) 2π (cid:90) 2π (cid:16) (cid:17)
+E X t − a j X t−j = (2π)2 A(ω 1 )A(ω 2 )E dZ(ω 1 )dZ(ω 2 )
+0 0
+j(cid:54)=0
+1 (cid:90) 2π 1 (cid:90) 2π
+= |A(ω)|2E|dZ(ω)|2 = |A(ω)|2f (ω)d(ω).
+(2π) (2π)
+0 0
+Observe that |A(ω)|2 ≥ 0 for all ω.
+Multivariate times series
+Suppose U (cid:48) = (X , Y (cid:48) ) (column vector) is a d-dimensional, zero mean, second order stationary mul-
+t t t
+tivariate time series. Second order stationarity in the multivariate set-up is similar to second order
+stationarity for univariate time series. But there are some important differences. A multivariate
+time series is second order stationary if for all t ∈ Z and h ∈ Z we have
+(cid:0) (cid:1)
+cov U , U = C(h), (12.2)
+t t+h
+where C(h) is a d × d matrix. However, unlike univariate time series, C(h) = C(−h) does not
+necessarily hold. Similar to univariate time series, the spectral density matrix is defined as
+(cid:88)
+Σ(ω) = C(h) exp(ihω).
+h∈Z
+411
+
+--- physical page 413 ---
+The matrix Σ(ω) looks like
+ 
+f (ω) f (ω) . . . f (ω)
+11 12 1d
+ 
+ f (ω) f (ω) . . . f (ω) 
+ 21 22 2d 
+Σ(ω) =   .
+  . . . . . . . . . . . .  
+ 
+f (ω) f (ω) . . . f (ω)
+d1 d2 dd
+The diagonal of Σ(ω) is simply the regular univariate spectral density, i.e. f (ω) is the spectral
+aa
+(a)
+density of the stationary time series {X } . The off-diagonal gives cross dependence information.
+t t
+For example by using (12.2) we can see that
+(cid:88)
+f (ω) = c (h) exp(ihω),
+ab ab
+h∈Z
+(a) (b)
+where c (h) = cov(X , X ). Thus f (ω) is a frequency measure of cross dependence between
+ab t t+h ab
+two time series. With a litte thought one can see that
+f (ω) = f (ω) = f (2π − ω).
+ba ab ab
+In other words, Σ(ω) = Σ(ω)∗ (where A∗ denotes the conjugate transpose of A).
+The vectors time series {U } has the representation
+t
+1 (cid:90) 2π
+U = exp(itω)dZ (ω), (12.3)
+t 2π U
+0
+where Z (ω) is an orthogonal increment process, which has similar properties to the univariate
+U
+orthogonal increment process. Under summability conditions on the autocovariance matrix we have
+for ω (cid:54)= ω
+1 2
+(cid:16) (cid:17)
+E dZ (ω )dZ (ω ) = 0
+U 1 U 2
+and
+E
+(cid:16)
+dZ (ω)dZ (ω)
+(cid:48)(cid:17)
+= E (dZ (ω)dZ (ω)∗) = Σ(ω)dω,
+U U U U
+where V ∗ denotes the conjugation and transpose of the vector V .
+412
+
+--- physical page 414 ---
+We write the spectral matrix as the block matrix below
+ 
+f (ω) f (ω)
+XX X,Y
+Σ(ω) =   .
+f (ω) f (ω)
+Y,X Y Y
+Spectral representations of linear sums Using (12.3) we have
+(cid:88) (cid:88) 1 (cid:90) 2π
+V = B Y = B ei(t−j)ωdZ (ω)
+t j t−j j 2π Y
+j∈Z j∈Z 0
+ 
+1 (cid:90) 2π (cid:88)
+= 2π eitω  B j e−ijω  dZ Y (ω)
+0 j∈Z
+1 (cid:90) 2π
+= eitωB(ω)dZ (ω).
+2π Y
+0
+Using the same arguments as in the univariate case we have
+1 (cid:90) 2π
+cov[V , V ] = E[V V (cid:48) ] = e−ihωB(ω)f (ω)B(ω)∗dω.
+t t+h t t+h 2π Y Y
+0
+Therefore, by the uniqueness of Fourier transforms the spectral density of {V } is B(ω)f (ω)B(ω)∗.
+t Y Y
+In order to obtain best linear predictors in a multivariate time series we note that by using the
+above we can write X − (cid:80) A(cid:48) Y
+t j∈Z j t−j
+X − (cid:88) A(cid:48) Y = 1 (cid:90) 2π eitω (cid:2) dZ (ω) − A(ω)(cid:48)dZ (ω) (cid:3) , (12.4)
+t j t−j 2π X Y
+j∈Z 0
+where A(ω) = (cid:80) A e−ijω. This will be our focus below.
+j∈Z j
+Mean squared errors Our aim is to rewrite the mean squared error
+ 2
+(cid:88)
+E X t − A(cid:48) j Y t−j
+j∈Z
+413
+
+--- physical page 415 ---
+using the spectral representation. To do this, we substitute (12.4) into the above to give
+ 2
+E X t − (cid:88) A(cid:48) j Y t−j = E (cid:12) (cid:12) (cid:12) (cid:12) 2 1 π (cid:90) 2π eitω (cid:2) dZ X (ω) − A(ω)(cid:48)dZ Y (ω) (cid:3) (cid:12) (cid:12) (cid:12) (cid:12) 2
+j∈Z 0
+= 1 (cid:90) 2π (cid:90) 2π eit(ω1−ω2) (cid:2) dZ (ω ) − A(ω )(cid:48)dZ (ω ) (cid:3) (cid:104) dZ (ω ) − A(ω )∗dZ (ω ) (cid:105)
+(2π)2 X 1 1 Y 1 X 2 2 Y 2
+0 0
+= 1 (cid:90) 2π E (cid:2) dZ (ω) − A(ω)(cid:48)dZ (ω ) (cid:3) (cid:104) dZ (ω) − A(ω)∗dZ (ω) (cid:105) ,
+(2π) X Y 1 X Y
+0
+(cid:16) (cid:17)
+where in the last equality of the above we use that E dZ (ω )dZ (ω ) = 0 if ω (cid:54)= ω . We note
+U 1 U 2 1 2
+(cid:104) (cid:105)
+that E [dZ (ω) − A(ω)(cid:48)dZ (ω )] dZ (ω) − A(ω)∗dZ (ω) is positive and can be written as
+X Y 1 X Y
+(cid:104) (cid:105)
+E (cid:2) dZ (ω) − A(ω)(cid:48)dZ (ω) (cid:3) dZ (ω) − A(ω)∗dZ (ω)
+X Y X Y
+(cid:104) (cid:105)
+= E (cid:2) |dZ (ω)|2 − A(ω)(cid:48)dZ (ω) (cid:3) dZ (ω) − A(ω)∗dZ (ω)
+X Y X Y
+(cid:104) (cid:105)
+= f (ω) − A(ω)(cid:48)f (ω) − f (ω)A(ω) + A(ω)(cid:48)f (ω)A(ω) dω.
+XX Y,X X,Y Y Y
+Substituting this into the integral gives
+ 2
+(cid:88)
+E X t − A(cid:48) j Y t−j
+j∈Z
+1 (cid:90) 2π (cid:104) (cid:105)
+= f (ω) − A(ω)(cid:48)f (ω) − f (ω)A(ω) + A(ω)(cid:48)f (ω)A(ω) dω.
+XX Y,X X,Y Y Y
+(2π)
+0
+By using a similar argument we have that
+ 
+(cid:88) (cid:88)
+cov X t − A(cid:48) j Y t−j , X τ − A(cid:48) j Y τ−j
+j∈Z j∈Z
+1 (cid:90) 2π (cid:104) (cid:105)
+= exp(i(t − τ )ω) f (ω) − A(ω)(cid:48)f (ω) − f (ω)A(ω) + A(ω)(cid:48)f (ω)A(ω) dω.
+XX Y,X X,Y Y Y
+(2π)
+0
+Thus by the uniqueness of Fourier transforms
+(cid:104) (cid:105)
+f (ω) − A(ω)(cid:48)f (ω) − f (ω)A(ω) + A(ω)(cid:48)f (ω)A(ω)
+XX Y,X X,Y Y Y
+is the spectral density of the transformed time series {X − (cid:80) A(cid:48) Y } .
+t j∈Z j t−j t
+414
+
+--- physical page 416 ---
+12.2 Multivariate time series regression
+(a)
+Suppose that {X } is a univariate (for simplicity) time series and {Y } a multivariate time series,
+t t
+(a)
+where {X t , Y t } t∈Z is jointly second order stationary. Let Σ(·) denote the spectral density matrix
+ 
+f (ω) f (ω)
+XX X,Y
+Σ(ω) =  
+f (ω) f (ω)
+Y,X Y Y
+(a) (a)
+corresponding to {X
+t
+, Y
+t
+} t∈Z. Our aim is to project X
+t
+onto the space spanned by {Y
+t−j
+}
+t−j
+.
+(a)
+This is not a model but simply a projection. Since {X , Y } is second order stationary the
+t t
+regressions will be invariant to shift. That is
+X (a) = (cid:88) A(cid:48) Y + ε (a) , (12.5)
+t j t−j t
+j∈Z
+(a)
+where cov[ε , Y ] = 0 and the d-dimension vectors A do not depend on t. Let
+t t−j j
+(cid:88)
+A(ω) = A(cid:48) exp(−ijω).
+j
+j∈Z
+Wiener showed that the A(ω) which gave the equation (12.5) could easily be solved in the frequency
+domain with
+A(ω) = f (ω)−1f (ω), (12.6)
+Y Y Y,X
+and by inverting A(ω) we can obtain the coefficients {A };
+j
+1 (cid:90) 2π
+A = A(ω) exp(−ijω)dω.
+j
+2π
+0
+Using this identity, one can easily obtain an estimator of A(ω) by estimating f (·) and f (·)
+Y Y Y,X
+and using these estimators to estimate A(ω). We prove (12.6) in Section ??. We start with some
+implications and applications of the regression (12.5).
+415
+
+--- physical page 417 ---
+12.2.1 Conditional independence
+In this section we discuss some of the notable features of projecting X (a) onto {Y } where Y (cid:48) =
+t t t
+(1) (d)
+(X , . . . , X ). We recall that
+t t
+X (a) = (cid:88) A(cid:48) Y + ε (a)
+t j t−j t
+j∈Z
+d
+(cid:88) (cid:88) ((cid:96)) (a)
+= A X + ε
+j,(cid:96) t−j t
+j∈Z (cid:96)=1
+Remark 12.2.1 (Special case) Suppose A = 0 for all j. This means the contribution of the
+j,s
+(s) (a)
+time series {X } in “predicting” X is zero. In other words, after projecting on the remain-
+t t t
+ing time series, the vector Y (cid:48) = (X (1) , . . . , X (s−1) , X (s+1) , . . . , X (d) ), {X (s) } is conditionally
+t,−s t t t t t t
+(a)
+uncorrelated (or independent if Gaussian) with {X }.
+t
+The regression is one-sided. But we know in the multivariate set-up the regression coefficients
+are related to the partial correlation though the expression identity
+(cid:115)
+var(ε )
+i
+β = ρ . (12.7)
+ij ij
+var(ε )
+j
+We now show a similar expression holds in the context of partial correlation. However, we first
+need to define the notion of partial correlation and coherency of a time series.
+12.2.2 Partial correlation and coherency between time series
+We now define the notion of partial correlation between time series and relate it to the regression
+coefficients in time series, mentioned above.
+Typically this is defined in terms of elements in one large vector time series, but to simplify
+notation suppose {(X (a) , X (b) , Y (cid:48) )} is a (d + 2)-dimension second order stationary time series. Let
+t t t t
+ 
+f (ω) f (ω) f (ω)
+aa ab a,Y
+ 
+Σ(ω) =  f (ω) f (ω) f (ω) 
+ ba bb b,Y 
+ 
+f (ω) f (ω) f (ω)
+Y,a Y,b Y Y
+416
+
+--- physical page 418 ---
+denote the spectral density matrix. Let
+∞
+ε (a) = X (a) − (cid:88) (A (a) )(cid:48)Y
+t,Y t j t−j
+j=−∞
+∞
+ε (b) = X (b) − (cid:88) (A (b) )(cid:48)Y
+t,Y t j t−j
+j=−∞
+(a) (b)
+where {A } and {A } are the coefficients which minimise the MSE and by using (12.6)
+j j j j
+A(a)(ω) = f (ω)−1f (ω) and A(b)(ω) = f (ω)−1f (ω) (12.8)
+Y Y Y,a Y Y Y,b
+with A(a)(ω) = (cid:80) A (a) exp[(ijω) and A(b)(ω) = (cid:80) A (b) exp[(ijω). We define the partial
+j∈Z j j∈Z j
+(a) (b)
+covariance between {ε } and {ε } as
+t,Y t t,Y t
+(cid:104) (cid:105)
+(a) (a)
+cov ε , ε = c (t − τ ).
+t,Y τ,Y a,b|Y
+(a)
+Observe that because the original time series is second order stationary, ε are also second order
+t,Y
+stationary (as it is a linear combination of a second order stationary time series time series).
+As in the case the regression coefficient is zero for all lags (as discussed in the previous section).
+(a) (b)
+If c (h) = 0 for all h, then {X } and {X } are conditonally independent (when conditioned
+a,b|Y t t
+on {Y } ).
+t
+(a) (a)
+12.2.3 Cross spectral density of {ε , ε }: The spectral partial
+t,Y t,Y
+coherency function
+(a) (a)
+We now evaluate the cross spectral density function of {(ε , ε )} which is the Fourier transform
+t,Y t,Y t
+of {c (h)} .
+a,b|Y h
+Remark 12.2.2 (What to look out for) If c (h) = 0 for all h then its spectral density will
+a,b|Y
+be zero too.
+To calculate this we use the representations in Section 12.1.3. In particular equation (12.4),
+417
+
+--- physical page 419 ---
+with
+X (a) − (cid:88) (A (a) )(cid:48)Y = 1 (cid:90) 2π eitω (cid:104) dZ (ω) − A(a)(ω)(cid:48)dZ (ω) (cid:105)
+t j t−j 2π a Y
+j∈Z 0
+X (b) − (cid:88) (A (b) )(cid:48)Y = 1 (cid:90) 2π eitω (cid:104) dZ (ω) − A(b)(ω)(cid:48)dZ (ω) (cid:105) ,
+t j t−j 2π b Y
+j∈Z 0
+where {Z (ω), Z (ω), Z (ω)} is an orthogonal increment vector process. Thus by using the result
+a b b
+in Section 12.1.3 we have
+1 (cid:90) 2π (cid:90) 2π (cid:16)(cid:104) (cid:105) (cid:104) (cid:105)(cid:17)
+c (t − τ ) = eitω1−iτω2E dZ (ω ) − A(b)(ω )(cid:48)dZ (ω ) dZ (ω ) − A(b)(ω )(cid:48)dZ (ω )
+a,b|Y (2π)2 b 1 1 Y 1 b 2 2 Y 2
+0 0
+= 1 (cid:90) 2π (cid:90) 2π ei(t−τ)ωE (cid:16)(cid:104) dZ (ω) − A(b)(ω)(cid:48)dZ (ω) (cid:105) (cid:2) dZ (ω) − A(b)(ω)(cid:48)dZ (ω) (cid:3) (cid:17) .
+2π b Y b Y
+0 0
+Now we focus on evaluating
+(cid:16)(cid:104) (cid:105) (cid:17)
+E dZ (ω) − A(b)(ω)(cid:48)dZ (ω) (cid:2) dZ (ω) − A(a)(ω)(cid:48)dZ (ω) (cid:3)
+b Y a Y
+= E[dZ (ω)dZ (ω)] − E[dZ (ω)dZ (ω) (cid:48) ]A(a)(ω)∗ − A(b)(ω)(cid:48)E[dZ (ω)dZ (ω)] +
+a b a Y Y a
+A(b)(ω)(cid:48)E[dZ (ω)dZ (ω) (cid:48) ]A(a)(ω)∗.
+Y Y
+Substituting (12.8) into the above gives
+(cid:16)(cid:104) (cid:105) (cid:17)
+E dZ (ω) − A(b)(ω)(cid:48)dZ (ω) (cid:2) dZ (ω) − A(a)(ω)(cid:48)dZ (ω) (cid:3)
+b Y a Y
+= (cid:2) f (ω) − f (ω)f (ω)−1f (ω) (cid:3) dω.
+ab a,Y Y Y,b
+Altogether this gives the decomposition
+c (h) = 1 (cid:90) 2π (cid:90) 2π e−ihω (cid:2) f (ω) − f (ω)f (ω)−1f (ω) (cid:3) dω.
+a,b|Y 2π ab a,Y Y Y,b
+0 0
+Thus by the uniqueness of the spectral density function, the spectral density of {c (h)} is
+a,b|Y
+(cid:88)
+f (ω) = c (h) exp(ihω) = f (ω) − f (ω)f (ω)−1f (ω).
+a,b|Y a,b|Y ab a,Y Y Y,b
+h∈Z
+418
+
+--- physical page 420 ---
+The standardized version of f (ω):
+a,b|Y
+f (ω) − f (ω)f (ω)−1f (ω)
+ab a,Y Y Y,b
+ρ (ω) =
+a,b|Y (cid:113)
+f (ω)f (ω)
+a,a|Y b,b|Y
+is often called the spectral partial coherence in multivariate time series.
+12.3 Properties of the inverse of the spectral density
+matrix
+We now show that results analogous to those in multivariate analysis, also apply to the inverse
+spectral density matrix. In particular, the linear regression A(ω) and partial coherency f are
+a,b|Y
+found within the inverse spectral density matrix. To do this we write everything in terms of the
+multivariate time series {Y } .
+t t
+The important results that we will use is that if Σ is a positive definite matrix and Γ = Σ−1 (it
+can be complex). Then
+• The diagonal
+1
+Γ = ,
+aa Σ − Σ Σ Σ(cid:48)
+aa a,−a −i,−i a,−a
+where Σ denotes the ath row of Σ with the ath column removed.
+a,−a
+• The off-diagonal For a (cid:54)= b we have
+Γ = −β Γ
+ab a,b aa
+where
+β = (β , . . . , β )(cid:48) = [Σ ]−1Σ . (12.9)
+a a,1 a,d −a,−a −a,a
+• The formula for partial correlation. The partial covariance is
+γ = Σ − Σ(cid:48) [Σ ]−1Σ . (12.10)
+a,b a,b a,−(a,b) −(a,b) a,−(a,b)
+419
+
+--- physical page 421 ---
+Thus the partial correlation is
+γ
+a,b
+ρ = √ .
+a,b
+γ γ
+aa bb
+(cid:113)
+The regression coefficients and partial correlations are linked by ρ = β Γaa . Using this
+a,b a,b Γ
+bb
+we can represent the partial correlation as
+Γ
+a,b
+ρ = − √ .
+a,b
+Γ Γ
+aa bb
+We will compare the above formulas with the time series regression coefficients (the Fourier
+transform) and spectral coherency. We will show that these quantities are hidden in the inverse
+of the spectral density matrix. Let us suppose that {Y } is a second order stationary time series,
+t t
+where Y (cid:48) = (X (1) , . . . , X (d) ). The corresponding spectral density matrix is
+t t t
+ 
+f (ω) f (ω) . . . f (ω)
+11 12 1d
+ 
+ f (ω) f (ω) . . . f (ω) 
+ 21 22 2d 
+Σ(ω) =   .
+  . . . . . . . . . . . .  
+ 
+f (ω) f (ω) . . . f (ω)
+d1 d2 dd
+We let Γ(ω) = Σ(ω)−1.
+Formulas for time series regression coefficients and spectral coherency:
+(a) (−a)
+• The best linear predictor of X given {Y } is
+t t t
+X (a) = (cid:88) (A (a) )(cid:48)Y (−a) + ε (a) .
+t (cid:96) t−(cid:96) t
+(cid:96)∈Z
+Let A(a)(ω) = (cid:80) A (a) exp(i(cid:96)ω), then
+(cid:96)∈Z (cid:96)
+A(a)(ω) = [Σ(ω) ]−1Σ(ω) , (12.11)
+−a,−a −a,a
+where Σ(ω) is Σ(ω) but with the jth column and row removed.
+−a,−a
+(a)
+• Formulas for spectral coherency (Fourier transform of partial covariance) between {X }
+t t
+420
+
+--- physical page 422 ---
+(b) −(a,b)
+and {X } given {Y } is
+t t t t
+f (ω) = Σ (ω) − Σ (ω)[Σ (ω)]−1Σ (ω) (12.12)
+a,b|−(a,b) ab a,−(a,b) −(a,b),−(a,b) −(a,b),b
+where Σ (ω) is the ath row of Σ(ω) but with the (a, b)th column removed. Using the
+a,−(a,b)
+above we define
+f (ω) − f (ω)f (ω)−1f (ω)
+ab a,−(a,b) −(a,b) −(a,b),b
+ρ (ω) = .
+a,b (cid:113)
+f (ω)f (ω)
+a,a|−(a,b) b,b|−(a,b)
+Making the comparison Comparing (12.9) with (12.11), we observe that
+1
+Γ(ω) = − where f (ω) = Σ(ω) − Σ(ω) [Σ(ω) ]−1Σ (ω)(cid:48).
+a,a −a a,a a,−a −a,−a a,−a
+f (ω)
+−a
+For a (cid:54)= b
+Γ(ω) = −[A(a)(ω)] Γ(ω) . (12.13)
+a,b b a,a
+Comparing f (ω) with Section 12.1.3 it can be seen that f (ω) is the spectral density of the
+−a −a
+residual time series {X (a) − (cid:80) (A (a) )(cid:48)Y (−a) }. This links the regression coefficients in time series
+t (cid:96) j t−(cid:96)
+with those of the precision matrix.
+We now turn to partial spectral coherency. Again comparing (12.10) with (12.12) we can see
+that
+Γ(ω)
+a,b
+ρ (ω) = − . (12.14)
+a,b (cid:112)
+Γ(ω) Γ(ω)
+aa bb
+In conclusion we have shown that all the formulas which connect the precision matrix to linear
+regression and partial correlation in multivariate analysis transfer to the precision spectral density
+matrix in stationary time series. However, the results derived above are based simply on a compar-
+ision of formulas. Below we give an intuition why these must hold using the orthogonal increment
+process {Z(ω); ω ∈ [0, 2π)}.
+421
+
+--- physical page 423 ---
+A heuristic understanding in terms of the orthogonal increment process
+Let Y (cid:48) = (X (1) , . . . , X (d) ), and suppose {Y } is a second order stationary time series. Then it has
+t t t t t
+the spectral representation
+1 (cid:90) 2π
+Y = exp(itω)dZ (ω),
+t 2π Y
+0
+where Z (ω) is an orthogonal increment process. Very roughly speaking (and totally ignoring Ito
+Y
+2π/δ−1
+Calculus) this means we can treat the increments/segments {∆ } where ∆ = Z((k + 1)δ) −
+k k=0 k
+Z(kδ) as roughly uncorrelated (but not identically distributed) random vectors. The random vector
+∆ has mean zero and variance that is
+k
+var[∆ ] = Σ((k + 1)δ) − Σ(kδ) ≈ δΣ(kδ).
+k
+Now we can apply all the results in multivariate analysis to the random vector ∆ (regression and
+k
+partial correlation) and obtain the formulas above.
+12.4 Proof of equation (12.6)
+(a)
+We recall in equation (12.5) we stated that the best linear predictor of X given Y is
+t t
+X (a) = (cid:88) A(cid:48) Y + ε (a) ,
+t j t−j t
+j∈Z
+where
+A(ω) = f (ω)−1f (ω),
+Y Y Y,X
+A(ω) = (cid:80) A(cid:48) exp(−ijω). We now prove this result. There are various method but in this
+j∈Z j
+section we use the spectral representation which reduces the mean squared error
+ 2
+(cid:88)
+E X t − A(cid:48) j Y t−j .
+j∈Z
+422
+
+--- physical page 424 ---
+By using the results in Section 12.1.3 we can write the MSE as
+ 2
+E X t − (cid:88) A(cid:48) j Y t−j = E (cid:12) (cid:12) (cid:12) (cid:12) 2 1 π (cid:90) 2π eitω (cid:2) dZ X (ω) − A(ω)(cid:48)dZ Y (ω) (cid:3) (cid:12) (cid:12) (cid:12) (cid:12) 2
+j∈Z 0
+= 1 (cid:90) 2π E (cid:2) dZ (ω) − A(ω)(cid:48)dZ (ω ) (cid:3) (cid:104) dZ (ω) − A(ω)∗dZ (ω) (cid:105) ,
+(2π) X Y 1 X Y
+0
+where
+(cid:104) (cid:105)
+E (cid:2) dZ (ω) − A(ω)(cid:48)dZ (ω) (cid:3) dZ (ω) − A(ω)∗dZ (ω)
+X Y X Y
+(cid:104) (cid:105)
+= f (ω) − A(ω)(cid:48)f (ω) − f (ω)A(ω) + A(ω)(cid:48)f (ω)A(ω) dω.
+XX Y,X X,Y Y Y
+Substituting this into the integral gives
+ 2
+(cid:88)
+E X t − A(cid:48) j Y t−j
+j∈Z
+1 (cid:90) 2π (cid:104) (cid:105)
+= f (ω) − A(ω)(cid:48)f (ω) − f (ω)A(ω) + A(ω)(cid:48)f (ω)A(ω) dω. (12.15)
+XX Y,X X,Y Y Y
+(2π)
+0
+Studying the above expansion we observe that the term inside the integral
+(cid:104) (cid:105)
+L(A; ω) = f (ω) − A(ω)(cid:48)f (ω) − f (ω)A(ω) + A(ω)(cid:48)f (ω)A(ω)
+XX Y,X X,Y Y Y
+is non-negative. Thus we can find the A(ω) which minimises (12.15) by finding the A(ω) which
+minimises L(A; ω) for each ω ∈ [0, π] (since A(ω) = A(2π − ω)). We first note that the vector A(ω)
+is a complex vector, thus we partition it in terms of its real and imaginary parts
+A(ω) = a(ω) + ib(ω).
+Substituting this into L(A; ω) and differentiating with respect to the entries in a(ω) and b(ω) gives
+∇ L(A; ω) = −f (ω) − f (ω)∗ + f (ω)A(ω) + (A(ω)∗f (ω))∗
+a Y,a a,Y Y Y Y Y
+∇ L(A; ω) = −if (ω) + if (ω)∗ + if (ω)A(ω) − i(A(ω)∗f (ω))∗.
+b Y,a a,Y Y Y Y Y
+423
+
+--- physical page 425 ---
+Equating the derivatives to zero and solving for a(ω) and b(ω) gives
+A(ω) = f (ω)−1f (ω).
+Y Y Y,X
+Thus we have proved the required result.
+An alternative proof involves the normal equations (derivatives of the MSE):
+  2
+(cid:88)
+E X t − A(cid:48) j Y t−j Y t−(cid:96) .
+j∈Z
+This avoids going immediately going into the frequency domain (we have done above) and thus
+the need to take complex derivatives. One then replaces the autocovariances in the above with the
+spectral density function. It has the advantage of avoiding the need to consider the derivatives of
+real and imaginary parts (or their complex derivatives). We leave the details as a exercise.
+424

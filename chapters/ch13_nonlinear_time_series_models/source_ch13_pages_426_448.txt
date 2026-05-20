@@ -1,0 +1,1068 @@
+--- physical page 426 ---
+Chapter 13
+Nonlinear Time Series Models
+Prerequisites
+• A basic understanding of expectations, conditional expectations and how one can use condi-
+tioning to obtain an expectation.
+Objectives:
+• Use relevant results to show that a model has a stationary, solution.
+• Derive moments of these processes.
+• Understand the differences between linear and nonlinear time series.
+So far we have focused on linear time series, that is time series which have the representation
+∞
+(cid:88)
+X = ψ ε , (13.1)
+t j t−j
+j=−∞
+where {ε } are iid random variables. Such models are extremely useful, because they are designed
+t
+to model the autocovariance structure and are straightforward to use for forecasting. These are
+some of the reasons that they are used widely in several applications. Note that all stationary
+Gaussian time series have a linear form (of the type given in (13.1)), where the innovations {ε }
+t
+are Gaussian.
+A typical realisation from a linear time series, will be quite regular with no suddent bursts
+or jumps. This is due to the linearity of the system. However, if one looks at financial data, for
+example, there are sudden bursts in volatility (variation) and extreme values, which calm down
+425
+
+--- physical page 427 ---
+after a while. It is not possible to model such behaviour well with a linear time series. In order to
+capture ‘nonlinear behaviour several nonlinear models have been proposed. The models typically
+consists of products of random variables which make possible the sudden irratic bursts seen in
+the data. Over the past 30 years there has been a lot research into nonlinear time series models.
+Probably one of the first nonlinear models proposed for time series analysis is the bilinear model,
+this model is used extensively in signal processing and engineering. A popular model for modelling
+financial data are (G)ARCH-family of models. Other popular models are random autoregressive
+coefficient models and threshold models, to name but a few (see, for example, Subba Rao (1977),
+Granger and Andersen (1978), Nicholls and Quinn (1982), Engle (1982), Subba Rao and Gabr
+(1984), Bollerslev (1986), Terdik (1999), Fan and Yao (2003), Straumann (2005) and Douc et al.
+(2014)).
+Once a model has been defined, the first difficult task is to show that it actually has a solution
+which is almost surely finite (recall these models have dynamics which start at the −∞, so if they
+are not well defined they could be ‘infinite’), with a stationary solution. Typically, in the nonlinear
+world, we look for causal solutions. I suspect this is because the mathematics behind existence of
+non-causal solution makes the problem even more complex.
+We state a result that gives sufficient conditions for a stationary, causal solution of a certain
+class of models. These models include ARCH/GARCH and Bilinear models. We note that the
+theorem guarantees a solution, but does not give conditions for it’s moments. The result is based
+on Brandt (1986), but under stronger conditions.
+Theorem 13.0.1 (Brandt (1986)) Let us suppose that {X } is a d-dimensional time series de-
+t
+fined by the stochastic recurrence relation
+X = A X + B , (13.2)
+t t t−1 t
+where {A } and {B } are iid random matrices and vectors respectively. If E log (cid:107)A (cid:107) < 0 and
+t t t
+E log (cid:107)B (cid:107) < ∞ (where (cid:107) · (cid:107) denotes the spectral norm of a matrix), then
+t
+∞ (cid:32)k−1 (cid:33)
+(cid:88) (cid:89)
+X = B + A B (13.3)
+t t t−i t−k
+k=1 i=0
+converges almost surely and is the unique strictly stationary causal solution.
+Note: The conditions given above are very strong and Brandt (1986) states the result under
+426
+
+--- physical page 428 ---
+which weaker conditions, we outline the differences here. Firstly, the assumption {A , B } are iid
+t t
+can be relaxed to their being Ergodic sequences. Secondly, the assumption E log (cid:107)A (cid:107) < 0 can be
+t
+relaxed to E log (cid:107)A (cid:107) < ∞1 and that {A } has a negative Lyapunov exponent, where the Lyapunov
+t t
+exponent is defined as lim 1 (cid:107) (cid:81)n A (cid:107) = γ, with γ < 0 (see Brandt (1986)).
+n→∞ n j=1 j
+The conditions given in the above theorem may appear a little cryptic. However, the condition
+E log |A | < 0 (in the unvariate case) becomes quite clear if you compare the SRE model with
+t
+the AR(1) model X = ρX + ε , where |ρ| < 1 (which is the special case of the SRE, where
+t t−1 t
+the coefficients is deterministic). We recall that the solution of the AR(1) is X = (cid:80)∞ ρjε .
+t k=1 t−j
+The important part in this decomposition is that |ρj| decays geometrically fast to zero. Now let
+us compare this to (13.3), we see that ρj plays a similar role to (cid:81)k−1 A . Given that there are
+i=0 t−i
+similarities between the AR(1) and SRE, it seems reasonable that for (13.3) to converge,
+(cid:81)k−1
+A
+i=0 t−i
+should converge geometrically too (at least almost surely). However analysis of a product is not
+straight forward, therefore we take logarithms to turn it into a sum
+k−1 k−1
+1 (cid:89) 1 (cid:88) a.s.
+log A = log A → E[log A ] := γ,
+t−i t−i t
+k k
+i=0 i=0
+since it is the sum of iid random variables. Thus taking anti-logs
+k−1
+(cid:89)
+A ≈ exp[kγ],
+t−i
+i=0
+which only converges to zero if γ < 0, in other words E[log A ] < 0. Thus we see that the condition
+t
+E log |A | < 0 is quite a logical conditional afterall.
+t
+13.0.1 Examples
+The AR(1) model
+It is straightforward to see that the causal, stationary AR(1) model satisfies the conditions in
+Theorem 13.0.1. Observe that since
+X = φX + ε
+t t−1 t
+has a stationary causal solution when |φ| < 1, then E[log |φ|] = log |φ| < 0 (since |φ < 1|).
+(cid:112)
+1Usually we use the spectral norm, which is defined as the λ (A(cid:48)A)
+max
+427
+
+--- physical page 429 ---
+The AR(2) model
+Things become a little tricker with the AR(2) case. We recall from Section ?? that the causal
+AR(2) model
+X = φ X + φ X + ε
+t 1 t−1 2 t−2 t
+can be written as an VAR(1) model
+∞
+(cid:88)
+X = AX + ε = Ajε (13.4)
+t t−1 t t−j
+j=0
+where
+ 
+φ φ
+1 2
+  , (13.5)
+1 0
+and ε(cid:48) = (ε , 0). For the process to be causal the eigenvalues of the matrix A should be less than
+t t
+one. Thus in the above example φ = a + b and φ = −ab, for some |a|, |b| < 1. This implies that
+1 2
+the eigenvalues of A will be less than one, however the eigenvalues of A(cid:48)A may not be less than
+one. For example consider the AR(2) model
+X = 2 × 0.2X − 0.22X + ε
+t t−1 t−2 t
+which correspond to A with the eigenvalues 0.2 and 0.2.
+A = matrix(c(2*phi,-phi**2,1,0),byrow =T, ncol = 2)
+>eigen(A)
+eigen() decomposition
+$values
+[1] 0.2+0i 0.2-0i
+> eigen(A%*%t(A))
+eigen() decomposition
+$values
+[1] 1.160220952 0.001379048
+From the code above, we see that the spectral radius of A (largest eigenvalue of A) is 0.2, but
+428
+
+--- physical page 430 ---
+(cid:107)A(cid:107) = 1.16. However, if we evaluate the spectral norm of A2, it is less than one;
+spec
+> A2 = A%*%A
+> eigen(A2%*%t(A2))
+eigen() decomposition
+$values
+[1] 1.762415e-01 1.452553e-05
+√
+In this example we see that (cid:107)A2(cid:107) = 0.176. Since we can group the product Ak into the
+spec
+products of A2, this is what gives the contraction. This will happen for any matrix, A, whose
+eigenvalues are less than one. For a large enough k, the spectral norm of Ak will be less than one2.
+Therefore the conditions of Theorem 13.0.1 are not satisfied. But the weaker conditions (given
+below the main conditions of the theorem) is satisfied.
+Nonlinear Time series models There are many other (nonlinear) models that have the representa-
+tion in (13.2). The purpose of this chapter is to introduce and motivate some of these models.
+13.1 Data Motivation
+13.1.1 Yahoo data from 1996-2014
+We consider here the closing share price of the Yahoo daily data downloaded from https://uk.
+finance.yahoo.com/q/hp?s=YHOO. The data starts from from 10th April 1996 to 8th August 2014
+(over 4000 observations). A plot is given in Figure 13.1. Typically the logarithm of such data
+taken, and in order to remove linear and/or stochastic trend the first difference of the logarithm
+is taken (ie. X = log S − log S ). The hope is that after taking differences the data has been
+t t t−1
+stationarized (see Example 4.7). However, the data set spans almost 20 years and this assumption
+is rather precarious and will be investigated later. A plot of the data after taking first differences
+together with the QQplot is given in Figure 13.2. From the QQplot in Figure 13.2, we observe that
+log differences {X } appears to have very thick tails, which may mean that higher order moments
+t
+of the log returns do not exist (not finite).
+In Figure 13.3 we give the autocorrelation (ACF) plots of the log differences, absolute log
+2This result is due to Gelfand’s lemma
+429
+
+--- physical page 431 ---
+Time
+oohay
+0 1000 2000 3000 4000
+004
+003
+002
+001
+0
+Figure 13.1: Plot of daily closing Yahoo share price 1996-2014
+Time
+ffid.gol.oohay
+0 1000 3000
+4.0
+2.0
+0.0
+2.0−
+4.0−
+6.0−
+8.0−
+l
+llllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll
+l
+l
+ll
+l
+−2 0 2
+4.0
+2.0
+0.0
+2.0−
+4.0−
+6.0−
+8.0−
+Normal Q−Q Plot
+Theoretical Quantiles
+selitnauQ
+elpmaS
+Figure 13.2: Plot of log differences of daily Yahoo share price 1996-2014 and the correspond-
+ing QQplot
+differences and squares of the log differences. Note that the sample autocorrelation is defined as
+T −|k|
+ρ(k) = (cid:98) c(k) , where c(k) = 1 (cid:88) (X − X¯ )(X − X¯ ). (13.6)
+(cid:98) (cid:98) t t+k
+c(0) T
+(cid:98)
+t=1
+The dotted lines are the errors bars (the 95% confidence of the sample correlations constructed
+under the assumption the observations are independent, see Section 8.2.1). From Figure 13.3a
+we see that there appears to be no correlation in the data. More precisely, most of the sample
+correlations are within the errors bars, the few that are outside it could be by chance, as the
+error bars are constructed pointwise. However, Figure 13.3b the ACF plot of the absolutes gives
+significant large correlations. In contrast, in Figure 13.3c we give the ACF plot of the squares,
+where there does not appear to be any significant correlations.
+To summarise, {X } appears to be uncorrelated (white noise). However, once absolutes have
+t
+430
+
+--- physical page 432 ---
+0 5 10 15 20 25 30 35
+0.1
+8.0
+6.0
+4.0
+2.0
+0.0
+Lag
+FCA
+Series yahoo.log.diff
+0 5 10 15 20 25 30 35
+(a) ACF plot of the log differ-
+ences
+0.1
+8.0
+6.0
+4.0
+2.0
+0.0
+Lag
+FCA
+Series abs(yahoo.log.diff)
+0 5 10 15 20 25 30 35
+(b) ACF plot of the absolute
+of the log differences
+0.1
+8.0
+6.0
+4.0
+2.0
+0.0
+Lag
+FCA
+Series (yahoo.log.diff)^2
+(c) ACF plot of the square of
+the log differences
+Figure 13.3: ACF plots of the transformed Yahoo data
+been taken there does appear to be dependence. This type of behaviour cannot be modelled with
+a linear model. What is quite interesting is that there does not appear to be any significant
+correlation in the squares. However, on explanation for this can be found in the QQplot. The data
+has extremely thick tails which suggest that the forth moment of the process may not exist (the
+empirical variance of X will be extremely large). Since correlation is defined as (13.6) involves
+t
+division by c(0), which could be extremely large, this would ‘hide’ the sample covariance.
+(cid:98)
+R code for Yahoo data
+Here we give the R code for making the plots above.
+yahoo <- scan("~/yahoo304.96.8.14.txt")
+yahoo <- yahoo[c(length(yahoo):1)] # switches the entries to ascending order 1996-2014
+yahoo.log.diff <- log(yahoo[-1]) - log(yahoo[-length(yahoo)])
+# Takelog differences
+par(mfrow=c(1,1))
+plot.ts(yahoo)
+par(mfrow=c(1,2))
+plot.ts(yahoo.log.diff)
+qqnorm(yahoo.log.diff)
+qqline(yahoo.log.diff)
+par(mfrow=c(1,3))
+acf(yahoo.log.diff) # ACF plot of log differences
+431
+
+--- physical page 433 ---
+acf(abs(yahoo.log.diff)) # ACF plot of absolute log differences
+acf((yahoo.log.diff)**2) # ACF plot of square of log differences
+13.1.2 FTSE 100 from January - August 2014
+For completeness we discuss a much shorter data set, the daily closing price of the FTSE 100
+from 20th January - 8th August, 2014 (141 observations). This data was downloaded from http:
+//markets.ft.com/research//Tearsheets/PriceHistoryPopup?symbol=FTSE:FSI.
+Exactly the same analysis that was applied to the Yahoo data is applied to the FTSE data and
+the plots are given in Figure 13.4-13.6.
+Time
+estf
+0 20 40 60 80 100 120 140
+0086
+0076
+0066
+0056
+Figure 13.4: Plot of daily closing FTSE price Jan-August, 2014
+Time
+ffid.gol.estf
+0 20 60 100 140
+510.0
+010.0
+500.0
+000.0
+500.0−
+010.0−
+510.0−
+l
+l
+ll
+llll
+lllll
+llllllllll
+lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll
+lllll
+ll
+l
+l l
+−2 −1 0 1 2
+510.0
+010.0
+500.0
+000.0
+500.0−
+010.0−
+510.0−
+Normal Q−Q Plot
+Theoretical Quantiles
+selitnauQ
+elpmaS
+Figure 13.5: Plot of log differences of daily FTSE price Jan-August, 2014 and the corre-
+sponding QQplot
+We observe that for this (much shorter) data set, the marginal observations do not appear to
+deviate much from normality (note just because the marginal is Gaussian does not mean the entire
+432
+
+--- physical page 434 ---
+0 5 10 15
+0.1
+8.0
+6.0
+4.0
+2.0
+0.0
+2.0−
+Lag
+FCA
+Series ftse.log.diff
+0 5 10 15
+(a) ACF plot of the log differ-
+ences
+0.1
+8.0
+6.0
+4.0
+2.0
+0.0
+2.0−
+Lag
+FCA
+Series abs(ftse.log.diff)
+0 5 10 15
+(b) ACF plot of the absolute
+of the log differences
+0.1
+8.0
+6.0
+4.0
+2.0
+0.0
+2.0−
+Lag
+FCA
+Series (ftse.log.diff)^2
+(c) ACF plot of the square of
+the log differences
+Figure 13.6: ACF plots of the transformed FTSE data
+time series is Gaussian). Furthermore, the ACF plot of the log differences, absolutes and squares
+do not suggest any evidence of correlation. Could it be, that after taking log differences, there is
+no dependence in the data (the data is a realisation from iid random variables). Or that there is
+dependence but it lies in a ‘higher order structure’ or over more sophisticated transformations.
+Comparing this to the Yahoo data, may be we ‘see’ dependence in the Yahoo data because it
+is actually nonstationary. The mystery continues (we look into this later). It would be worth while
+conducting a similar analysis on a similar portion of the Yahoo data.
+13.2 The ARCH model
+During the early 80s Econometricians were trying to find a suitable model for forecasting stock
+prices. They were faced with data similar to the log differences of the Yahoo data in Figure 13.2.
+As Figure 13.3a demonstrates, there does not appear to be any linear dependence in the data,
+which makes the best linear predictor quite useless for forecasting. Instead, they tried to predict
+the variance of future prices given the past, var[X |X , X , . . .]. This called for a model that
+t+1 t t−1
+has a zero autocorrelation function, but models the conditional variance.
+To address this need, Engle (1982) proposed the autoregressive conditionally heteroskadastic
+(ARCH) model (note that Rob Engle, together with Clive Granger, in 2004, received the Noble prize
+for Economics for Cointegration). He proposed the ARCH(p) which satisfies the representation
+p
+(cid:88)
+X = σ Z σ2 = a + a X2 ,
+t t t t 0 j t−j
+j=1
+433
+
+--- physical page 435 ---
+where Z are iid random variables where E(Z ) = 0 and var(Z ) = 1, a > 0 and for 1 ≤ j ≤ p
+t t t 0
+a ≥ 0.
+j
+Before, worrying about whether a solution of such a model exists, let us consider the reasons
+behind why this model was first proposed.
+13.2.1 Features of an ARCH
+Let us suppose that a causal, stationary solution of the ARCH model exists (X is a function of
+t
+Z , Z , Z , . . .) and all the necessary moments exist. Then we obtain the following.
+t t−1 t−1
+(i) The first moment:
+E[X ] = E[Z σ ] = E[E(Z σ |X , X , . . .)] = E[σ E(Z |X , X , . . .)]
+t t t t t t−1 t−2 t t t−1 t−2
+(cid:124) (cid:123)(cid:122) (cid:125)
+σt function of Xt−1,...,Xt−p
+= E[σ E(Z ) ] = E[0 · σ ] = 0.
+t t t
+(cid:124) (cid:123)(cid:122) (cid:125)
+by causality
+Thus the ARCH process has a zero mean.
+(ii) The conditional variance:
+var(X |X , X , . . . , X ) = E(X2|X , X , . . . , X )
+t t−1 t−2 t−p t t−1 t−2 t−p
+= E(Z2σ2|X , X , . . . , X ) = σ2E[Z2] = σ2.
+t t t−1 t−2 t−p t t t
+Thus the conditional variance is σ2 = a + (cid:80)p a X2 (a weighted sum of the squared
+t 0 j=1 j t−j
+past).
+(iii) The autocovariance function:
+Without loss of generality assume k > 0
+cov[X , X ] = E[X X ] = E[X E(X |X , . . . , X )]
+t t+k t t+k t t+k t+k−1 t
+= E[X σ E(Z |X , . . . , X )] = E[X σ E(Z )] = E[X σ · 0] = 0.
+t t+k t+k t+k−1 t t t+k t+k t t+k
+The autocorrelation function is zero (it is a white noise process).
+(iv) We will show in Section 13.2.2 that E[X2d] < ∞ iff [ (cid:80)p a ]E[Z2d]1/d < 1. It is well known
+j=1 j t
+that even for Gaussian innovations E[Z2d]1/d grows with d, therefore if any of the a are
+t j
+434
+
+--- physical page 436 ---
+non-zero (recall all need to be positive), there will exist a d such that for all d ≥ d E[Xd]
+0 0 t
+will not be finite. Thus the we see that the ARCH process has thick tails.
+Usually we measure the thickness of tails in data using the Kurtosis measure (see wiki).
+Points (i-iv) demonstrate that the ARCH model is able to model many of the features seen in the
+stock price data.
+In some sense the ARCH model can be considered as a generalisation of the AR model. That
+is the squares of ARCH model satisfy
+p
+(cid:88)
+X2 = σ2Z2 = a + a X2 + (Z2 − 1)σ2, (13.7)
+t t 0 j t−j t t
+j=1
+with characteristic polynomial φ(z) = 1 − (cid:80)p a zj. It can be shown that if (cid:80)p a < 1, then the
+j=1 j j=1 j
+roots of the characteristic polynomial φ(z) lie outside the unit circle (see Exercise 4.2). Moreover,
+the ‘innovations’ (cid:15) = (Z2 − 1)σ2 are martingale differences (see wiki). This can be shown by noting
+t t t
+that
+E[(Z2 − 1)σ2|X , X , . . .] = σ2E(Z2 − 1|X , X , . . .) = σ2 E(Z2 − 1) = 0.
+t t t−1 t−2 t t t−1 t−2 t t
+(cid:124) (cid:123)(cid:122) (cid:125)
+=0
+Thus cov((cid:15) , (cid:15) ) = 0 for s (cid:54)= t. Martingales are a useful asymptotic tool in time series, we demon-
+t s
+strate how they can be used in Chapter 14.
+To summarise, in many respects the ARCH(p) model resembles the AR(p) except that the
+innovations {(cid:15) } are martingale differences and not iid random variables. This means that despite
+t
+the resemblence, it is not a linear time series.
+We show that a unique, stationary causal solution of the ARCH model exists and derive con-
+ditions under which the moments exist.
+13.2.2 Existence of a strictly stationary solution and second order
+stationarity of the ARCH
+To simplify notation we will consider the ARCH(1) model
+X = σ Z σ2 = a + a X2 . (13.8)
+t t t t 0 1 t−1
+435
+
+--- physical page 437 ---
+It is difficult to directly obtain a solution of X , instead we obtain a solution for σ2 (since X can
+t t t
+immediately be obtained from this). Using that X2 = σ2 Z2 and substituting this into (13.8)
+t−1 t−1 t−1
+we obtain
+σ2 = a + a X2 = (a Z2 )σ2 + a . (13.9)
+t 0 1 t−1 1 t−1 t−1 0
+We observe that (13.9) can be written in the stochastic recurrence relation form given in (13.2)
+with A = a Z2 and B = a . Therefore, by using Theorem 13.0.1, if E[log a Z2 ] = log a +
+t 1 t−1 t 0 1 t−1 1
+E[log Z2 ] < 0, then σ2 has the strictly stationary causal solution
+t−1 t
+∞ k
+(cid:88) (cid:89)
+σ2 = a + a ak Z2 .
+t 0 0 1 t−j
+k=1 j=1
+The condition for existence using Theorem 13.0.1 and (13.9) is
+E[log(a Z2)] = log a + E[log Z2] < 0, (13.10)
+1 t 1 t
+which is immediately implied if a < 1 (since E[log Z2] ≤ log E[Z2] = 0), but it is also satisfied
+1 t t
+under weaker conditions on a .
+1
+To obtain the moments of X2 we use that it has the solution is
+t
+ 
+∞ k
+(cid:88) (cid:89)
+X t 2 = Z t 2 a 0 + a 0 ak 1 Z t 2 −j , (13.11)
+k=1 j=1
+therefore taking expectations we have
+ 
+∞ k ∞
+(cid:88) (cid:89) (cid:88)
+E[X t 2] = E[Z t 2]E a 0 + a 0 ak 1 Z t 2 −j = a 0 + a 0 ak 1 .
+k=1 j=1 k=1
+Thus E[X2] < ∞ if and only if a < 1 (heuristically we can see this from E[X2] = E[Z2](a +
+t 1 t 2 0
+a E[X2 ])).
+1 t−1
+By placing stricter conditions on a , namely a E(Z2d)1/d < 1, we can show that E[X2d] < ∞
+1 1 t t
+(note that this is an iff condition). To see why consider the simple case d is an integer, then by
+436
+
+--- physical page 438 ---
+using (13.11) we have
+ 2d
+∞ k
+(cid:88) (cid:89)
+X t 2d ≥ Z t 2dad 0 ad 1 k  Z t 2 −j
+k=1 j=1
+∞ k ∞
+(cid:88) (cid:89) (cid:88)
+⇒ E[X2d] ≥ E[Z2d]ad adk E[Z2d ] = E[Z2d]ad adkE[Z2d]k
+t t 0 1 t−j t 0 1 t
+k=1 j=1 k=1
+∞
+(cid:88) (cid:16) (cid:17)k
+= E[Z2d]ad adE[Z2d] .
+t 0 1 t
+k=1
+It is immediately clear the above is only finite if a E[Z2d]1/d < 1.
+1 t
+The ARCH(p) model
+We can generalize the above results to ARCH(p) processes (but to show existence of a solution we
+need to write the ARCH(p) process as a vector process similar to the Vector AR(1) representation
+of an AR(p) given in Section ??). It can be shown that under sufficient conditions on the coefficients
+{a } that the stationary, causal solution of the ARCH(p) model is
+j
+(cid:88)
+X2 = a Z2 + m (k) (13.12)
+t 0 t t
+k≥1
+k k
+where m t (k) = (cid:88) a 0 (cid:0) (cid:89) a jr (cid:1) (cid:89) Z t 2 −(cid:80)r
+s=0
+js (j 0 = 0).
+j1,...,j
+k
+≥1 r=1 r=0
+The above solution belongs to a general class of functions called a Volterra expansion. We note
+that E[X2] < ∞ iff (cid:80)p a < 1.
+t j=1 j
+13.3 The GARCH model
+A possible drawback of the ARCH(p) model is that the conditional variance only depends on finite
+number of the past squared observations/log returns (in finance, the share price is often called
+the return). However, when fitting the model to the data, analogous to order selection of an
+autoregressive model (using, say, the AIC), often a large order p is selected. This suggests that
+the conditional variance should involve a large (infinite?) number of past terms. This observation
+motivated the GARCH model (first proposed in Bollerslev (1986) and Taylor (1986)), which in
+many respects is analogous to the ARMA. The conditional variance of the GARCH model is a
+437
+
+--- physical page 439 ---
+weighted average of the squared returns, the weights decline with the lag, but never go completely
+to zero. The GARCH class of models is a rather parsimonous class of models and is extremely
+popular in finance. The GARCH(p, q) model is defined as
+p q
+(cid:88) (cid:88)
+X = σ Z σ2 = a + a X2 + b σ2 (13.13)
+t t t t 0 j t−j i t−i
+j=1 i=1
+where Z are iid random variables where E(Z ) = 0 and var(Z ) = 1, a > 0 and for 1 ≤ j ≤ p
+t t t 0
+a ≥ 0 and 1 ≤ i ≤ q b ≥ 0.
+j i
+Under the assumption that a causal solution with sufficient moments exist, the same properties
+defined for the ARCH(p) in Section 13.2.1 also apply to the GARCH(p, q) model.
+It can be shown that under suitable conditions on {b } that X satisfies an ARCH(∞) represen-
+j t
+tation. Formally, we can write the conditional variance σ2 (assuming that a stationarity solution
+t
+exists) as
+q p
+(cid:88) (cid:88)
+(1 − b Bi)σ2 = (a + a X2 ),
+i t 0 j t−j
+i=1 j=1
+where B denotes the backshift notation defined in Chapter 4. Therefore if the roots of b(z) =
+(1 − (cid:80)q b zi) lie outside the unit circle (which is satisfied if (cid:80) b < 1) then
+i=1 i i i
+p ∞
+1 (cid:88) (cid:88)
+σ2 = (a + a X2 ) = α + α X2 , (13.14)
+t (1 − (cid:80)q b Bj) 0 j t−j 0 j t−j
+j=1 j j=1 j=1
+where a recursive equation for the derivation of α can be found in Berkes et al. (2003). In other
+j
+words the GARCH(p, q) process can be written as a ARCH(∞) process. This is analogous to the
+invertibility representation given in Definition 4.5.2. This representation is useful when estimating
+the parameters of a GARCH process (see Berkes et al. (2003)) and also prediction. The expansion
+in (13.14) helps explain why the GARCH(p, q) process is so popular. As we stated at the start of
+this section, the conditional variance of the GARCH is a weighted average of the squared returns,
+the weights decline with the lag, but never go completely to zero, a property that is highly desirable.
+Example 13.3.1 (Inverting the GARCH(1, 1)) If b < 1, then we can write σ2 as
+1 t
+ 
+∞ ∞
+σ t 2 =  (cid:88) bjBj  · (cid:2) a 0 + a 1 X t 2 −1 (cid:3) = 1 a − 0 b + a 1 (cid:88) bjX t 2 −1−j .
+j=0 j=0
+438
+
+--- physical page 440 ---
+This expansion offers us a clue as to why the GARCH(1, 1) is so popular in finance. In finance one
+important objective is to predict future volatility, this is the variance of say a stock tomorrow given
+past information. Using the GARCH model this is σ2, which we see is
+t
+∞
+σ2 = a 0 + a (cid:88) bjX2 .
+t 1 − b 1 t−1−j
+j=0
+This can be viewed as simply an exponentially weighted average of X2 . Some researchers argue
+t−j
+that other models can lead to the same predictor of future volatility and there is nothing intrinsically
+specially about the GARCH process. We discuss this in more detail in Chapter 5.
+In the following section we derive conditions for existence of the GARCH model and also it’s
+moments.
+13.3.1 Existence of a stationary solution of a GARCH(1, 1)
+We will focus on the GARCH(1, 1) model as this substantially simplifies the conditions. We recall
+the conditional variance of the GARCH(1, 1) can be written as
+σ2 = a + a X2 + b σ2 = (cid:0) a Z2 + b (cid:1) σ2 + a . (13.15)
+t 0 1 t−1 1 t−1 1 t−1 1 t−1 0
+We observe that (13.15) can be written in the stochastic recurrence relation form given in (13.2)
+with A = (a Z2 +b ) and B = a . Therefore, by using Theorem 13.0.1, if E[log(a Z2 +b )] < 0,
+t 1 t−1 1 t 0 1 t−1 1
+then σ2 has the strictly stationary causal solution
+t
+∞ k
+(cid:88) (cid:89)
+σ2 = a + a (a Z2 + b ). (13.16)
+t 0 0 1 t−j 1
+k=1 j=1
+These conditions are relatively weak and depend on the distribution of Z . They are definitely
+t
+satisfied if a + b < 1, since E[log(a Z2 + b )] ≤ log E[a Z2 + b ] = log(a + b ). However
+1 1 1 t−1 1 1 t−1 1 1 1
+existence of a stationary solution does not require such a strong condition on the coefficients (and
+there can still exist a stationary solution if a + b > 1, so long as the distribution of Z2 is such
+1 1 t
+that E[log(a Z2 + b )] < 0).
+1 t 1
+439
+
+--- physical page 441 ---
+By taking expectations of (13.16) we can see that
+∞ k ∞
+(cid:88) (cid:89) (cid:88)
+E[X2] = E[σ2] = a + a (a + b ) = a + a (a + b )k.
+t t 0 0 1 1 0 0 1 1
+k=1 j=1 k=1
+Thus E[X2] < ∞ iff a + b < 1 (noting that a and b are both positive). Expanding on this
+t 1 1 1 1
+argument, if d > 1 we can use Minkowski inequality to show
+∞ k ∞ k
+(cid:88) (cid:89) (cid:88) (cid:89)
+(E[σ2d])1/d ≤ a + a (E[ (a Z2 + b )]d)1/d ≤ a + a ( E[(a Z2 + b )d])1/d.
+t 0 0 1 t−j 1 0 0 1 t−j 1
+k=1 j=1 k=1 j=1
+Therefore, if E[(a Z2 + b )d] < 1, then E[X2d] < ∞. This is an iff condition, since from the
+1 t−j 1 t
+definition in (13.15) we have
+E[σ2d] = E[a + (a Z2 + b )σ2 ]d ≥ E[(a Z2 + b )σ2 ]d = E[(a Z2 + b )d]E[σ2d ],
+t 0 1 t−1 1 t−1 1 t−1 1 t−1 1 t−1 1 t−1
+(cid:124) (cid:123)(cid:122) (cid:125)
+every term is positive
+since σ2 has a causal solution, it is independent of Z2 . We observe that by stationarity and if
+t−1 t−1
+E[σ2d] < ∞, then E[σ2d] = E[σ2d ]. Thus the above inequality only holds if E[(a Z2 + b )d] < 1.
+t t t−1 1 t−1 1
+Therefore, E[X2d] < ∞ iff E[(a Z2 + b )d] < 1.
+t 1 t−1 1
+Indeed in order for E[X2d] < ∞ a huge constraint needs to be placed on the parameter space
+t
+of a and b .
+1 1
+Exercise 13.1 Suppose {Z } are standard normal random variables. Find conditions on a and
+t 1
+b such that E[X4] < ∞.
+1 t
+The above results can be generalised to GARCH(p, q) model. Conditions for existence of a
+stationary solution hinge on the random matrix corresponding to the SRE representation of the
+GARCH model (see Bougerol and Picard (1992a) and Bougerol and Picard (1992b)), which are
+nearly impossible to verify. Sufficient and necessary conditions for both a stationary (causal)
+solution and second order stationarity (E[X2] < ∞) is (cid:80)p a + (cid:80)q b < 1. However, many
+t j=1 j i=1 i
+econometricians believe this condition places an unreasonable constraint on the parameter space of
+{a } and {b }. A large amount of research has been done on finding consistent parameter estimators
+j j
+under weaker conditions. Indeed, in the very interesting paper by Berkes et al. (2003) (see also
+Straumann (2005)) they derive consistent estimates of GARCH parameters on far milder set of
+conditions on {a } and {b } (which don’t require E(X2) < ∞).
+j i t
+440
+
+--- physical page 442 ---
+Definition 13.3.1 The IGARCH model is a GARCH model where
+p q
+(cid:88) (cid:88)
+X = σ Z σ2 = a + a X2 + b σ2 (13.17)
+t t t t 0 j t−j i t−i
+j=1 i=1
+where the coefficients are such that
+(cid:80)p
+a +
+(cid:80)q
+b = 1. This is an example of a time series
+j=1 j i=1 i
+model which has a strictly stationary solution but it is not second order stationary.
+Exercise 13.2 Simulate realisations of ARCH(1) and GARCH(1, 1) models. Simulate with both iid
+Gaussian and t-distribution errors ({Z } where E[Z2] = 1). Remember to ‘burn-in’ each realisation.
+t t
+In all cases fix a > 0. Then
+0
+(i) Simulate an ARCH(1) with a = 0.3 and a = 0.9.
+1 1
+(ii) Simulate a GARCH(1, 1) with a = 0.1 and b = 0.85, and a GARCH(1, 1) with a = 0.85
+1 1 1
+and b = 0.1. Compare the two behaviours.
+1
+13.3.2 Extensions of the GARCH model
+One criticism of the GARCH model is that it is ‘blind’ to negative the sign of the return X . In
+t
+other words, the conditional variance of X only takes into account the magnitude of X and does
+t t
+not depend on increases or a decreases in S (which corresponds to X being positive or negative).
+t t
+In contrast it is largely believed that the financial markets react differently to negative or positive
+X . The general view is that there is greater volatility/uncertainity/variation in the market when
+t
+the price goes down.
+This observation has motivated extensions to the GARCH, such as the EGARCH which take
+into account the sign of X . Deriving conditions for such a stationary solution to exist can be
+t
+difficult task, and the reader is refered to Straumann (2005) and more the details.
+Other extensions to the GARCH include an Autoregressive type model with GARCH innova-
+tions.
+13.3.3 R code
+install.packages("tseries"), library("tseries") recently there have been a new package
+developed library("fGARCH").
+441
+
+--- physical page 443 ---
+13.4 Bilinear models
+The Bilinear model was first proposed in Subba Rao (1977) and Granger and Andersen (1978) (see
+also Subba Rao (1981)). The general Bilinear (BL(p, q, r, s)) model is defined as
+p q r s
+(cid:88) (cid:88) (cid:88) (cid:88)
+X − φ X = ε + θ ε + b X ε ,
+t j t−j t i t−i k,k(cid:48) t−k t−k(cid:48)
+j=1 i=1 k=1 k(cid:48)=1
+where {ε } are iid random variables with mean zero and variance σ2.
+t
+To motivate the Bilinear model let us consider the simplest version of the model BL(1, 0, 1, 1)
+X = φ X + b X ε + ε = [φ + b ε ]X + ε . (13.18)
+t 1 t−1 1,1 t−1 t−1 t 1 1,1 t−1 t−1 t
+Comparing (13.20) with the conditional variane of the GARCH(1, 1) in (13.15) we see that they are
+very similar, the main differences are that (a) the bilinear model does not constrain the coefficients
+to be positive (whereas the conditional variance requires the coefficients to be positive) (b) the
+ε depends on X , whereas in the GARCH(1, 1) Z2 and σ2 are independent coefficients
+t−1 t−1 t−1 t−1
+and (c) the innovation in the GARCH(1, 1) model is deterministic, whereas in the innovation in
+the Bilinear model is random. (b) and (c) makes the analysis of the Bilinear more complicated
+than the GARCH model. From model (13.20) we observe that when ε and X “couple” (both
+t−1 t−1
+are large, mainly because ε is large) it leads to large burst in X . We observe this from the
+t−1 t
+simulations below. Therefore this model has been used to model seismic activity etc.
+13.4.1 Features of the Bilinear model
+In this section we assume a causal, stationary solution of the bilinear model exists, the appropriate
+number of moments and that it is invertible in the sense that there exists a function g such that
+ε = g(X , X , . . .).
+t t−1 t−2
+Under the assumption that the Bilinear process is invertible we can show that
+E[X |X , X , . . .] = E[(φ + b ε )X |X , X , . . .] + E[ε |X , X , . . .]
+t t−1 t−2 1 1,1 t−1 t−1 t−1 t−2 t t−1 t−2
+= (φ + b ε )X , (13.19)
+1 1,1 t−1 t−1
+thus unlike the autoregressive model the conditional expectation of the X given the past is a
+t
+nonlinear function of the past. It is this nonlinearity that gives rise to the spontaneous peaks that
+442
+
+--- physical page 444 ---
+we see a typical realisation.
+To see how the bilinear model was motivated in Figure 13.7 we give a plot of
+X = φ X + b X ε + ε , (13.20)
+t 1 t−1 1,1 t−1 t−1 t
+where φ = 0.5 and b = 0, 0.35, 0.65 and −0.65. and {ε } are iid standard normal random
+1 1,1 t
+variables. We observe that Figure 13.7a is a realisation from an AR(1) process and the subsequent
+plots are for different values of b . Figure 13.7a is quite ‘regular’, whereas the sudden bursts in
+1,1
+activity become more pronounced as b grows (see Figures 13.7b and 13.7c). In Figure 13.7d
+1,1
+we give a plot realisation from a model where b is negative and we see that the fluctation has
+1,1
+changed direction.
+Time
+)0
+,5.0
+,004(raenilib
+0 100 200 300 400
+4
+3
+2
+1
+0
+1−
+2−
+3−
+Time
+(a) φ = 0.5 and b = 0
+1 1,1
+)3.0
+,5.0
+,004(raenilib
+0 100 200 300 400
+6
+4
+2
+0
+2−
+(b) φ = 0.5 and b = 0.35
+1 1,1
+Time
+)6.0
+,5.0
+,004(raenilib
+0 100 200 300 400
+01
+5
+0
+Time
+(c) φ = 0.5 and b = 0.65
+1 1,1
+)6.0−
+,5.0
+,004(raenilib
+0 100 200 300 400
+5
+0
+5−
+01−
+51−
+02−
+(d) φ = 0.5 and b = −0.65
+1 1,1
+Figure 13.7: Realisations from different BL(1, 0, 1, 1) models
+443
+
+--- physical page 445 ---
+Remark 13.4.1 (Markov Bilinear model) Some authors define the BL(1, 0, 1, 1) as
+Y = φ Y + b Y ε + ε = [φ + b ε ]Y + ε .
+t 1 t−1 1,1 t−1 t t 1 11 t t−1 t
+The fundamental difference between this model and (13.20) is that the multiplicative innovation
+(using ε rather than ε ) does not depend on Y . This means that E[Y |Y , Y , . . .] = φ Y
+t t−1 t−1 t t−1 t−2 1 t−1
+and the autocovariance function is the same as the autocovariance function of an AR(1) model
+with the same AR parameter. Therefore, it is unclear the advantage of using this version of the
+model if the aim is to forecast, since the forecast of this model is the same as a forecast using the
+corresponding AR(1) process X = φ X + ε . Forecasting with this model does not take into
+t 1 t−1 t
+account its nonlinear behaviour.
+13.4.2 Solution of the Bilinear model
+We observe that (13.20) can be written in the stochastic recurrence relation form given in (13.2) with
+A = (φ + b ε ) and B = a . Therefore, by using Theorem 13.0.1, if E[log(φ + b ε )2] < 0
+t 1 11 t−1 t 0 1 11 t−1
+and E[ε ] < ∞, then X has the strictly stationary, causal solution
+t t
+ 
+∞ k−1
+(cid:88) (cid:89)
+X t =  (φ 1 + b 1,1 ε t−j ) · [(φ 1 + b 1,1 ε t−k )ε t−k ] + ε t . (13.21)
+k=1 j=1
+To show that it is second order stationary we require that E[X2] < ∞, which imposes additional
+t
+conditions on the parameters. To derive conditions for E[X2] we use (13.22) and the Minkowski
+t
+inequality to give
+ 21/2
+∞ k−1
+(cid:88) (cid:89) (cid:16) (cid:17)1/2
+(E[X t 2])1/2 ≤ E  (φ 1 + b 1,1 ε t−j )  · E [(φ 1 + b 11 ε t−k )ε t−k ]2
+k=1 j=1
+∞ k−1
+(cid:88) (cid:89) (cid:16) (cid:17)1/2 (cid:16) (cid:17)1/2
+= E [(φ + b ε )]2 · E [(φ + b ε )ε ]2 . (13.22)
+1 1,1 t−j 1 1,1 t−k t−k
+k=1 j=1
+Therefore if E[ε4] < ∞ and
+t
+E [(φ + b ε )]2 = φ2 + b2 var(ε ) < 1,
+1 1,1 t 11 t
+then E[X2] < ∞ (note that the above equality is due to E[ε ] = 0).
+t t
+444
+
+--- physical page 446 ---
+Remark 13.4.2 (Inverting the Bilinear model) We note that
+ε = −(bX )ε + [X − φX ],
+t t−1 t−1 t t−1
+thus by iterating backwards with respect to ε we have
+t−j
+∞ (cid:32) j (cid:33)
+(cid:88) (cid:89)
+ε = (−b)j−1 X [X − φX ].
+t t−1−j t−j t−j−1
+j=0 i=0
+This invertible representation is useful both in forecasting and estimation (see Section 7.10.3).
+Exercise 13.3 Simulate the BL(2, 0, 1, 1) model (using the AR(2) parameters φ = 1.5 and φ =
+1 2
+−0.75). Experiment with different parameters to give different types of behaviour.
+Exercise 13.4 The random coefficient AR model is a nonlinear time series proposed by Barry
+Quinn (see Nicholls and Quinn (1982) and Aue et al. (2006)). The random coefficient AR(1)
+model is defined as
+X = (φ + η )X + ε
+t t t−1 t
+where {ε } and {η } are iid random variables which are independent of each other.
+t t
+(i) State sufficient conditions which ensure that {X } has a strictly stationary solution.
+t
+(ii) State conditions which ensure that {X } is second order stationary.
+t
+(iii) Simulate from this model for different φ and var[η ].
+t
+13.4.3 R code
+Code to simulate a BL(1, 0, 1, 1) model:
+# Bilinear Simulation
+# Bilinear(1,0,1,1) model, we use the first n0 observations are burn-in
+# in order to get close to the stationary solution.
+bilinear <- function(n,phi,b,n0=400) {
+y <- rnorm(n+n0)
+445
+
+--- physical page 447 ---
+w <- rnorm(n + n0)
+for (t in 2:(n+n0)) {
+y[t] <- phi * y[t-1] + b * w[t-1] * y[t-1] + w[t]
+}
+return(y[(n0+1):(n0+n)])
+}
+13.5 Nonparametric time series models
+Many researchers argue that fitting parametric models can lead to misspecification and argue that
+it may be more realistic to fit nonparametric or semi-parametric time series models instead. There
+exists several nonstationary and semi-parametric time series (see Fan and Yao (2003) and Douc
+et al. (2014) for a comprehensive summary), we give a few examples below. The most general
+nonparametric model is
+X = m(X , . . . , X , ε ),
+t t−1 t−p t
+but this is so general it looses all meaning, especially if the need is to predict. A slight restriction
+is make the innovation term additive (see Jones (1978))
+X = m(X , . . . , X ) + ε ,
+t t−1 t−p t
+it is clear that for this model E[X |X , . . . , X ] = m(X , . . . , X ). However this model has
+t t−1 t−p t−1 t−p
+the distinct disadvantage that without placing any structure on m(·), for p > 2 nonparametric
+estimators of m(·) are lousy (as the suffer from the curse of dimensionality).
+Thus such a generalisation renders the model useless. Instead semi-parametric approaches have
+been developed. Examples include the functional AR(p) model defined as
+p
+(cid:88)
+X = φ (X )X + ε
+t j t−p t−j t
+j=1
+the semi-parametric AR(1) model
+X = φX + γ(X ) + ε ,
+t t−1 t−1 t
+446
+
+--- physical page 448 ---
+the nonparametric ARCH(p)
+p
+(cid:88)
+X = σ Z σ2 = a + a (X2 ).
+t t t t 0 j t−j
+j=1
+In the case of all these models it is not easy to establish conditions in which a stationary solution
+exists. More often then not, if conditions are established they are similar in spirit to those that
+are used in the parametric setting. For some details on the proof see Vogt (2013) (also here), who
+considers nonparametric and nonstationary models (note the nonstationarity he considers is when
+the covariance structure changes over time, not the unit root type). For example in the case of the
+the semi-parametric AR(1) model, a stationary causal solution exists if |φ + γ(cid:48)(0)| < 1.
+Remark 13.5.1 There are several other parametric nonlinear models that are of interest. A no-
+table example, is the Markov Switching (Vector) Autorregressive model, which is popular in econo-
+metrics.
+This model generalises the classical autoregressive model in the sense that X has the presenta-
+t
+tion
+p
+(cid:88)
+X = φ (S )X + ε
+t j t t−1 t
+j=1
+where S ∈ {1, . . . , M } is a discrete Markov process that is unobserved and {φ (s)}p are the
+t j j=1
+AR(p) parameters in state s. Note that for these models we are only interested in causal solutions
+(i.e. those which are generated from the past)
+One fascinating aspect of this model, is that unlike the classical AR(p) process, in order for X
+t
+to have a well defined solution, the characteristic function corresponding to {φ (s)}p need not
+j j=1
+have roots which lie outside the unit circle. If the switch into the state s is “short enough” the roots
+of {φ (s)}p can lie within the unit circle (and a short explosion can occur), see ? for further
+j j=1
+details.
+447

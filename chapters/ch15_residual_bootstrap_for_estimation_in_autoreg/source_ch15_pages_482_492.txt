@@ -1,0 +1,479 @@
+--- physical page 482 ---
+Chapter 15
+Residual Bootstrap for estimation in
+autoregressive processes
+In Chapter ?? we consider the asymptotic sampling properties of the several estimators including
+the least squares estimator of the autoregressive parameters and the gaussian maximum likelihood
+estimator used to estimate the parameters of an ARMA process. The asymptotic distributions
+are often used for statistical testing and constructing confidence intervals. However the results
+are asymptotic, and only hold (approximately), when the sample size is relatively large. When
+the sample size is smaller, the normal approximation is not valid and better approximations are
+sought. Even in the case where we are willing to use the asymptotic distribution, often we need to
+obtain expressions for the variance or bias. Sometimes this may not be possible or only possible
+with a excessive effort. The Bootstrap is a power tool which allows one to approximate certain
+characteristics. To quote from Wikipedia ‘Bootstrap is the practice of estimating properties of an
+estimator (such as its variance) by measuring those properties when sampling from an approximat-
+ing distribution’. Bootstrap essentially samples from the sample. Each subsample is treated like
+a new sample from a population. Using these ‘new’ multiple realisations one can obtain approx-
+imations for CIs and variance estimates for the parameter estimates. Of course in reality we do
+not have multiple-realisations, we are sampling from the sample. Thus we are not gaining more
+as we subsample more. But we do gain some insight into the finite sample distribution. In this
+chapter we will details the residual bootstrap method, and then show that the asymptotically the
+bootstrap distribution coincides with asymptotic distribution.
+The residual bootstrap method was first proposed by J. P. Kreiss (Kreiss (1997) is a very nice
+481
+
+--- physical page 483 ---
+review paper on the subject), (see also Franke and Kreiss (1992), where an extension to AR(∞)
+processes is also given here). One of the first theoretical papers on the bootstrap is Bickel and
+Freedman (1981). There are several other boostrapping methods for time series, these include
+bootstrapping the periodogram, block bootstrap, bootstrapping the Kalman filter (Stoffer and
+Wall (1991), Stoffer and Wall (2004) and Shumway and Stoffer (2006)). These methods have not
+only been used for variance estimation but also determining orders etc. At this point it is worth
+mentioning methods Frequency domain approaches are considered in Dahlhaus and Janas (1996)
+and Franke and H¨ardle (1992) (a review of subsampling methods can be found in Politis et al.
+(1999)).
+15.1 The residual bootstrap
+Suppose that the time series {X } satisfies the stationary, causal AR process
+t
+p
+(cid:88)
+X = φ X + ε ,
+t j t−j t
+j=1
+where {ε } are iid random variables with mean zero and variance one and the roots of the charac-
+t
+teristic polynomial have absolute value greater than (1 + δ). We will suppose that the order p is
+known.
+The residual bootstrap for autoregressive processes
+(i) Let
+n n
+1 (cid:88) 1 (cid:88)
+Γˆ = X X(cid:48) and γˆ = X X , (15.1)
+p n t−1 t−1 p n t−1 t
+t=p+1 t=p+1
+where X(cid:48) = (X , . . . , X ). We use φˆ = (φˆ , . . . , φˆ )(cid:48) == Γˆ−1γˆ as an estimator of
+t t t−p+1 n 1 p p p
+φ = (φ , . . . , φ ).
+1 p
+(ii) We create the bootstrap sample by first estimating the residuals {ε } and sampling from the
+t
+residuals. Let
+p
+(cid:88)
+εˆ = X − φ X .
+t t j t−j
+j=1
+482
+
+--- physical page 484 ---
+(iii) Now create the empirical distribution function based on εˆ . Let
+t
+n
+1 (cid:88)
+Fˆ (x) = I (x).
+n n − p (−∞,εˆt]
+t=p+1
+we notice that sampling from the distribution Fˆ (x), means observing εˆ with probability
+n t
+(n − p)−1.
+(iv) Sample independently from the distribution Fˆ (x) n times. Label this sample as {ε+}.
+n k
+(v) Let X = ε+ for 1 ≤ k ≤ p and
+k k
+p
+(cid:88)
+X+ = φ X+ + ε , p < k ≤ n.
+k j k−j k
+j=1
+(vi) We call {X+}. Repeating step (vi,v) N times gives us N bootstrap samples. To distinguish
+k
+each sample we can label each bootstrap sample as ({(X+)(i)}; i = p + 1, . . . , n).
+k
+(vii) For each bootstrap sample we can construct a bootstrap matrix, vector and estimator (Γ+)(i),
+p
+(γ+)(i) and
+(φˆ+
+)(i) = ((Γ+)(i))−1(γ+)(i).
+p n p p
+(viii) Using (φˆ+ )(i) we can estimate the variance of φˆ − φ with 1 (cid:80)n ((φˆ+ )(i) − φˆ ) and the
+n n n j=1 n n
+distribution function of φˆ − φ.
+n
+15.2 The sampling properties of the residual bootstrap
+estimator
+In this section we show that the distribution of √ n(φˆ+ − φˆ ) and √ n(φˆ − φ) asymptotically
+n n n
+coincide. This means that using the bootstrap distribution is no worse than using the asymptotic
+normal approximation. However it does not say the bootstrap distribution better approximates
+the finite sample distribution of (φˆ − φ), to show this one would have to use Edgeworth expansion
+n
+methods.
+In order to show that the distribution of the bootstrap sample √ n(φˆ+ −φˆ ) asymptotically coin-
+n n
+√
+cides with the asymptotic distribution of n(φˆ − φ), we will show convergence of the distributions
+n
+483
+
+--- physical page 485 ---
+under the following distance
+d (H, G) = inf {E(X − Y )p}1/p,
+p
+X∼H,Y ∼G
+where p > 1. Roughly speaking, if d (F , G ) → 0, then the limiting distributions of F and G
+p n n n n
+are the same (see Bickel and Freedman (1981)). The case that p = 2 is the most commonly used p,
+and for p = 2, this is called Mallows distance. The Mallows distance between the distribution H
+and G is defined as
+d (H, G) = inf {E(X − Y )2}1/2,
+2
+X∼H,Y ∼G
+we will use the Mallow distance to prove the results below. It is worth mentioning that the
+distance is zero when H = G are the same (as a distance should be). To see this, set the joint
+distribution between X and Y to be F (x, y) == G(x) when y = x and zero otherwise, then it
+clear that d (H, G) = 0. To reduce notation rather than specify the distributions, F and G, we let
+2
+d (X, Y ) = d (H, G), where the random variables X and Y have the marginal distributions H and
+p p
+G, respectively. We mention that distance d satisfies the triangle inequality.
+p
+The main application of showing that d (F , G ) → 0 is stated in the following lemma, which
+p n n
+is a version of Lemma 8.3, Bickel and Freedman (1981).
+Lemma 15.2.1 Let α, α be two probability measures then d (α , α) → 0 if and only if
+n p n
+(cid:90) (cid:90)
+E (|X|p) = |x|pα (dx) → E (|X|p) = |x|pα(dx) n → ∞.
+αn n α
+and the distribution α converges weakly to the distribution α.
+n
+Our aim is to show that
+√ √
+d (cid:0) n(φˆ+ − φˆ ), n(φˆ − φ (cid:1) → 0,
+2
+n n n
+which implies that their distributions asymptotically coincide. To do this we use
+√ √
+( n(φˆ − φ) = nΓˆ−1(γˆ − Γˆ φ)
+n p p p
+√ √
+( n(φˆ+ − φˆ) = n(Γ+)−1(γ+ − Γ+φˆ ).
+n p p p n
+484
+
+--- physical page 486 ---
+Studying how Γˆ , γˆ , Γ+ and γ+ are constructed, we see as a starting point we need to show
+p p p p
+d (X+, X ) → 0 t, n → ∞, d (Z+, Z ) → 0 n → ∞.
+2 t t 2 t t
+We start by showing that d (Z+, Z ) → 0
+2 t t
+Lemma 15.2.2 Suppose ε+ is the bootstrap residuals and ε are the true residuals. Define the
+t t
+discrete random variable J = {p + 1, . . . , n} and let P (J = k) = 1 . Then
+n−p
+E (cid:0) (εˆ − ε )2|X , . . . , X (cid:1) = O ( 1 ) (15.2)
+J J 1 n p
+n
+and
+d (Fˆ , F ) ≤ d (Fˆ , F ) + d (F , F ) → 0 as → ∞, (15.3)
+2 n 2 n n 2 n
+where F = 1 (cid:80)n I (x), Fˆ (x) = 1 (cid:80)n I (x) are the empirical distribution
+n n−1 t=p+1 (−∞,εt) n n−p t=p+1 (−∞,εˆt]
+function based on the residuals {ε }n and estimated residuals {εˆ }n, and F is the distribution
+t p t p
+function of the residual ε .
+t
+PROOF. We first show (15.2). From the definition of εˆ+ and ε we have
+J J
+n
+1 (cid:88)
+E(|εˆ − ε |2|X , . . . , X ) = (εˆ − ε )2
+J J 1 n t t
+n − p
+t=p+1
+n p
+1 (cid:88) (cid:88)
+= ( [φˆ − φ ]X )2
+j j t−j
+n − p
+t=p+1 j=1
+p n
+(cid:88) 1 (cid:88)
+= [φˆ − φ ][φˆ − φ ] X X .
+j1 j1 j2 j2
+n − p
+t−j1 t−j2
+j1,j2=1 t=p+1
+Now by using (14.14) we have sup |φˆ − φ | = O (n−1/2), therefore we have E|εˆ − ε |2 =
+1≤j≤p j j p J J
+O (n−1/2).
+p
+We now prove (15.3). We first note by the triangle inequality we have
+d (F, F ) ≤ d (F, F ) + d (Fˆ , F ).
+2 n 2 n 2 n n
+By using Lemma 8.4, Bickel and Freedman (1981), we have that d (F , F ) → 0. Therefore we need
+2 n
+to show that d (Fˆ , F ) → 0. It is clear by definition that d (Fˆ , F ) = d (ε+, ε˜ ), where ε+ is
+2 n n 2 n n 2 t t t
+485
+
+--- physical page 487 ---
+sampled from Fˆ = 1 (cid:80)n I (x) and ε˜ is sampled from F = 1 (cid:80)n I (x).
+n n−1 t=p+1 (−∞,εˆt) t n n−1 t=p+1 (−∞,εt)
+Hence, ε˜ ε˜+ have the same distribution as ε and εˆ . We now evaluate d (ε+, ε˜ ). To evaluate
+t t J J 2 t t
+d (ε+, ε˜ ) = inf E|ε+ − ε˜ | we need that the marginal distributions of (ε+, ε˜ ) are Fˆ and
+2 t t ε+
+t
+∼Fˆ n,ε˜t∼Fn t t t t n
+F , but the infimum is over all joint distributions. It is best to choose a joint distribution which
+n
+is highly dependent (because this minimises the distance between the two random variables). An
+ideal candidate is to suppose that ε+ = εˆ and ε˜ = ε , since these have the marginals Fˆ and F
+t J t J n n
+respectively. Therefore
+d (Fˆ , F )2 = inf E|ε+ − ε˜ |2 ≤ E (cid:0) (εˆ − ε )2|X , . . . , X (cid:1) = O ( 1 ),
+2 n n ε+
+t
+∼Fˆ n,ε˜t∼Fn t t J J 1 n p n
+where the above rate comes from (15.2). This means that d (Fˆ , F ) → P 0, hence we obtain (15.3).
+2 n n
+(cid:3)
+Corollary 15.2.1 Suppose ε+ is the bootstrapped residual. Then we have
+t
+E ((ε+)2|X , . . . , X ) → P E (ε2)
+Fˆ
+n
+t 1 n F t
+PROOF. The proof follows from Lemma 15.2.1 and Lemma 15.2.2. (cid:3)
+We recall that since X is a causal autoregressive process, there exists some coefficients {a }
+t j
+such that
+∞
+(cid:88)
+X = a ε ,
+t j t−j
+j=0
+where a = a (φ) = [A(φ)j] = [Aj] (see Lemma 4.5.1). Similarly using the estimated parame-
+j j 1,1 1,1
+ters φˆ we can write X+ as
+n t
+t
+(cid:88)
+X+ = a (φˆ )ε+ ,
+t j n t−j
+j=0
+where a (φˆ ) = [A(φˆ )j] . We now show that d (X+, X ) → 0 as n → ∞ and t → ∞.
+j n n 1,1 2 t t
+Lemma 15.2.3 Let J , . . . , J be independent samples from {n − p + 1, . . . , n} with P (J = k) =
+p+1 n i
+486
+
+--- physical page 488 ---
+1 . Define
+n−p
+t t t ∞
+(cid:88) (cid:88) (cid:88) (cid:88)
+Y + = a (φˆ )ε+ , Y˜ + = a (φˆ )ε+ , Y˜ = a ε , Y = Y˜ + a ε ,
+t j n Jt−j t j n Jt−j t j Jt−j t t j t−j
+j=p+1 j=p+1 j=p+1 j=t+p+1
+where ε is a sample from {ε , . . . , ε } and εˆ is a sample from {εˆ , . . . , εˆ }. Then we have
+Jj p+1 n J p+1 n
+E (cid:0) (Y + − Y˜ +)2|X , . . . , X (cid:1) = O ( 1 ), d (Y +, Y˜ +) → 0 n → ∞, (15.4)
+t t 1 n p n 2 t t
+E (cid:0) (Y˜ + − Y˜ )2|X , . . . , X (cid:1) = O ( 1 ), d (Y˜ +, Y˜ ) → 0 n → ∞, (15.5)
+t t 1 n p n 2 t t
+and
+E (cid:0) (Y˜ − Y )2|X , . . . , X (cid:1) ≤ Kρt, d (Y˜ , Y ) → 0 n → ∞. (15.6)
+t t 1 n 2 t t
+PROOF. We first prove (15.4). It is clear from the definitions that
+t
+E (cid:0) (Y + − Y˜ +)2| X , . . . , X (cid:1) ≤ (cid:88) ([A(φ)j] − [A(φˆ )j] )2E((ε+)2|X , . . . , X ). (15.7)
+t t 1 n 1,1 n 1,1 j 1 n
+j=0
+Using Lemma 15.2.1 we have that E((ε+)2|X , . . . , X ) is the same for all j and E((ε+)2|X , . . . , X ) → P
+j 1 n j 1 n
+E(ε2), hence we will consider for now ([A(φ)j] − [A(φˆ )j] )2. Using (14.14) we have (φˆ − φ) =
+t 1,1 n 1,1 n
+O (n−1/2), therefore by the mean value theorem we have [A(φ) − A(φˆ )| = (φˆ − φ)D ≈ K D (for
+p n n n
+some random matrix D). Hence
+K
+(cid:18)
+K
+(cid:19)j
+A(φˆ )j = (A(φ) + D)j = A(φ)j 1 + A(φ)−1
+n n n
+(note these are heuristic bounds, and this argument needs to be made precise). Applying the mean
+value theorem again we have
+(cid:18)
+K
+(cid:19)j
+K K
+A(φ)j 1 + A(φ)−1 D = A(φ)j + D A(φ)j(1 + A(φ)−1 B)j,
+n n n
+487
+
+--- physical page 489 ---
+where B is such that (cid:107)B(cid:107) ≤ (cid:107) K D(cid:107). Altogether this gives
+spec n
+K K
+|[A(φ)j − A(φˆ )j] | ≤ D A(φ)j(1 + A(φ)−1 B)j.
+1,1
+n n n
+Notice that for large enough n, (1 + A(φ)−1 K B)j is increasing slower (as n → ∞) than A(φ)j is
+n
+contracting. Therefore for a large enough n we have
+(cid:12) (cid:12)[A(φ)j − A(φˆ )j] 1,1 (cid:12) (cid:12) ≤ K ρj,
+n n1/2
+for any 1 < ρ < 1. Subsituting this into (15.7) gives
+1+δ
+t
+E (cid:0) (Y + − Y˜ +)2|X , . . . , X (cid:1) ≤ K E((ε+)2) (cid:88) ρj = O ( 1 ) → 0 n → ∞.
+t t 1 n n1/2 t p n
+j=0
+hence d (Y˜ +, Y +) → 0 as n → ∞.
+2 t t
+We now prove (15.5). We see that
+t t
+E (cid:0) (Y˜ + − Y˜ )2|X , . . . , X (cid:1) = (cid:88) a2E(εˆ − ε )2 = E(εˆ − ε )2 (cid:88) a2. (15.8)
+t t 1 n j Jt−j Jt−j Jt−j Jt−j j
+j=0 j=0
+Now by substituting (15.2) into the above we have E(Y˜ + − Y˜ )2 = O(n−1), as required. This means
+t t
+that d (Y˜ +, Y˜ ) → 0.
+2 t t
+Finally we prove (15.6). We see that
+∞
+E (cid:0) (Y˜ − Y )2|X , . . . , X (cid:1) = (cid:88) a2E(ε2). (15.9)
+t t 1 n j t
+j=t+1
+Using (4.21) we have E(Y˜ − Y )2 ≤ Kρt, thus giving us (15.6). (cid:3)
+t t
+We can now almost prove the result. To do this we note that
+n n
+1 (cid:88) 1 (cid:88)
+(γˆ − Γˆ φ) = ε X , (γ+ − Γ+φˆ ) = ε+X+ . (15.10)
+p p n − p t t−1 p p n n − p t t−1
+t=p+1 t=p+1
+Lemma 15.2.4 Let Y , Y +, Y˜ + and Y˜ , be defined as in Lemma 15.2.3. Define Γ¯ and Γ¯+, γ¯
+t t t t p p p
+and γ+ in the same way as Γˆ and γˆ defined in (15.1), but using Y and Y + defined in Lemma
+p p p t t
+488
+
+--- physical page 490 ---
+15.2.3, rspectively, rather than X . We have that
+t
+d (Y , Y +) ≤ {E(Y − Y +)2}1/2 = O (K(n−1/2 + ρt), (15.11)
+2 t t t t p
+d (Y , X ) → 0, n → ∞, (15.12)
+2 t t
+and
+√ √
+d (cid:0) n(γ¯ − Γ¯ φ), n(γ¯+ − Γ¯+φˆ ) (cid:1) ≤ nE (cid:0) (γ¯ − Γ¯ φ) − (γ¯+ − Γ¯+φˆ ) (cid:1)2 → 0 n → ∞, (15.13)
+2 p p p p n p p p p n
+where Γ¯ , Γ¯+, γ¯ and γ¯+ are defined in the same was as Γˆ , Γ+, γˆ and γ+, but with {Y } replacing
+p p p p p p p p t
+X in Γ¯ and γ¯ and {Y +} replacing X+ in Γ¯+ and γ¯+. Furthermore we have
+t p p t t p p
+E|Γ¯+ − Γ¯ | → 0, (15.14)
+p p
+d (cid:0) (γ¯ − Γ¯ φ), (γ − Γ φ) (cid:1) → 0, E|Γ¯ − Γˆ | → 0 n → ∞. (15.15)
+2 p p p p p p
+PROOF. We first prove (15.11). Using the triangle inequality we have
+{E (cid:0) (Y˜ − Y +)2|X , . . . , X (cid:1) }1/2 ≤ { (cid:0) E(Y − Y˜ )2|X , . . . , X (cid:1) }1/2 + { (cid:0) E(Y˜ − Y˜ +)2|X , . . . , X (cid:1) }1/2
+t t 1 n t t 1 n t t 1 n
++{E (cid:0) (Y˜ + − Y +)2|X , . . . , X (cid:1) }1/2 = O(n−1/2 + ρt),
+t t 1 n
+where we use Lemma 15.2.3 we get the second inequality above. Therefore by definition of
+d (X , X+) we have (15.11). To prove (15.12) we note that the only difference between Y and
+2 t t t
+X is that the {ε } in Y , is sampled from {ε , . . . , ε } hence sampled from F , where as the
+t J t p+1 n n
+k
+{ε }n in X are iid random variables with distribution F . Since d (F , F ) → 0 (Bickel and
+t t=p+1 t 2 n
+Freedman (1981), Lemma 8.4) it follows that d (Y , X ) → 0, thus proving (15.12).
+2 t t
+To prove (15.13) we consider the difference (γ¯ − Γ¯ φ) − (γ¯+ − Γ¯+φˆ ) and use (15.10) to get
+p p p p n
+n (cid:26) (cid:27) n (cid:26) (cid:27)
+1 (cid:88) 1 (cid:88)
+ε Y − ε+Y+ = (ε − ε+)Y + ε+(Y − Y+ ) ,
+n t t−1 t t−1 n t t t−1 t t−1 t−1
+t=p+1 t=p+1
+where we note that Y+ = (Y + , . . . , Y + )(cid:48) and Y = (Y , . . . , Y )(cid:48). Using the above,
+t−1 t−1 t−p t−1 t−1 t−p
+489
+
+--- physical page 491 ---
+and taking conditional expectations with respect to {X , . . . , X } and noting that conditioned on
+1 n
+{X , . . . , X }, (ε − ε+) are independent of X and X+ for k < t we have
+1 n t t k k
+(cid:26)
+1
+(cid:18)
+(cid:88)
+n (cid:26) (cid:27)(cid:19)2 (cid:27)1/2
+E ε Y − ε+Y+ |X , . . . , X ≤ I + II
+n t t−1 t t−1 1 n
+t=p+1
+where
+n
+I = 1 (cid:88) {E (cid:0) (ε − ε+)2|X , . . . , X (cid:1) }1/2{E(Y2 |X , . . . , X )}1/2
+n t t 1 n t−1 1 n
+t=p+1
+n
+= {E (cid:0) (ε − ε+)2|X , . . . , X (cid:1) }1/2 1 (cid:88) {E((Y2 |X , . . . , X )}1/2
+t t 1 n n t−1 1 n
+t=p+1
+n
+1 (cid:88)
+II = {E((ε+)2|X , . . . , X )}1/2{E((Y − Y+ )2|X , . . . , X }1/2
+n t 1 n t−1 t−1 1 n
+t=p+1
+n
+1 (cid:88)
+= {E((ε+)2|X , . . . , X )}1/2 {E((Y − Y+ )2|X , . . . , X )}1/2.
+t 1 n n t−1 t−1 1 n
+t=p+1
+Now by using (15.2) we have I ≤ Kn−1/2, and (15.13) and Corollary 15.2.1 we obtain II ≤ Kn−1/2,
+hence we have (15.13). Using a similar technique to that given above we can prove (15.14).
+(15.15) follows from (15.13), (15.14) and (15.12). (cid:3)
+Corollary 15.2.2 Let Γ+, Γˆ , γˆ and γ+ be defined in (15.1). Then we have
+p p p p
+(cid:18)√ √ (cid:19)
+d n(γˆ − Γˆ φ), n(γ+ − Γ+φˆ ) → 0 (15.16)
+2 p p p p n
+d (Γ+, Γˆ ) → 0, (15.17)
+1 p p
+as n → ∞.
+PROOF. We first prove (15.16). Using (15.13), (15.15) and the triangular inequality gives (15.16).
+To prove (15.17) we use (15.14) and (15.15) and the triangular inequality and (15.16) immediately
+follows. (cid:3)
+Now by using (15.17) and Lemma 15.2.1 we have
+Γ+ → P E(Γ ),
+p p
+490
+
+--- physical page 492 ---
+√
+and by using (15.16), the distribution of n(γ+ − Γ+φˆ converges weakly to the distribution of
+p p n
+√
+n(γˆ − Γˆ φ). Therefore
+p p
+√
+n(φˆ+ − φˆ ) → D N (0, 2Γ−1),
+n n p
+√ √
+hence the distributions of n(γˆ −Γˆ φ) and n(γ+−Γ+φˆ ) aymptotically coincide. From (14.15) we
+p p p p n
+have √ n(φˆ −φ) → D N (0, σ2Γ−1). Thus we see that the distribution of √ n(φˆ −φ) and √ n(φˆ+ −φˆ )
+n p n n n
+asymptotically coincide.
+491

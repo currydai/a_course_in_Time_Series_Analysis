@@ -1,0 +1,2638 @@
+--- physical page 364 ---
+Chapter 11
+Spectral Analysis
+Prerequisites
+• The Gaussian likelihood.
+• The approximation of a Toeplitz by a Circulant (covered in previous chapters).
+Objectives
+• The DFTs are close to uncorrelated but have a frequency dependent variance (under station-
+arity).
+• The DFTs are asymptotically Gaussian.
+• For a linear time series the DFT is almost equal to the transfer function times the DFT of
+the innovations.
+• The periodograms is the square of the DFT, whose expectation is approximately equal to the
+spectral density. Smoothing the periodogram leads to an estimator of the spectral density as
+does truncating the covariances.
+• The Whittle likelihood and how it is related to the Gaussian likelihood.
+• Understand that many estimator can be written in the frequency domain.
+• Calculating the variance of an estimator.
+363
+
+--- physical page 365 ---
+11.1 The DFT and the periodogram
+In the previous section we motivated transforming the stationary time series {X } into it’s discrete
+t
+Fourier transform
+n
+1 (cid:88) 2πt
+J (ω ) = √ X exp(ik )
+n k t
+2πn n
+t=1
+(cid:18) n n (cid:19)
+1 (cid:88) 2πt 1 (cid:88) 2πt
+= √ X cos(k ) + i √ X sin(k ) k = 0, . . . , n/2
+t t
+2πn n 2πn n
+t=1 t=1
+(frequency series) as an alternative way of analysing the time series. Since there is a one-to-one
+mapping between the two, nothing is lost by making this transformation. Our principle reason
+n/2
+for using this transformation is given in Lemma 10.2.1, where we showed that {J (ω )} is an
+n k n=1
+almost uncorrelated series. However, there is a cost to the uncorrelatedness property, that is unlike
+the original stationary time series {X }, the variance of the DFT varies over the frequencies, and
+t
+the variance is the spectral density at that frequency. We summarise this result below, but first we
+recall the definition of the spectral density function
+∞
+1 (cid:88)
+f (ω) = c(r) exp(irω) ω ∈ [0, 2π]. (11.1)
+2π
+r=−∞
+We summarize some of the results derived in Chapter 10 here.
+Lemma 11.1.1 Suppose that {X } is a zero second order stationary time series, where cov(X , X ) =
+t 0 r
+c(r) and (cid:80) |c(r)| < ∞. Define ω = 2πk . Then
+r k n
+(i)
+n−1
+1 (cid:88)
+|J (ω)|2 = cˆ (r) exp(irω), (11.2)
+n n
+2π
+r=−(n−1)
+where cˆ (r) is the sample autocovariance.
+n
+(ii) for k (cid:54)= 0 we have E[J (ω )] = 0,
+n k
+(cid:12) (cid:12)E(|J n (ω)|2) − f (ω) (cid:12) (cid:12) ≤ 1 (cid:0) (cid:88) |c(r)| + 1 (cid:88) |rc(r)| (cid:1) → 0 (11.3)
+2π n
+|r|≥n |r|≤n
+as n → ∞,
+364
+
+--- physical page 366 ---
+(iii)
+
+cov (cid:20) J ( 2πk 1 ), J ( 2πk 2 ) (cid:21) =  f ( 2π n k ) + o(1) k 1 = k 2
+n n
+n n
+ o(1) k (cid:54)= k
+1 2
+(cid:80)
+where f (ω) is the spectral density function defined in (11.1). Under the stronger condition |rc(r)| <
+r
+∞ the o(1) above is replaced with O(n−1).
+In addition if we have higher order stationarity (or strict stationarity), then we also can find
+expressions for the higher order cumulants of the DFT (see Proposition 10.7.1).
+It should be noted that even if the mean of the stationary time series {X } is not zero (ie. E(X ) =
+t t
+µ (cid:54)= 0), so long as ω (cid:54)= 0 E(J (ω )) = 0 (even without centering X , with X − X¯ ).
+k n k t t
+Since there is a one-to-one mapping between the observations and the DFT, it is not surprising
+that classical estimators can be written in terms of the DFT. For example, the sample covariance
+can be rewritten in terms of the DFT
+n
+1 (cid:88)
+c (r) + c (n − r) = |J (ω )|2 exp(−irω ). (11.4)
+(cid:98)n (cid:98)n n k k
+n
+k=1
+(see Appendix A.3(iv)). Since c (n − r) = 1 (cid:80)n X X , for small r (relative to T ) this
+(cid:98)n n t=|n−r| t t+|n−r|
+term is negligible, and gives
+n
+1 (cid:88)
+c (r) ≈ |J (ω )|2 exp(−irω ). (11.5)
+(cid:98)n n k k
+n
+k=1
+The modulo square of the DFT plays such an important role in time series analysis that it has
+it’s own name, the periodogram, which is defined as
+n−1
+1 (cid:88)
+I (ω) = |J (ω)|2 = cˆ (r) exp(irω). (11.6)
+n n n
+2π
+r=−(n−1)
+By using Lemma 11.1.1 or Theorem 10.7.1 we have E(I (ω)) = f (ω) + O( 1 ). Moreover, (11.4)
+n n
+belongs to a general class of integrated mean periodogram estimators which have the form
+n
+1 (cid:88)
+A(φ, I ) = I (ω )φ(ω ). (11.7)
+n n k k
+n
+k=1
+Replacing the sum by an integral and the periodogram by its limit, it is clear that these are
+365
+
+--- physical page 367 ---
+estimators of the integrated spectral density
+(cid:90) 2π
+A(f, φ) = f (ω)φ(ω)dω.
+0
+Before we consider these estimators (in Section 11.5). We analyse some of the properties of the
+DFT.
+11.2 Distribution of the DFT and Periodogram under
+linearity
+An interesting aspect of the DFT, is that under certain conditions the DFT is asymptotically
+normal. We can heuristically justify this by noting that the DFT is a (weighted) sample mean. In
+fact at frequency zero, it is the sample mean (J (0) = (cid:112) n X¯ ). In this section we prove this result,
+n 2π
+and a similar result for the periodogram. We do the proof under linearity of the time series, that is
+∞
+(cid:88)
+X = ψ ε ,
+t j t−j
+j=−∞
+however the result also holds for nonlinear time series (but is beyond this course).
+The DFT of the innovations J ε (ω k ) = √ 2 1 πn (cid:80)n t=1 ε t eitω k is a very simple object to deal with it.
+First the DFT is an orthogonal transformation and the orthogonal transformation of iid random
+variables leads to uncorrelated random variables. In other words, {J (ω )} is completely uncor-
+ε k
+related as are its real and imaginary parts. Secondly, if {ε } are Gaussian, then {J (ω )} are
+t ε k
+independent and Gaussian. Thus we start by showing the DFT of a linear time series is approxi-
+mately equal to the DFT of the innovations multiplied by the transfer function. This allows us to
+transfer results regarding J (ω ) to J (ω ).
+ε k n k
+We will use the assumption that (cid:80) |j1/2ψ | < ∞, this is a slightly stronger assumption than
+j j
+(cid:80)
+|ψ | < ∞ (which we worked under in Chapter 4).
+j j
+Lemma 11.2.1 Let us suppose that {X } satisfy X = (cid:80)∞ ψ ε , where (cid:80)∞ |j1/2ψ | < ∞,
+t t j=−∞ j t j=−∞ j
+and {ε } are iid random variables with mean zero and variance σ2. Let
+t
+n
+1 (cid:88)
+J (ω) = √ ε exp(itω).
+ε t
+2πn
+t=1
+366
+
+--- physical page 368 ---
+Then we have
+(cid:8) (cid:88) (cid:9)
+J (ω) = ψ exp(ijω) J (ω) + Y (ω), (11.8)
+n j ε n
+j
+where Y n (ω) = √ 2 1 πn (cid:80) j ψ j exp(ijω)U n,j , with U n,j = (cid:80)n t= − 1 j −j exp(itω)ε t − (cid:80)n t=1 exp(itω)ε t and
+E(Y (ω))2 ≤ ( 1 (cid:80)∞ |ψ | min(|j|, n)1/2)2 = O( 1 ).
+n n1/2 j=−∞ j n
+PROOF. We note that
+∞ n
+(cid:88) 1 (cid:88)
+J (ω) = ψ exp(ijω) √ ε exp(itω)
+n j t−j
+2πn
+j=−∞ t=1
+∞ n−j
+(cid:88) 1 (cid:88)
+= ψ exp(ijω) √ ε exp(isω)
+j s
+2πn
+j=−∞ s=1−j
+   
+n−j n
+1 (cid:88) (cid:88) (cid:88) (cid:88)
+=  √ ψ j exp(ijω) J ε (ω) + ψ j exp(ijω)  exp(itω)ε t − exp(itω)ε t .
+2πn
+j j t=1−j t=1
+(cid:124) (cid:123)(cid:122) (cid:125)
+=Yn(ω)
+We will show that Y (ω) is negligible with respect to the first term. We decompose Y (ω) into
+n n
+three terms
+ 
+−n n−j n
+1 (cid:88) (cid:88) (cid:88)
+Y n (ω) = √ ψ j eijω  exp(itω)ε t − exp(itω)ε t +
+2πn
+j=−∞ t=1−j t=1
+(cid:124) (cid:123)(cid:122) (cid:125)
+no terms in common
+ 
+n n−j n
+1 (cid:88) (cid:88) (cid:88)
+√ ψ j eijω  exp(itω)ε t − exp(itω)ε t +
+2πn
+j=−n t=1−j t=1
+(cid:124) (cid:123)(cid:122) (cid:125)
+(n−j) terms in common, 2j terms not in common
+ 
+∞ n−j n
+1 (cid:88) (cid:88) (cid:88)
+√ ψ j eijω  exp(itω)ε t − exp(itω)ε t
+2πn
+j=n+1 t=1−j t=1
+(cid:124) (cid:123)(cid:122) (cid:125)
+no terms in common
+= I + II + II.
+(cid:80)
+If we took the expectation of the absolute of Y (ω) we find that we require the condition |jψ | <
+n j j
+∞ (and we don’t exploit independence of the innovations). However, by evaluating E|Y (ω)|2 we
+n
+367
+
+--- physical page 369 ---
+exploit to independence of {ε }, ie.
+t
+  21/2
+−n n−j n
+1 (cid:88) (cid:88) (cid:88)
+[E(I2)]1/2 ≤ √ |ψ j | E  exp(itω)ε t − exp(itω)ε t 
+2πn
+j=−∞ t=1−j t=1
+−n −n ∞
+≤ √ 1 (cid:88) |ψ | (cid:2) 2nσ2(cid:3)1/2 ≤ √ 1 (cid:88) |j1/2ψ | ≤ √ 1 (cid:88) |j1/2ψ |
+j j j
+2πn 2πn 2πn
+j=−∞ j=−∞ j=−∞
+similarly, III = O(n−1/2) and
+  21/2
+n n−j n
+1 (cid:88) (cid:88) (cid:88)
+[E(I2)]1/2 ≤ √ |ψ j | E  exp(itω)ε t − exp(itω)ε t 
+2πn
+j=−n t=1−j t=1
+−n −n ∞
+≤ √ 1 (cid:88) |ψ | (cid:2) 2jσ2(cid:3)1/2 ≤ √ 1 (cid:88) |j1/2ψ | ≤ √ 1 (cid:88) |j1/2ψ |.
+j j j
+2πn 2πn 2πn
+j=−n j=−∞ j=−∞
+Thus we obtain the desired result. (cid:3)
+The above shows that under linearity and the condition (cid:80) |j1/2ψ | < ∞ we have
+j j
+(cid:8) (cid:88) (cid:9) 1
+J (ω) = ψ exp(ijω) J (ω) + O ( √ ). (11.9)
+n j ε p
+n
+j
+This implies that the distribution of J (ω) is determined by the DFT of the innovations J (ω). We
+n ε
+generalise the above result to the periodogram.
+Lemma 11.2.2 Let us suppose that {X } is a linear time series X =
+(cid:80)∞
+ψ ε , where
+t t j=−∞ j t−j
+(cid:80)∞ |j1/2ψ | < ∞, and {ε } are iid random variables with mean zero, variance σ2 E(ε4) < ∞.
+j=−∞ j t t
+Then we have
+(cid:12) (cid:12)2
+(cid:12) (cid:12)
+I n (ω) = (cid:12) (cid:12) (cid:88) ψ j exp(ijω) (cid:12) (cid:12) |J ε (ω)|2 + R n (ω), (11.10)
+(cid:12) (cid:12)
+(cid:12) j (cid:12)
+where E(sup |R (ω)|) = O( 1 ).
+ω n n
+PROOF. See Priestley (1983), Theorem 6.2.1 or Brockwell and Davis (1998), Theorem 10.3.1. (cid:3)
+368
+
+--- physical page 370 ---
+To summarise the above result, for a general linear process X =
+(cid:80)∞
+ψ ε we have
+t j=−∞ j t−j
+(cid:88) 1 1
+I (ω) = | ψ exp(ijω)|2|J (ω)|2 + O ( ) = 2πf (ω)I (ω) + O ( ), (11.11)
+n j ε p ε p
+n n
+j
+where we assume w.l.o.g. that var(ε ) = 1 and f (ω) = 1 | (cid:80) ψ exp(ijω)|2 is the spectral density
+t 2π j j
+of {X }.
+t
+The asymptotic normality of J (ω) follows from asymptotic normality of J (ω), which we prove
+n ε
+in the following proposition.
+Proposition 11.2.1 Suppse {ε } are iid random variables with mean zero and variance σ2. We
+t
+define J ε (ω) = √ 2 1 πn (cid:80)n t=1 ε t exp(itω) and I ε (ω) = 2π 1 n (cid:12) (cid:12) (cid:80)n t=1 ε t exp(itω) (cid:12) (cid:12) 2 . Then we have
+ 
+(cid:60)J
+ε
+(ω)
+D
+(cid:18) σ2 (cid:19)
+J ε (ω) =   → N 0, 2(2π) I 2 , (11.12)
+(cid:61)J (ω)
+ε
+where I is the identity matrix. Furthermore, for any finite m
+2
+(cid:18) σ2 (cid:19)
+(J (ω )(cid:48), . . . , J (ω )(cid:48)) → D N 0, I , (11.13)
+ε k1 ε km 2(2π) 2m
+I (ω)/σ2 → D χ2(2)/2 (which is equivalent to the exponential distribution with mean one) and
+ε
+
+ κ4 j (cid:54)= k
+cov(|J (ω )|2, |J (ω )|2) = (2π)2n (11.14)
+ε j ε k
+ κ4 + 2σ4 j = k
+(2π)2n (2π)2
+where ω = 2πj/n and ω = 2πk/n (and j, k (cid:54)= 0 or n).
+j k
+PROOF. We first show (11.15). We note that (cid:60)(J ε (ω k )) = √ 2 1 πn (cid:80)n t=1 α t,n and (cid:61)(J ε (ω k )) =
+√ 2 1 πn (cid:80)n t=1 β t,n where α t,n = ε t cos(2kπt/n) and β t,n = ε t sin(2kπt/n). We note that (cid:60)(J ε (ω k )) =
+√ 2 1 πn (cid:80)n t=1 α t,n and (cid:61)(J ε (ω k )) = √ 2 1 πn (cid:80)n t=1 β t,n are the weighted sum of iid random variables,
+hence {α } and {β } are martingale differences. Therefore, to show asymptotic normality, we
+t,n t,n
+will use the martingale central limit theorem with the Cramer-Wold device to show that (11.15).
+We note that since {α } and {β } are independent random variables we an prove the same result
+t,n t,n
+using a CLT for independent, non-identically distributed variables. However, for practice we will
+use a martingale CLT. To prove the result we need to verify the three conditions of the martingale
+369
+
+--- physical page 371 ---
+CLT. First we consider the conditional variances
+2π
+1
+n
+(cid:88) n E (cid:0) |α
+t,n
+|2(cid:12) (cid:12)ε
+t−1
+, ε
+t−2
+, . . . , ε
+1
+(cid:1) =
+2π
+1
+n
+(cid:88) n cos(2kπt/n)2ε2
+t
+→ P
+2
+σ
+π
+2
+t=1 t=1
+2π
+1
+n
+(cid:88) n E (cid:0) |β
+t,n
+|2(cid:12) (cid:12)ε
+t−1
+, ε
+t−2
+, . . . , ε
+1
+(cid:1) =
+2π
+1
+n
+(cid:88) n sin(2kπt/n)2ε2
+t
+→ P
+2
+σ
+π
+2
+t=1 t=1
+n n
+2π
+1
+n
+(cid:88) E (cid:0) α
+t,n
+β
+t,n
+(cid:12) (cid:12)ε
+t−1
+, ε
+t−2
+, . . . , ε
+1
+(cid:1) =
+2π
+1
+n
+(cid:88) cos(2kπt/n) sin(2kπt/n)ε2
+t
+→ P 0,
+t=1 t=1
+where the above follows from basic calculations using the mean and variance of the above. Finally
+we need to verify the Lindeberg condition, we only verify it for √ 2 1 πn (cid:80)n t=1 α t,n , the same argument
+holds true for √ 2 1 πn (cid:80)n t=1 β t,n . We note that for every (cid:15) > 0 we have
+1 (cid:88) n E (cid:0) |α
+t,n
+|2I(|α
+t,n
+| ≥ 2π √ n(cid:15)) (cid:12) (cid:12)ε
+t−1
+, ε
+t−2
+, . . . (cid:1) = 1 (cid:88) n E (cid:2) |α
+t,n
+|2I(|α
+t,n
+| ≥ 2π √ n(cid:15)) (cid:3) .
+2πn 2πn
+t=1 t=1
+By using |α | = | cos(2πt/n)ε | ≤ |ε | the above can be bounded by
+t,n t t
+1 (cid:88) n E (cid:2) |α |2I(|α | ≥ 2π √ n(cid:15))]
+t,n t,n
+2πn
+t=1
+≤ 1 (cid:88) n E (cid:2) |ε |2I(|ε | ≥ 2π √ n(cid:15)) (cid:3) = E (cid:2) |ε |2I(|ε | ≥ 2π √ n(cid:15)) (cid:3) → P 0 as n → ∞,
+t t t t
+2πn
+t=1
+the above is true because E(ε2) < ∞. Hence we have verified Lindeberg condition and we obtain
+t
+(11.15). The proof of (11.13) is similar, hence we omit the details. Because I (ω) = (cid:60)(J (ω))2 +
+ε ε
+(cid:61)(J (ω))2, from (11.15) we have I (ω)/σ2 ∼ χ2(2)/2 (which is the same as an exponential with
+ε ε
+mean one).
+To prove (11.14) we can either derive it from first principles or by using Proposition 10.7.1.
+Here we do it from first principles. We observe
+1 (cid:88) (cid:88) (cid:88) (cid:88)
+cov(I (ω ), I (ω )) = cov(ε ε , ε ε ).
+ε j ε k (2π)2n2 t1 t1+k1 t2 t2+k2
+k1 k2 t1 t2
+Expanding the covariance gives
+cov(ε ε , ε ε ) = cov(ε , ε )cov(ε , ε ) + cov(ε , ε )cov(ε , ε ) +
+t1 t1+k1 t2 t2+k2 t1 t2+k2 t2 t1+k1 t1 t2 t1+k1 t2+k2
+cum(ε , ε , ε , ε ).
+t1 t1+k1 t2 t2+k2
+370
+
+--- physical page 372 ---
+Since {ε } are iid random variables, for most t , t , k and k the above covariance is zero. The
+t 1 2 1 2
+exceptions are when t = t and k = k or t = t and k = k = 0 or t − t = k = −k . Counting
+1 2 1 2 1 2 1 2 1 2 1 2
+all these combinations we have
+2σ4 (cid:88) (cid:88) (cid:88) 1 (cid:88)
+cov(|J (ω )|2, |J (ω )|2) = exp(ik(ω − ω )) + κ
+ε j ε k (2π)2n2 j k (2π)2n2 4
+k t t t
+where σ2 = var(ε ) and κ = cum (ε) = cum(ε , ε , ε , ε ). We note that for j (cid:54)= k, (cid:80) exp(ik(ω −
+t 4 4 t t t t t j
+ω )) = 0 and for j = k, (cid:80) exp(ik(ω − ω )) = n, substutiting this into cov(|J (ω )|2, |J (ω )|2)
+k t j k ε j ε k
+gives us the desired result. (cid:3)
+By using (11.9) the following result follows immediately from Lemma 11.2.1, equation (11.15).
+Corollary 11.2.1 Let us suppose that {X } is a linear time series X =
+(cid:80)∞
+ψ ε , where
+t t j=−∞ j t−j
+(cid:80)∞ |j1/2ψ | < ∞, and {ε } are iid random variables with mean zero, variance σ2 E(ε4) < ∞.
+j=−∞ j t t
+Then we have
+ 
+(cid:60)J n (ω) D (cid:18) 1 (cid:19)
+  → N 0, f (ω)I 2 , (11.15)
+2
+(cid:61)J (ω)
+n
+Using (11.11) we see that I (ω) ≈ f (ω)|J (ω)|2. This suggest that most of the properties which
+n ε
+apply to |J (ω)2 also apply to I (ω). Indeed in the following theorem we show that the asympototic
+ε n
+distribution of I (ω) is exponential with asymptotic mean f (ω) and variance f (ω)2 (unless ω = 0
+n
+in which case it is 2f (ω)2).
+By using Lemma 11.2.1 we now generalise Proposition 11.2.1 to linear processes. We show
+that just like the DFT the Periodogram is also ‘near uncorrelated’ at different frequencies. This
+result will be useful when motivating and deriving the sampling of the spectral density estimator
+in Section 11.3.
+Theorem 11.2.1 Suppose {X } is a linear time series X = (cid:80)∞ ψ ε , where (cid:80)∞ |j1/2ψ | <
+t t j=−∞ j t−j j=−∞ j
+∞ with E[ε ] = 0, var[ε ] = σ2 and E[ε4] < ∞. Let I (ω) denote the periodogram associated with
+t t t n
+{X , . . . , X } and f (·) be the spectral density. Then
+1 n
+(i) If f (ω) > 0 for all ω ∈ [0, 2π] and 0 < ω , . . . , ω < π, then
+1 m
+(cid:0) (cid:1)
+I (ω )/f (ω ), . . . , I (ω )/f (ω )
+n 1 1 n m m
+371
+
+--- physical page 373 ---
+converges in distribution (as n → ∞) to a vector of independent exponential distributions
+with mean one.
+(ii) Furthermore, for ω = 2πj and ω = 2πk we have
+j n k n
+
+  2f (ω k )2 + O(n−1/2) ω j = ω k = 0 or π
+
+
+cov(I n (ω k ), I n (ω j )) = f (ω k )2 + O(n−1/2) 0 < ω j = ω k < π
+
+
+  O(n−1) ω (cid:54)= ω
+j k
+where the bound is uniform in ω and ω .
+j k
+Remark 11.2.1 (Summary of properties of the periodogram) (i) The periodogram is non-
+(cid:80)
+negative and is an asymptotically an unbiased estimator of the spectral density (when |ψ | <
+j j
+∞).
+(ii) It symmetric about zero, I (ω) = I (ω + π), like the spectral density function.
+n n
+(iii) At the fundemental frequencies {I (ω )} are asymptotically uncorrelated.
+n j
+(iv) If 0 < ω < π, I (ω) is asymptotically exponentially distributed with mean f (ω).
+n
+It should be mentioned that Theorem 11.2.1 also holds for several nonlinear time series too.
+11.3 Estimating the spectral density function
+There are several explanations as to why the raw periodogram can not be used as an estimator of
+the spectral density function, despite its mean being approximately equal to the spectral density.
+One explanation is a direct consequence of Theorem 11.2.1, where we showed that the distribution
+of the periodogram standardized with the spectral density function is an exponential distribution,
+from here it is clear it will not converge to the mean, however large the sample size. An alternative,
+explanation is that the periodogram is the Fourier transform of the autocovariances estimators
+at n different lags. Typically the variance for each covariance c (k) will be about O(n−1), thus,
+(cid:98)n
+roughly speaking, the variance of I (ω) will be the sum of these n O(n−1) variances which leads to
+n
+a variance of O(1), this clearly does not converge to zero.
+Both these explanations motivate estimators of the spectral density function, which turn out to
+be the same. It is worth noting that Parzen (1957) proposed a consistent estimator of the spectral
+372
+
+--- physical page 374 ---
+density. These results not only lead to a revolution in spectral density estimation but also the
+usual density estimation that you may have encountered in nonparametric statistics (one of the
+first papers on density estimation is Parzen (1962)).
+We recall that J (ω ) are zero mean uncorrelated random variables whose variance is almost
+n k
+equal to f (ω ). This means that E|J (ω )|2 = E[I (ω )] ≈ f (ω ).
+k n k n n k
+Remark 11.3.1 (Smoothness of the spectral density and decay of the autocovariances)
+We observe that
+1 (cid:88)
+f (s)(ω) = (ir)sc(r) exp(irω).
+(2π)
+r∈Z
+Therefore, the smoothness of the spectral density function is determined by finiteness of (cid:80) |rsc(r)|,
+r
+in other words how fast the autocovariance function converges to zero. We recall that the acf of
+ARMA processes decay exponential fast to zero, thus f is extremely smooth (all derivatives exist).
+11.3.1 Spectral density estimation using a lagged window approach
+To motivate the lagged window approach we recall that
+n−1
+1 (cid:88)
+I (ω) = c (k) exp(ikω),
+n (cid:98)n
+2π
+k=−(n−1)
+where c (r) = n−1 (cid:80)n−|r| X X . Observe it is the sum of n autocovariance estimators. As
+(cid:98)n t=1 t t+r
+explained above, this estimator is not a consistent estimator of f (·) because it uses “too many”
+coefficient estimators to estimate f .
+The population autocovariances decay to zero for large lags, this suggests that we do not use
+all the sample covariances in the estimator, just some of them. This motivates the estimator of the
+spectral density based on truncating the sample autocovariances:
+m
+1 (cid:88)
+f(cid:101)m,n (ω) =
+(cid:98)
+c
+n
+(r) exp(irω), (11.16)
+2π
+r=−m
+where c (r) = n−1 (cid:80)n−|r| X X . The important feature of this estimator is that not all the
+(cid:98)n t=1 t t+r
+sample covariances are used, just the first (2m + 1) sample covariances.
+A generalised version of this which down weights the sample autocovariances at larger lags is
+373
+
+--- physical page 375 ---
+the scaled lag kernel estimator
+n−1
+1 (cid:88) (cid:16) r (cid:17)
+f(cid:101)m,n (ω) = λ
+(cid:98)
+c
+n
+(r) exp(irω), (11.17)
+2π m
+r=−(n−1)
+where λ : R → R is the so called lag window. There are two types of scaled lagged kernels:
+• The truncated scaled lag kernel λ : [−1, 1] → R where λ(x) = 0 for x ∈/ [−1, 1]. In this case
+(11.17) reduces to
+m
+1 (cid:88) (cid:16) r (cid:17)
+f(cid:101)m,n (ω) = λ
+(cid:98)
+c
+n
+(r) exp(irω). (11.18)
+2π m
+r=−m
+• The non-truncated scaled lag kernel where λ(s/m) does not “vanish” after some point. Ex-
+amples include the Bartlett kernel of the form λ (s) = (πs/m)−1 sin(πs/m)). For such
+m
+kernels m should not be treated as a truncation parameter that truncates the number of
+sample autocovariances. Indeed if a truncation were applied one could not truncate at m
+and would require a far larger truncation to obtain a near approximation.
+Often non-truncated scaled lag kernels will correspond to a truncated spectral kernel in the
+frequency domain i.e. have the form
+1 (cid:90) 1/m
+f(cid:101)m,n (ω) = I
+n
+(λ)W
+m
+(ω − λ)dω.
+2π
+−1/m
+1 We discuss this in more detail below.
+To understand why f(cid:101)m,n (ω) is estimating f we rewrite in the frequency domain (in terms of
+the periodogram). Using the inverse Fourier transform we have
+(cid:90) 2π
+c (r) = I (ω) exp(−irω)dω.
+(cid:98)n n
+0
+Replacing c (r) in (11.17) with the above yields the convolution
+(cid:98)n
+(cid:90) n−1 (cid:90)
+1 (cid:88) k 1
+f(cid:101)m,n (ω) = I
+n
+(λ) λ( ) exp(ik(ω − λ))dλ = I
+n
+(λ)W
+m
+(ω − λ)dω(,11.19)
+2π m 2π
+k=−(n−1)
+1It is important to remember that truncation over covariance means that truncation over frequency is
+not possible and vice versa. This is famously due to the Heisenberg uncertainty principle; that one cannot
+have simultaneously time and frequency localisation.
+374
+
+--- physical page 376 ---
+where W
+m
+(ω) =
+2
+1
+π
+(cid:80)n
+k=
+−
+−
+1
+(n−1)
+λ(
+m
+k ) exp(ikω). f(cid:101)n (ω) is a convolution/weighted integral average
+between the periodogam and W (ω). If W (ω − λ) is largest at ω = λ, it gives most weight to
+m m
+periodogram at frequency λ. At the extreme end if W (ω − λ) were the Dirac delta function (you
+m
+can think of this as the indicator variable which zero everywhere but ω = λ), then (11.19) simply
+returns the periodogram. The precise result is given below.
+Lemma 11.3.1 (Expectation of lagged window estimator) Suppose {X } is a stationary time
+t
+series with absolutely summable covariance (cid:80) |r|K |c(r)| < ∞ and fourth order cumulants
+r
+(cid:80)
+|cum(X , X , X , X )| < ∞. If λ(·) is a truncated lagged window, then
+r1,r2,r3 0 r1 r2 r3
+(cid:90)
+1
+E[f(cid:101)m,n (ω)] = f (ω)W
+m
+(ω − λ)dω + O(n−1)
+2π
+n−1 (cid:18) (cid:19)
+1 (cid:88) k
+= λ c(r) exp(irω) + O(n−1)
+2π m
+k=−(n−1)
+= f (ω) + O (cid:0) m−K (cid:1)
+and
+1 (cid:90) π 1 (cid:90) π
+var[f(cid:101)m,n (ω)] = W
+m
+(ω − λ)2f (λ)2dλ + W
+m
+(ω − λ)W
+m
+(ω + λ − 2π)f (λ)2dλ +o(m/n)
+n n
+−π −π
+(cid:124) (cid:123)(cid:122) (cid:125)
+if ω is far from zero ≈ 0.
+= O(m/n).
+See Section 6.2.4 in Priestley (1983)2.
+The lemma above tells us that if the truncation parameter m is such that m/n → ∞ as n and
+m → 0 then the variance of the spectral density estimator will improve as the sample size grows.
+Below we list some lag windows and their corresponding spectral window W (ω). For some
+m
+examples an exact analytic expression for W (ω) cannot be derived. However by using the Possion
+m
+summation formula we have
+∞
+(cid:88)
+W (ω) = m K(m(ω + 2πj))
+m
+j=−∞
+2Recall the variance of the sample mean of iid random variables is var[X¯ ] = σ2/n = O(n−1). The variance
+of f(cid:101)n (ω) will be larger because it is the sum of many averages.
+375
+
+--- physical page 377 ---
+where
+1 (cid:90) ∞
+K(ω) = λ(u) exp(−iuω)du.
+2π
+−∞
+Example 11.3.1 (Examples of Lag windows) Below are examples of lag windows.
+1. Truncated Periodogram lag window λ(u) = I (u), where {λ(k/m)} corresponds to
+[−1,1]
+m
+1 (cid:88) 1 sin[(m + 1/2)x]
+W (x) = eikω = ,
+m
+2π 2π sin(x/2)
+k=−m
+which is the Dirichlet kernel and
+1 (cid:90) 1 1 sin(ω)
+K(ω) = exp(−iuω)du = .
+2π π ω
+−1
+Note that the Dirchlet kernel is negative at some frequencies, thus we can see from (11.19)
+that f(cid:101)n can be negative. Which is one potential drawback of this estimator (see Example
+10.6.2).
+2. The Bartlett lag window λ(x) = (1 − |x|)I (x), where {λ(k/m)} corresponds to
+[−1,1]
+1 (cid:88)
+m (cid:18)
+|k|
+(cid:19)
+1
+(cid:18)
+sin(mx/2)
+(cid:19)2
+W (x) = 1 − eikω =
+m
+2π m 2πn sin(x/2)
+k=−m
+which is the Fejer kernel and
+1 (cid:90) 1 1 (cid:18) sin(ω/2) (cid:19)2
+K(ω) = (1 − |u|) exp(−iuω)du = .
+2π 2π ω/2
+−1
+We can immediately see that one advantage of the Bartlett window is that it corresponds to
+a spectral density estimator which is positive.
+Note that in the case that m = n (the sample size), the truncated periodogram window
+estimator corresponds to (cid:80) c(r)eirω and the Bartlett window estimator corresponds to
+|r|≤n
+(cid:80) [1 − |r|/n]c(r)eirω.
+|r|≤n
+376
+
+--- physical page 378 ---
+3. The Parzen lag window
+
+ 1 − 6x2 + 6|x|3 |x| ≤ 1/2
+
+
+
+λ(x) = 2(1 − |x|)3 1/2 < |x| ≤ 1
+
+
+
+ 0 otherwise
+No analytic expression for W (·) exists, however
+m
+1 (cid:90) ∞ 3 (cid:18) sin(ω/4) (cid:19)
+K(ω) = λ(u) exp(−iuω)du =
+2π 8π ω/4
+−∞
+4. The Danielll (non-truncated) lag window
+sin(πu)
+λ(x) = .
+πu
+and
+
+ 1/(2π) |ω| ≤ π
+K(ω) = .
+ 0 |ω| > 0
+5. The Bartlett-Priestley (non-truncated) lag window
+(cid:18) (cid:19)
+3 sin πx
+λ(x) = − cos(πx) .
+πx2 πx
+and
+
+ 3 (1 − (ω/π)2) |ω| ≤ π
+K(ω) = 4π .
+ 0 |ω| > 0
+Observe that K(·) has a compact support for both the Daniell and Bartlett-Priestley kernel. Thus
+for these kernels
+W (ω) = mK(mθ).
+m
+Different lag windows lead to different biases and variances. A list of the variance and bias of each
+window is given on page 463 in Priestley (1983).
+377
+
+--- physical page 379 ---
+11.3.2 Spectral density estimation by using a discrete average pe-
+riodogram approach
+In this section we focus on an alternative approach for estimating the spectral density function
+which is closely related to the non-truncated lagged window estimators.
+To motivate this approach we note that from Theorem 11.2.1, that {I (ω )} are close to un-
+n k
+correlated and I (ω )/f (ω ) is 2−1χ2. Therefore we can write I (ω ) as
+n k k 2 n k
+I (ω ) = E(I (ω )) + [I (ω ) − E(I (ω ))]
+n k n k n k n k
+≈ f (ω ) + f (ω )U , k = 1, . . . , n, (11.20)
+k k k
+where {U } is sequence of mean zero and constant variance almost uncorrelated random variables.
+k
+In the remark below we briefly review nonparametric regression methods and then compare
+equation (11.20) to the classical nonparametric regression equation.
+Remark 11.3.2 (Nonparametric Kernel estimation) Let us suppose that we observe Y where
+i
+(cid:18) (cid:19)
+i
+Y = g + ε 1 ≤ i ≤ n, (11.21)
+i i
+n
+and {ε } are iid random variables and g(·) is a ‘smooth’ function. The kernel density estimator of
+i
+g ( i )
+(cid:98)n n
+(cid:18) (cid:19) (cid:18) (cid:19)
+j (cid:88) 1 j − i
+g = W Y ,
+(cid:98)n i
+n bn bn
+i
+where W (·) is a smooth kernel function of your choosing, such as the Gaussian kernel, etc.
+Comparing (11.21) with (11.20) motivates the following nonparametric estimator of f (ω).
+(cid:18) (cid:19)
+(cid:88) 1 j − k
+f(cid:98)b,n (ω
+j
+) = W I
+n
+(ω
+k
+), (11.22)
+bn bn
+k
+where W : [−1, 1] → R is a spectral window which satisfies the condition (cid:82) 1 W (x)dx = 1 and
+−1
+(cid:82)
+−
+1
+1
+W (x)2dx < ∞. We observe that f(cid:98)b,n (ω
+j
+) resembles the lagged window estimator representation
+given in (11.19), where the integral is replaced with a sum. The main difference is (i) the support
+that the limits of the sum/integral are from [−nb, nb] (or −1/b, 1/b) whereas for the general lag
+378
+
+--- physical page 380 ---
+window in (11.19) the integral is from [−1, 1] (ii) W (·) cannot be written as a rescaled W (·).
+m
+The exceptions are the non-truncated lag windows which can be written as (11.22), in this case
+b−1 = m, i.e.
+n n
+1 (cid:88) (cid:88)
+f(cid:98)b,n (ω
+j
+) =
+n
+X
+t
+X
+τ
+λ
+t−τ,1/b
+exp(i(t − τ )ω
+j
+)
+t=1 τ=1
+where λ = 1 (cid:80) W ( ω k −ωj ) exp(i(t − τ )ω ) = 1 (cid:80) W ( ωs ) exp(i(t − τ )ω )
+t−τ,1/b bn j b k−j bn j b s
+Example 11.3.2 (Spectral windows) Here we give examples of spectral windows (see Section
+6.2.3, page 437 in Priestley (1983)).
+(i) The Daniell spectral Window is the local average
+
+ 1/2 |x| ≤ 1
+W (x) =
+ 0 |x| > 1
+This window leads to the estimator
+j+bn/2
+1 (cid:88)
+f(cid:98)b,n (ω
+j
+) = I
+n
+(ω
+k
+).
+bn
+k=j−bn/2
+A plot of the periodgram, spectral density and different estimators (using Daniell kernel with
+bn = 2 and bn = 10) of the AR(2) process X = 1.5X − 0.75X + ε is given in Figure
+t t−1 t−2 t
+11.1. We observe that too small b leads to undersmoothing but too large b leads to over
+smoothing of features. There are various methods for selecting the bandwidth, one commonly
+method based on the Kullbach-Leibler criterion is proposed in Beltrao and Bloomfield (1987).
+(ii) The Bartlett-Priestley spectral Window
+
+ 3 (cid:0) 1 − x2(cid:1) |x| ≤ 1
+W (x) = 4
+ 0 |x| > 1
+This spectral window was designed to reduce the mean squared error of the spectral density
+estimator (under certain smoothness conditions).
+We now analyze the sampling properties of the spectral density estimator. It is worth noting
+379
+
+--- physical page 381 ---
+l
+l
+l llllll l l l lllllll lll ll llll lll lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll
+0.0 0.1 0.2 0.3 0.4 0.5
+0.1
+8.0
+6.0
+4.0
+2.0 0.0
+frequency[c(1:128)]
+])821:1(c[2P
+0.0 0.1 0.2 0.3 0.4 0.5
+06
+05
+04
+03
+02
+01 0
+frequency
+murtceps
+Autoregressive
+0.0 0.1 0.2 0.3 0.4 0.5
+001
+08
+06
+04
+02
+0
+frequency
+murtceps
+Series: ar2
+Smoothed Periodogram
+0.0 0.1 0.2 0.3 0.4 0.5
+bandwidth = 0.00564
+04
+03
+02
+01
+0
+frequency
+murtceps
+Series: ar2
+Smoothed Periodogram
+bandwidth = 0.0237
+Figure 11.1: Using a realisation of the AR(2): X = 1.5X − 0.75X + ε where n = 256.
+t t−1 t−2 t
+Top left: Periodogram, Top Right: True spectral density function. Bottom left: Spectral
+density estimator with bn = 2 and Bottom right: Spectral density estimator with bn = 10.
+that the analysis is very similar to the analysis of nonparametric kernel regression estimator g ( j ) =
+(cid:98)n n
+1 (cid:80) W ( j−i )Y , where Y = g( i ) + g( i )ε and {ε } are iid random variables. This is because the
+bn i bn i i n n i i
+periodogram {I (ω)} is ‘near uncorrelated’. However, still some care needs to be taken in the
+n k
+proof to ensure that the errors in the near uncorrelated term does not build up.
+(cid:80)
+Theorem 11.3.1 Suppose {X } is a stationary time series that satisfies the conditions |rc(r)| <
+t r∈Z
+(cid:80)
+∞ and
+r1,r2,r3
+|cum(X
+0
+, X
+r1
+, X
+r2
+, X
+r3
+)| < ∞. Let f(cid:98)b,n (ω) be the spectral estimator defined in
+(11.22). Then
+(cid:18) (cid:19)
+(cid:12) (cid:12) 1
+(cid:12)E(f(cid:98)b,n (ω
+j
+)) − f (ω
+j
+)(cid:12) ≤ C + b (11.23)
+n
+and
+
+ 1 f (ω )2 0 < ω < π
+var[f(cid:98)b,n (ω
+j
+)] → bn j j , (11.24)
+ 2 f (ω )2 ω = 0 or π
+bn j j
+bn → ∞, b → 0 as n → ∞.
+PROOF. The proof of both (11.23) and (11.24) are based on the spectral window W (x/b) becom-
+ing narrower as b → 0, hence there is increasing localisation as the sample size grows (just like
+380
+
+--- physical page 382 ---
+nonparametric regression).
+We first note that since (cid:80) |rc(r)| < ∞, then |f (cid:48)(ω)| ≤ (cid:80) |rc(r)| < ∞. Hence f is continuous
+r r
+with a bounded first derivative.
+To prove (11.23) we take expections
+(cid:12) (cid:12)
+(cid:12) (cid:12)
+(cid:12)
+E(f(cid:98)b,n (ω
+j
+)) − f (ω
+j
+) (cid:12) (cid:12)
+(cid:12)
+= (cid:12) (cid:12)
+(cid:12)
+(cid:88)
+b
+1
+n
+W (cid:18)
+b
+k
+n
+(cid:19) (cid:8) E (cid:2) I(ω
+j−k
+) (cid:3) − f (ω
+j
+) (cid:9) (cid:12) (cid:12)
+(cid:12)
+(cid:12) (cid:12)
+k
+(cid:12) (cid:18) (cid:19)(cid:12) (cid:12) (cid:18) (cid:19)(cid:12)
+(cid:88) 1 (cid:12) k (cid:12) (cid:12) (cid:2) (cid:3) (cid:12) (cid:88) 1 (cid:12) k (cid:12)
+= (cid:12)W (cid:12) (cid:12)E I(ω j−k ) − f (ω j−k )(cid:12) + (cid:12)W (cid:12) |f (ω j ) − f (ω j−k )|
+bn (cid:12) bn (cid:12) bn (cid:12) bn (cid:12)
+k k
+:= I + II.
+Using Lemma 11.1.1 we have
+(cid:12) (cid:18) (cid:19) (cid:12)
+(cid:88) 1 (cid:12) k (cid:12) (cid:12) (cid:0) (cid:1) (cid:12)
+I = (cid:12)W |(cid:12) (cid:12)E I(ω
+j−k
+) − f (ω
+j−k
+)(cid:12)
+bn (cid:12) bn (cid:12)
+k
+ 
+(cid:32) (cid:33)
+1 (cid:88) k (cid:88) 1 (cid:88) 1
+≤ C |W ( )|  |c(k)| + |kc(k)| = O( ).
+bn bn n n
+k |k|≥n |k|≤n
+To bound II we use that |f (ω ) − f (ω )| ≤ sup |f (cid:48)(ω)| · |ω − ω |, this gives
+1 2 1 2
+(cid:12) (cid:88) 1 k (cid:8) (cid:9)(cid:12)
+II = (cid:12) K( ) f (ω j ) − f (ω j−k ) (cid:12) = O(b).
+bn bn
+k
+Altogether this gives I = O(n−1) and II = O(b) as bn → ∞, b → 0 and n → ∞. The above two
+bounds mean give (11.23).
+We will use Theorem 11.2.1 to prove (11.24). We first assume that j (cid:54)= 0 or n. To prove the
+result we use that
+cov(|J (ω )|2, |J (ω )|2) =
+n k1 n k2
+1 1 1
+[f (ω )I(k = k ) + O( )]2 + [f (ω )I(k = n − k ) + O( )][f (ω )I(n − k = k ) + O( )]
+k1 1 2
+n
+k1 1 2
+n
+k1 1 2
+n
+1 1
++[ f (ω , −ω , ω ) + O( )].
+n 4 1 1 2 n2
+381
+
+--- physical page 383 ---
+where the above follows from Proposition 10.7.1. This gives
+var(f(cid:98)b,n (ω
+j
+))
+(cid:18) (cid:19) (cid:18) (cid:19)
+(cid:88) 1 j − k 1 j − k 2
+= W W cov(I(ω ), I(ω ))
+(bn)2 bn bn k1 k1
+k1,k2
+(cid:18) (cid:19) (cid:18) (cid:19)
+(cid:88) 1 j − k 1 j − k 2
+= W W
+(bn)2 bn bn
+k1,k2
+(cid:18)
+(cid:2) 1 (cid:3)2 (cid:2) 1 1 (cid:3)
+f (ω )I(k = k ) + O( ) + f (ω )I(k = n − k ) + O( )][f (ω )I(n − k = k ) + O( )
+k1 1 2
+n
+k1 1 2
+n
+k1 1 2
+n
+(cid:19)
+(cid:2) 1 1 (cid:3)
++ f (ω , −ω , ω ) + O( )
+n 4 1 1 2 n2
+= (cid:88)
+n
+1 W
+(cid:18)
+j − k 1
+(cid:19)2
+f (ω2)
+(bn)2 bn k
+k=1
+n (cid:18) (cid:19) (cid:18) (cid:19)
++ (cid:88) 1 W j − k 1 W j − (n − k 1 ) f (ω2) + O( 1 )
+(bn)2 bn bn k n
+k=1
+1 (cid:90) 1 (cid:18) ω − ω (cid:19)2 1 (cid:90) 1 (cid:18) ω − 2π + ω (cid:19) (cid:18) ω − ω (cid:19) 1
+= W j f (ω)2dω + W j W j f (ω)dω +O( )
+2πnb b b 2πnb b b b n
+(cid:124) (cid:123)(cid:122) (cid:125)
+→0
+1 (cid:90) 1 (cid:16) ω (cid:17)2 1
+= f (ω )2 W dω + O( )
+j
+2πnb b b n
+where the above is using the integral approximation of the sum. A similar proof can be used to
+prove the case j = 0 or n. (cid:3)
+The above result means that the mean squared error of the estimator
+(cid:2) (cid:3)2
+E f(cid:98)b,n (ω
+j
+) − f (ω
+j
+) → 0,
+where bn → ∞ and b → 0 as n → ∞. Moreover
+(cid:18) (cid:19)
+E (cid:2) f(cid:98)b,n (ω
+j
+) − f (ω
+j
+) (cid:3)2 = O 1 + b2 .
+bn
+11.3.3 The sampling properties of the spectral density estimator
+The χ2 approximation (mainly heuristics)
+Using that the periodogram I (ω)/f (ω) is asymptotically exponentially distributed and uncorre-
+n
+lated at the fundemental frequencies, we can heuristically deduce the limiting distribution of fˆ (ω).
+n
+382
+
+--- physical page 384 ---
+Here we consider the distribution with the rectangular spectral window
+j+bn/2
+1 (cid:88)
+fˆ (ω ) = I(ω ).
+n j k
+bn
+k=j−bn/2
+Since I(ω )/f (ω ) are approximately χ2(2)/2, then since the sum (cid:80)j+bn/2 I(ω ) is taken over a
+k k k=j−bn/2 k
+local neighbourhood of ω , we have that f (ω )−1 (cid:80)j+bn/2 I(ω ) is approximately χ2(2bn)/2.
+j j k=j−bn/2 k
+Gaussian approximation of the spectral density estimator
+In general, to prove normality of the spectral density estimator we rewrite it as a quadratic form3.
+We first consider the truncated lagged window estimator of the form
+m
+1 (cid:88) (cid:16) r (cid:17)
+f(cid:101)m,n (ω) = λ
+(cid:98)
+c
+n
+(r) exp(irω)
+2π m
+r=−m
+n n (cid:18) (cid:19)
+1 (cid:88) (cid:88) t − τ
+= λ X X exp(i(t − τ )ω)
+t τ
+2πn m
+t=1 τ=1
+n min(n−t,m) (cid:18) (cid:19)
+1 (cid:88) (cid:88) (cid:96)
+= λ X X exp(i(cid:96)ω)
+t t+(cid:96)
+2πn M
+t=1 (cid:96)=max(−t+1,−m)
+There are various methods to show the above is asymptotically Gaussian depending on whether
+one assumes the process is linear, mixing, physical dependent etc. But the classical method is to
+rewrite the sum over
+(cid:80)n
+into large and small blocks of the form
+t=1
+k (cid:88)n−1
+(cid:88)
+kn
+f(cid:101)m,n (ω) − E[f(cid:101)m,n (ω)] = L
+j,n
++ S
+j,n
+,
+j=0 j=−1
+3It is also possible to show asymptotic normality using the average of periodogram representation under
+the assumption of Gaussianity or absolute summability of cumulants of all orders.
+383
+
+--- physical page 385 ---
+1
+(j+
+(cid:88)
+1)rn
+(cid:88)
+m (cid:18)
+(cid:96)
+(cid:19)
+L = (X X − E[X X ])λ exp(i(cid:96)ω) for 0 ≤ j ≤ k − 1
+j,n n t t+(cid:96) t t+(cid:96) m n
+t=jrn+qn+1 (cid:96)=−m
+1
+jr
+(cid:88)
+n+qn
+(cid:88)
+m (cid:18)
+(cid:96)
+(cid:19)
+S = (X X − E[X X ])λ exp(i(cid:96)ω) for 0 ≤ j ≤ k − 1
+j,n n t t+(cid:96) t t+(cid:96) m n
+t=jrn+1 (cid:96)=−m
+m 1 (cid:18) (cid:19)
+1 (cid:88) (cid:88) (cid:96)
+S = (X X − E[X X ])λ exp(i(cid:96)ω)
+−1,n n t t+(cid:96) t t+(cid:96) m
+t=1 (cid:96)=−t+1
+n n−t (cid:18) (cid:19)
+1 (cid:88) (cid:88) (cid:96)
+S = (X X − E[X X ])λ exp(i(cid:96)ω),
+kn,n n t t+(cid:96) t t+(cid:96) m
+t=n−m (cid:96)=1
+with r = p + q , k = n/r and p > q > m. Under certain conditions it can be shown that
+n n n n n n n
+(cid:114)
+n (cid:16) (cid:17)
+k (cid:88)n−1
+f(cid:101)m,n (ω) − E[f(cid:101)m,n (ω)] = L
+j,n
++ R
+m
+j=0
+where E[R2] = q /(p + q ). Thus if the size of the large block is order of magnitude larger
+n n n
+than the size of the small block f(cid:101)m,n (ω) can be approximated by the sum of large blocks. The
+key ingredient in this approximation is that the large blocks L do not contain an common X s,
+j,n t
+thus if the time series were independent random variable then {L }kn−1 would be the sum of k -
+j,n j=0 n
+independent random variables and a Lindeberg-Levy central limit theorem could be used to prove
+asymptotic normality of f(cid:101)m,n (ω). Of course, {X
+t
+}s are a time series so we cannot immediately
+apply the Lindeberg-Levy central limit theorem and one more approximation is necessary. Let
+S
+n
+= (cid:80)k
+j=
+n−
+0
+1 L
+j,n
+. Given L
+j,n
+and S
+n
+, we start by defining auxillary variables {L(cid:101)j,n }
+j
+that are
+independent and define the sum S(cid:101)n = (cid:80)k
+j=
+n−
+0
+1 L(cid:101)j,n . There are then two different strategies on how
+to proceed:
+• If we assume the time series satisfies a linear or physical dependence condition (a notion
+developed by Wei Bao Wu) we can define an “m-dependent” sequence L(cid:98)j,n associated with
+L
+j,n
+such that {L(cid:101)j,n }
+j
+are independent and show that (n/m)E|S
+n
+− S(cid:101)n |2 = o(1). We can
+then show that S(cid:101)n satisfies the conditions of the Lindeberg-Levy central limit theorem. Since
+(n/m)E|S
+n
+− S(cid:101)n |2 = o(1) this would prove asymptotic normality of S
+n
+and thus f(cid:101)m,n (ω).
+• An alternative route is to work under mixing (say α-mixing). To replace U
+j,n
+with U(cid:101)j,n where
+the random variable U(cid:101)j,n has the same distribution as U
+j,n
+but is independent over j. Then to
+show that the characteristic functions of S
+n
+and S(cid:101)n asymptotically converge (under mixing).
+Using this we proceed as before by applying the conditions of the Lindeberg-Levy central
+384
+
+--- physical page 386 ---
+limit theorem to show asymptotic normality of S(cid:101)n .
+Therefore under suitable conditions it can be shown that from this asymptotic normality can be
+derived, where
+(cid:104) (cid:105)
+σ
+m,n
+(ω)−1 f(cid:101)m,n (ω) − E[f(cid:101)m,n (ω)] ≈ N (0, 1)
+and
+1 (cid:90) π 1 (cid:90) π
+σ (ω)2 = W (ω − λ)2f (λ)2dλ + W (ω − λ)W (ω + λ − 2π)f (λ)2dλ
+m,n M m m
+n n
+−π −π
+as m, n → ∞.
+The outline of the proof described above is for the truncated lagged window estimator. For
+the averaged periodogram estimator or equivalently the non-truncated lagged window estimator
+the proof requires a slight modification. We recall that the average periodogram estimator can be
+written as
+n n
+1 (cid:88) (cid:88)
+f(cid:98)b,n (ω
+j
+) =
+n
+X
+t
+X
+τ
+λ
+t−τ,1/b
+exp(i(t − τ )ω
+j
+)
+t=1 τ=1
+where λ = 1 (cid:80) W ( ω k −ωj ) exp(i(t − τ )ω ) = 1 (cid:80) W ( ωs ) exp(i(t − τ )ω ). Unlike the
+t−τ,1/b bn j b k−j bn j b s
+truncated lagged window estimator λ is non-zero for most lags. Thus we cannot divide the
+t−τ,1/b
+sum
+(cid:80)n
+t=1
+(cid:80)n
+τ=1
+into sums which do not overlap. Thus to derive the sampling properties of f(cid:98)b,n (ω
+j
+)
+we truncate λ by setting to zero large lags. The following lemma (due to Lemma A.2 in ?)
+t−τ,1/b
+allows us to obtain a bound on this approximation.
+Lemma 11.3.2 Suppose the kernel W : [−1, 1] → C has a bounded derivative. Then
+
+(cid:88) bn (cid:16) s (cid:17) (cid:18) ir2πs (cid:19)  O(bn) |r| ≤ nb or n − b−1 ≤ |r| ≤ n
+W exp =
+(cid:16) (cid:17)
+bn n  O n b−1 ≤ |r| ≤ n − b−1
+s=−bn min(|r|,n−|r|)
+The above lemma implies that
+
+ O(1) |r| ≤ b−1 or n − b−1 ≤ |r| ≤ n
+λ =
+r,1/b (cid:16) (cid:17)
+ O 1 b−1 ≤ |r| ≤ n − b−1
+b min(|r|,n−|r|)
+We observe that λ declines as we r becomes large. Thus it should be possible to truncate λ
+r,1/b r,1/b
+385
+
+--- physical page 387 ---
+for a sufficiently large r and thus approximate f(cid:98)b,n (ω
+j
+) with a truncated lag window to a sufficient
+degree. Let
+n min(n−t,Bbn)
+1 (cid:88) (cid:88)
+f(cid:101)b,n,B (ω
+j
+) =
+n
+X
+t
+X
+t+(cid:96)
+λ
+t−τ,1/b
+exp(i(t − τ )ω
+j
+)
+t=1 (cid:96)=max(−t+1,−Bbn)
+where 1 < B < 1/b. By using Lemma 11.3.2 it can be shown that
+(cid:18) (cid:19)
+log n
+(nb)E[f(cid:98)b,n (ω
+j
+) − f(cid:101)b,n,B (ω
+j
+)]2 = O .
+B
+Thus if we allow B → ∞ as nb and n → ∞, then the approximate truncated lag window estimator
+has the sample asymptotic distribution as the averaged periodogram estimator. Note that B simply
+plays the role as a dummy variable and has no role in the estimation scheme.
+Using these approximations we can use asymptotic normality of the truncated lagged window
+periodogram estimator (as described above) to give
+(cid:104) (cid:105)
+σ
+b,n
+(ω)−1 f(cid:98)b,n (ω) − E[f(cid:98)b,n (ω)] ≈ N (0, 1)
+and
+1 (cid:90) π (cid:18) (ω − λ) (cid:19)2 1 (cid:90) π (cid:18) ω − λ (cid:19) (cid:18) ω + λ − 2π (cid:19)
+σ (ω)2 = W f (λ)2dλ + W W f (λ)2dλ
+b,n b m
+n b n b b
+−π −π
+as b → 0 and n → ∞.
+11.4 The Whittle Likelihood
+In Chapter 8 we considered various methods for estimating the parameters of an ARMA process.
+The most efficient method (in terms of Fisher efficiency), when the errors are Gaussian is the
+Gaussian maximum likelihood estimator. This estimator was defined in the time domain, but it is
+interesting to note that a very similar estimator which is asymptotically equivalent to the GMLE
+estimator can be defined within the frequency domain. We start by using heuristics to define the
+Whittle likelihood. We then show how it is related to the Gaussian maximum likelihood.
+To motivate the method let us return to the Sunspot data considered in Exercise 5.1. The
+386
+
+--- physical page 388 ---
+Periodogram and the spectral density corresponding to the best fitting autoregressive model,
+(cid:12)
+f (ω) = (2π)−1(cid:12) (cid:12)1 − 1.1584eiω − 0.3890ei2ω − 0.1674ei3ω − 0.1385ei4ω − 0.1054ei5ω − 0.0559ei6ω −
+(cid:12)
+(cid:12)−2
+0.0049ei7ω − 0.0572ei8ω − 0.2378eω(cid:12) (cid:12) ,
+(cid:12)
+is given in Figure 11.2. We see that the spectral density of the best fitting AR process closely
+follows the shape of the periodogram (the DFT modulo square). This means that indirectly the
+autoregressive estimator (Yule-Walker) chose the AR parameters which best fitted the shape of
+the periodogram. The Whittle likelihood estimator, that we describe below, does this directly. By
+selecting the parametric spectral density function which best fits the periodogram. The Whittle
+ll
+l
+l
+l
+ll
+ll
+l
+llllllllllllllllll
+l
+l lllll
+l
+l llllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll
+0.0 0.1 0.2 0.3 0.4 0.5
+021
+08
+04
+0
+frequency2[c(2:n3)]
+])3n:2(c[2P
+0.0 0.1 0.2 0.3 0.4 0.5
+001
+05
+0
+frequency
+murtceps
+Autoregressive
+Figure 11.2: The periodogram of sunspot data (with the mean removed, which is necessary
+to prevent a huge peak at zero) and the spectral density of the best fitting AR model.
+likelihood measures the distance between I (ω) and the parametric spectral density function using
+n
+the Kullbach-Leibler criterion
+n (cid:18) (cid:19)
+Lw(θ) = (cid:88) log f (ω ) + I n (ω k ) , ω = 2πk ,
+n θ k f (ω ) k n
+θ k
+k=1
+and the parametric model which minimises this ‘distance’ is used as the estimated model. The choice
+of this criterion over the other distance criterions may appear to be a little arbitrary, however there
+are several reasons why this is considered a good choice. Below we give some justifications as to
+387
+
+--- physical page 389 ---
+why this criterion is the prefered one.
+First let us suppose that we observe {X }n , where X satisfies the ARMA representation
+t t=1 t
+p q
+(cid:88) (cid:88)
+X = φ X + ψ ε + ε ,
+t j t−j j t−j t
+j=1 j=1
+and {ε } are iid random variables. We will assume that {φ } and {ψ } are such that the roots
+t j j
+of their corresponding characteristic polynomial are greater than 1 + δ. Let θ = (φ, θ). As we
+(cid:80)
+mentioned in Section 10.2 if |rc(r)| < ∞, then
+r
+ 
+f (ω ) + O( 1 ) k = k
+cov(J n (ω k1 ), J n (ω k2 )) =  k1
+O( 1 )
+n
+k
+1
+(cid:54)= k
+2
+,
+ .
+n 1 2
+where
+σ2|1 + (cid:80)q θ exp(ijω)|2
+j=1 j
+f (ω) = .
+2π|1 + (cid:80)p φ exp(ijω)|2
+j=1 j
+In other words, if the time series satisfies an ARMA presentation the DFT is ‘near’ uncorrelated,
+its mean is zero and its variance has a well specified parametric form. Using this information
+we can define a criterion for estimating the parameters. We motivate this criterion through the
+likelihood, however there are various other methods for motivating the criterion for example the
+Kullbach-Leibler criterion is an alternative motivation, we comment on this later on.
+If the innovations are Gaussian then (cid:60)J (ω) and (cid:61)J (ω) are also Gaussian, thus by using above
+n n
+we approximately have
+ 
+(cid:60)J (ω )
+n 1
+ 
+ (cid:61)J (ω ) 
+ n 1 
+ . 
+J n =   . .   ∼ N (0, diag(f (ω 1 ), f (ω 1 ), . . . , f (ω n/2 ), f (ω n/2 ))).
+ 
+ 
+ (cid:60)J n (ω n/2 ) 
+ 
+(cid:61)J (ω )
+n n/2
+In the case that the innovations are not normal then, by Corollary 11.2.1, the above holds asymp-
+totically for a finite number of frequencies. Here we construct the likelihood under normality of the
+innovations, however, this assumption is not required and is only used to motivate the construction.
+Since J is normally distributed random vector with mean zero and ‘approximate’ diagonal
+n
+388
+
+--- physical page 390 ---
+matrix variance matrix diag(f (ω ), . . . , f (ω )), the negative log-likelihood of J is approximately
+1 n n
+Lw(θ) = (cid:88) n (cid:18) log |f (ω )| + |J X (ω k )|2 (cid:19) .
+n θ k f (ω )
+θ k
+k=1
+To estimate the parameter we would choose the θ which minimises the above criterion, that is
+w
+θ(cid:98) = arg min Lw(θ), (11.25)
+n n
+θ∈Θ
+where Θ consists of all parameters where the roots of the corresponding characteristic polynomial
+have absolute value greater than (1 + δ) (note that under this assumption all spectral densities
+corresponding to these parameters will be bounded away from zero).
+Example 11.4.1 Fitting an ARMA(1, 1) model to the data To fit an ARMA model to the data
+using the Whittle likelihood we use the criterion
+(cid:88) n/2 (cid:18) σ2|1 + θeiω k |2 2π|1 − φeiω k |2 (cid:19)
+Lw(θ) = log + I (ω ) .
+n 2π|1 − φeiω k | n k σ2|1 + θeiω k |2
+k=1
+By differentiating Lω with respect to φ, σ2 and θ we solve these three equations (usually numeri-
+n
+cally), this gives us the Whittle likelihood estimators.
+Whittle (1962) showed that the above criterion is an approximation of the GMLE. The correct
+proof is quite complicated and uses several matrix approximations due to Grenander and Szeg¨o
+(1958). Instead we give a heuristic proof which is quite enlightening.
+11.4.1 Connecting the Whittle and Gaussian likelihoods
+We now give the details of a derivation which explicitly connects the Whittle and the Gaussian like-
+lihood. The details can be found in Subba Rao and Yang (2020). To understand the construction,
+we review some results from likelihoods of independent random variables and Principal Component
+analysis.
+Background First suppose that Y (cid:48) = (Y , . . . , Y ) is a random vector comprised of independent
+n 1 n
+random variables where var[Y ] = σ2. Let ∆ = var[Y ]. It is easy to show
+j n n
+Y (cid:48) ∆−1Y = (cid:88) n Y j 2 .
+n n n σ2
+j=1 j
+389
+
+--- physical page 391 ---
+We show below that any random vector can be written in the above form (even when the variance
+is not a diagonal matrix).
+Suppose X(cid:48) = (X , . . . , X ) is a n-dimension random vector with mean zero and variance Σ .
+n 1 n n
+Let us suppose that Σ is non-singular. Since Σ is symmetric and positive definite it has the
+n n
+spectral decomposition
+Σ = U ∆ U (cid:48) ,
+n n n n
+where U −1 = U (cid:48) and ∆ = diag(λ , . . . , λ ). This means
+n n n 1 n
+Σ−1 = U ∆−1U (cid:48) .
+n n n n
+The matrix U is built of orthogonal vectors but has the additional property that it decorrelates
+n
+the random vector X . To see why, let U = (u , . . . , u ) define the transformed vector Y = U (cid:48) X ,
+n n 1 n n n n
+where the jth entry in the vector is
+n
+(cid:88)
+Y = (cid:104)u , X (cid:105) = u(cid:48) X = u X .
+j j n j n j,s s
+s=1
+We observe
+var[Y ] = var (cid:2) U (cid:48) X (cid:3) = U (cid:48) var[X ]U
+n n n n n n
+= U (cid:48) U ∆ U (cid:48) U = ∆ ,
+n n n n n n
+where we recall ∆ = diag(λ , . . . , λ ). This means that the entries of the transformed random
+n 1 n
+vector Y (cid:48) = (Y , Y , . . . , Y ) are uncorrelated:
+n 1 2 n
+cov [Y , Y ] = 0 if j (cid:54)= j and var [Y ] = λ for j = 1, . . . , n.
+j1 j2 1 2 j j
+Using the inverse transform X = (U (cid:48) )−1Y = U Y we can represent X as
+n n n n n n
+n
+(cid:88)
+X = Y u .
+n j j
+j=1
+390
+
+--- physical page 392 ---
+Returning to X(cid:48) Σ−1X we have
+n n n
+X(cid:48) Σ−1X = X(cid:48) U ∆−1U (cid:48) X
+n n n n n n n n
+= Y (cid:48) ∆−1Y
+n n n
+(cid:88) n Y j 2
+= .
+λ2
+j=1 j
+However, the above expansion is very specific to the spectral decomposition of Σ , which is unique.
+n
+We now describe an analogous result, which can apply to any unique pairing of matrices.
+Biorthogonal transforms and Likelihoods Let us return to the eigenvector matrix U . It has the
+n
+unique property that its vectors {u } are orthogonal and var[U X ] is a diagonal matrix. We now
+j n n
+define a more general concept (called a biorthogonal transform) that yields a similar result. For
+any transform matrix U (it does not need to be such that U U (cid:48) = I ), there exists a matrix V
+n n n n n
+such that cov[U X , V X ] = Λ (where Λ = diag(δ , . . . , δ ) is a diagonal matrix). U and V
+n n n n n n 1 n n n
+are called biorthogonal transforms. By definition of the biorthogonal transform we have
+cov [U X , V X ] = U var[X ]V ∗ = Λ .
+n n n n n n n n
+Rearranging the above gives
+var[X ] = U −1Λ (V ∗)−1
+n n n n
+next inverting it gives
+var[X ]−1 = V ∗Λ−1U .
+n n n n
+Now we define two transformed random vectors Y = U X and Z = V X . Let Y (cid:48) =
+n n n n n n n
+(Y , . . . , Y ) and Z(cid:48) = (Z , . . . , Z ). Then the biorthogonality properties means
+1 n n 1 n
+cov[Z , Y ] = 0 if j (cid:54)= j and cov[Z , Y ] = δ .
+j1 j2 1 2 j j j
+391
+
+--- physical page 393 ---
+Thus
+X(cid:48) Σ−1X = X(cid:48) V ∗Λ−1U X = Z Λ−1Y
+n n n n n n n n n n n
+n
+(cid:88) Z n Y n
+= . (11.26)
+δ
+n
+j=1
+It is this identity that will link the Gaussian and Whittle likelihood.
+The Whittle likelihood We recall that the Whittle likelihood is
+(cid:88) n |J n (ω k )|2
+L (θ) =
+n
+f (ω ; θ)
+k
+k=1
+where for simplicity we have ignored the log f (ω ; θ) term. The DFT vector
+k
+Y (cid:48) = (J (ω ), . . . , J (ω ))(cid:48)
+n n 1 n n
+is a linear transform of the observed time series X(cid:48) = (X , . . . , X ). Let F be the DFT matrix
+n 1 n n
+with (F ) = n−1/2 exp(itω ), then Y = F X . Then we can write L (θ) as
+n k,t k n n n n
+L (θ) = (cid:88) n |(F n X n ) k |2 .
+n
+f (ω ; θ)
+k
+k=1
+The biorthogonal transform of Y will give a representation of the Gaussian likelihood in terms
+n
+of Y . In particular, if V is the biorthogonal transform of F with respect the variance matrix
+n n n
+Γ (f ) then by using (11.26) we have
+n θ
+X(cid:48) Σ (f )−1X = (cid:88) n (F n ∗X n ) k (V n X n ) k .
+n n θ n δ
+k
+k=1
+But in Section 10.2.3 we have already encountered the biorthogonal transform to the DFT J (ω )
+n k
+it is simply the complete DFT
+∞
+1 (cid:88) 1 (cid:88)
+J(cid:101)n (ω; f ) = J
+n
+(ω) + √ P
+X
+(X
+τ
+)eiτω = √ P
+X
+(X
+τ
+)eiτω.
+n n
+τ(cid:54)={1,2,...,n} τ=−∞
+where P
+X
+(X
+τ
+) denotes the projection of X
+τ
+onto {X
+t
+}n
+t=1
+. Let Z(cid:48)
+n
+= (J(cid:101)n (ω
+1
+; f ), . . . , J(cid:101)n (ω
+n
+; f )). By
+392
+
+--- physical page 394 ---
+using the results in Section 10.2.3 we have the biorthogonality
+cov[J
+n
+(ω
+k1
+), J(cid:101)n (ω
+k2
+; f )] = 0 if k
+1
+(cid:54)= k
+2
+and cov[J
+n
+(ω
+k
+), J(cid:101)n (ω
+k
+; f )] = f (ω
+k
+) for k = 1, . . . , n.
+Thus
+n
+X(cid:48) Σ (f )−1X = (cid:88) J n (ω k1 )J(cid:101)n (ω k2 ; f θ ) .
+n n θ n f (ω )
+θ k
+k=1
+This places the Gaussian likelihood within the frequency domain and shows that the difference
+between the Gaussian and Whittle likelihood is
+X(cid:48) Σ (f )−1X − (cid:88) n |J n (ω k )|2
+n n θ n f (ω ; θ)
+k
+k=1
+n
+=
+(cid:88) J n (ω k1 )J(cid:98)n (ω k2 ; f θ )
+,
+f (ω )
+θ k
+k=1
+where
+1 (cid:88)
+J(cid:98)n (ω; f ) = √ P
+X
+(X
+τ
+)eiτω.
+n
+τ(cid:54)={1,2,...,n}
+This result allows us to rewrite the Gaussian likelihood in the frequency domain and understand
+how precisely the two likelihoods are connected.
+11.4.2 Sampling properties of the Whittle likelihood estimator
+Lemma 11.4.1 (Consistency) Suppose that {X } is a causal ARMA process with parameters θ
+t
+w
+whose roots lie outside the (1 + δ)-circle (where δ > 0 is arbitrary). Let θ(cid:98) be defined as in (11.25)
+and suppose that E(ε4) < ∞. Then we have
+t
+w P
+θ(cid:98) → θ.
+PROOF. To show consistency we need to show pointwise convergence and equicontinuity of 1 L .
+n n
+Let
+1 (cid:90) 2π (cid:18) f (ω) (cid:19)
+Lw(θ) = log f (ω) + θ0 dω.
+θ
+2π f (ω)
+0 θ
+393
+
+--- physical page 395 ---
+It is straightforward to show that E( 1 Lw(θ)) → L˜ (θ). Next we evaluate the variance, to do this
+n n n
+we use Proposition 10.7.1 and obtain
+(cid:20) (cid:21) n
+1 1 (cid:88) 1 1
+var Lw(θ) = cov(|J (ω )|2, |J (ω )|2) = O( ).
+n n n2 f (ω )f (ω ) n k1 n k2 n
+k1,k2=1
+θ k1 θ k2
+Thus we have
+1
+Lw(θ) → P Lw(θ).
+n n
+To show equicontinuity we apply the mean value theorem to 1 Lw. We note that because the
+n n
+parameters (φ, θ) ∈ Θ, have characteristic polynomial whose roots are greater than (1 + δ) then
+f (ω) is bounded away from zero (there exists a δ∗ > 0 where inf f (ω) ≥ δ∗). Hence it can be
+θ ω,θ θ
+shown that there exists a random sequence {K } such that | 1 Lw(θ ) − 1 Lw(θ ))| ≤ K ((cid:107)θ − θ (cid:107))
+n n n 1 n n 2 n 1 2
+and K converges almost surely to a finite constant as n → ∞. Therefore 1 L is stochastically
+n n n
+equicontinuous. Since the parameter space Θ is compact, the three standard conditions are satisfied
+and we have consistency of the Whittle estimator. (cid:3)
+To show asymptotic normality we note that 1 Lw(θ) can be written as a quadratic form
+n n
+1 (cid:90) 2π 1 n (cid:88) −1 n (cid:88) −|r|
+Lw(θ) = log f (ω ) + d (r; θ) X X
+n n θ k n n k k+r
+0
+r=−(n−1) k=1
+where
+n
+1 (cid:88)
+d (r; θ) = f (ω )−1 exp(irω ).
+n θ k k
+n
+k=1
+Using the above quadratic form and it’s derivatives wrt θ one can show normality of the Whittle
+likelihood under various dependence conditions on the time series. Using this result, in the following
+theorem we show asymptotic normality of the Whittle estimator. Note, this result not only applies
+to linear time series, but several types of nonlinear time series too.
+Theorem 11.4.1 Let us suppose that {X } is a strictly stationary time series with a sufficient
+t
+dependence structure (such as linearity, mixing at a certain rate, etc.) with spectral density function
+394
+
+--- physical page 396 ---
+f (ω) and E|X4| < ∞. Let
+θ t
+Lw(θ) = (cid:88) n (cid:18) log |f (ω )| + |J n (ω k )|2 (cid:19) ,
+n θ k f (ω )
+θ k
+k=1
+θ(cid:98)n = arg min Lw
+n
+(θ) θ = arg min Lw(θ)
+θ∈Θ θ∈Θ
+Then we have
+√
+n (cid:0) θ(cid:98)n − θ (cid:1) → D N (0, 2V −1 + V −1W V −1)
+where
+1 (cid:90) 2π (cid:18) ∇ f (ω) (cid:19) (cid:18) ∇ f (ω) (cid:19)(cid:48)
+θ θ θ θ
+V = dω
+2π f (ω) f (ω)
+0 θ θ
+W =
+2 (cid:90) 2π (cid:90) 2π (cid:0)
+∇ f (ω
+)−1(cid:1) (cid:0)
+∇ f (ω
+)−1(cid:1)(cid:48)
+f (ω , −ω , ω )dω dω ,
+(2π)2 θ θ 1 θ θ 2 4,θ0 1 1 2 1 2
+0 0
+and f (ω , ω , ω ) is the fourth order spectrum of {X }.
+4,θ0 1 2 3 t
+We now apply the above result to the case of linear time series. We now show that in this case,
+in the fourth order cumulant term, W , falls out. This is due to the following lemma.
+Lemma 11.4.2 Suppose that the spectral density has the form f (ω) = σ2|1 + (cid:80)∞ ψ exp(ijω)|2
+j=1 j
+and inf f (ω) > 0. Then we have
+1 (cid:90) 2π
+log f (ω)dω = log σ2
+2π
+0
+PROOF. Since f (z) is non-zero for |z| ≤ 1, then log f (z) has no poles in {z; |z| ≤ 1}. Thus we have
+1 (cid:90) 2π 1 (cid:90) 2π 1 (cid:90) 2π (cid:88) ∞
+log f (ω)dω = log σ2dω + log |1 + ψ exp(ijω)|2dω
+j
+2π 2π 2π
+0 0 0
+j=1
+1 (cid:90) 2π 1 (cid:90) (cid:88) ∞
+= log σ2dω + log |1 + ψ z|2dz
+j
+2π 2π
+0 |z|=1
+j=1
+1 (cid:90) 2π
+= log σ2dω.
+2π
+0
+An alternative proof is that since f (z) is analytic and does not have any poles for |z| ≤ 1, then
+395
+
+--- physical page 397 ---
+log f (z) is also analytic in the region |z| ≤ 1, thus for |z| ≤ 1 we have the power series expansion
+log |1 + (cid:80)∞ ψ exp(ijω)|2 = (cid:80)∞ b zj (a Taylor expansion about log 1). Using this we have
+j=1 j j=1 j
+1 (cid:90) 2π (cid:88) ∞ 1 (cid:90) 2π (cid:88) ∞
+log |1 + ψ exp(ijω)|2dω = b exp(ijω)dω
+j j
+2π 2π
+0 0
+j=1 j=1
+1 (cid:88) ∞ (cid:90) 2π
+= b exp(ijω)dω = 0,
+j
+2π
+0
+j=1
+and we obtain the desired result. (cid:3)
+Lemma 11.4.3 Suppose that {X } is a linear ARMA time series X −
+(cid:80)p
+φ X =
+(cid:80)q
+θ ε +
+t t j=1 j t−j i=1 i t−i
+ε , where E[ε ] = 0, var[ε ] = σ2 and E[ε4] < ∞. Let θ = ({φ , θ }), then we have W = 0 and
+t t t t j j
+√ n (cid:16) θ(cid:98) w − θ (cid:17) → D N (0, 2V −1).
+n
+PROOF. The result follows from Theorem 11.4.1, however we need to show that in the case of
+linearity that W = 0.
+We use Example 10.7.1 for linear processes to give f (ω , ω , −ω ) = κ |A(ω )|2|A(ω )|2 =
+4,θ 1 1 2 4 1 2
+κ4 f (ω )f (ω ). Substituting this into W gives
+σ4 1 2
+1 (cid:90) 2π (cid:90) 2π (cid:18) (cid:19)(cid:18) (cid:19)(cid:48)
+W = ∇ f (ω )−1 ∇ f (ω )−1 f (ω , −ω , ω )dω dω
+2π
+θ θ 1 θ θ 2 4,θ0 1 1 2 1 2
+0 0
+κ (cid:18) 1 (cid:90) 2π ∇ f (ω) (cid:19)2 κ (cid:18) 1 (cid:90) 2π ∇ f (ω) (cid:19)2
+4 θ θ 4 θ θ
+= f (ω)dω = dω
+σ4 2π f (ω)2 θ σ4 2π f (ω)
+0 θ 0 θ
+κ (cid:18) 1 (cid:90) 2π (cid:19)2
+4
+= ∇ log f (ω)dω
+σ4 2π θ θ
+0
+κ (cid:18) 1 (cid:90) 2π (cid:19)2 κ (cid:18) σ2 (cid:19)2
+4 4
+= ∇ log f (ω)dω = ∇ log = 0,
+σ4 2π θ θ σ4 θ 2π
+0
+where by using Lemma 11.4.2 we have
+(cid:82) 2π
+log f (ω)dω = 2π log
+σ2
+and since θ does not include
+0 θ 2π
+σ2 we obtain the above. Hence for linear processes the higher order cumulant does not play an
+asymptotic role in the variance thus giving the result. (cid:3)
+On first appearances there does not seem to be a connection between the Whittle likelihood
+and the sample autocorrelation estimator defined in Section 8.2.1. However, we observe that the
+variance of both estimators, under linearity, do not contain the fourth order cumulant (even for
+non-Gaussian linear time series). In Section 11.5 we explain there is a connection between the two,
+396
+
+--- physical page 398 ---
+and it is this connection that explains away this fourth order cumulant term.
+Remark 11.4.1 Under linearity, the GMLE and the Whittle likelihood are asymptotically equiva-
+lent, therefore they have the same asymptotic distributions. The GMLE has the asymptotic distri-
+√
+bution n(φˆ − φ, θˆ − θ) → D N (0, Λ−1), where
+n n
+ 
+E(U U (cid:48)) E(V U (cid:48))
+t t t t
+Λ =  
+E(U V (cid:48)) E(V V (cid:48))
+t t t t
+and {U } and {V } are autoregressive processes which satisfy φ(B)U = ε and θ(B)V = ε .
+t t t t t t
+By using the similar derivatives to those given in (9.26) we can show that
+ 
+E(U t U t (cid:48)) E(V t U t (cid:48)) 1 (cid:90) 2π (cid:18) ∇ θ f θ (ω) (cid:19) (cid:18) ∇ θ f θ (ω) (cid:19)(cid:48)
+  = dω.
+E(U V (cid:48)) E(V V (cid:48)) 2π 0 f θ (ω) f θ (ω)
+t t t t
+11.5 Ratio statistics in Time Series
+We recall from (11.4) that the covariance can be written as a general periodogram mean which has
+the form
+n
+1 (cid:88)
+A(φ, I ) = I (ω )φ(ω ). (11.27)
+n n k k
+n
+k=1
+The variance of this statistic is
+n
+1 (cid:88)
+var(A(φ, I )) = φ(ω )φ(ω )cov(|J (ω )|2, |J (ω )|2)
+n n2 k1 k1 n k1 n k2
+k1,k2=1
+n (cid:20)
+1 (cid:88)
+= φ(ω )φ(ω ) cov(J (ω ), J (ω ))cov(J (ω ), J (ω ))
+n2 k1 k1 n k1 n k2 n k1 n k2
+k1,k2=1
++cov(J (ω ), J (ω ))cov(J (ω ), J (ω ))
+n k1 n k2 n k1 n k2
+(cid:21)
++cum(J (ω ), J (ω ), J (ω ), J (ω ) . (11.28)
+n k1 n k2 n k2 n k2
+397
+
+--- physical page 399 ---
+By using Proposition 10.7.1 we have
+cov(|J (ω )|2, |J (ω )|2) =
+n k1 n k2
+(cid:20) (cid:18)
+1
+(cid:19)(cid:21)2 (cid:20) (cid:18)
+1
+(cid:19)(cid:21) (cid:20) (cid:18)
+1
+(cid:19)(cid:21)
+f (ω )I(k = k ) + O + f (ω )I(k = n − k ) + O f (ω )I(n − k = k ) + O
+k1 1 2
+n
+k1 1 2
+n
+k1 1 2
+n
+(cid:18) (cid:19)
+1 1
++ f (ω , −ω , ω ) + O . (11.29)
+n 4 1 1 2 n2
+Substituting (11.29) into (11.28) the above gives
+var(A(φ, I ))
+n
+n n
+1 (cid:88) 1 (cid:88)
+= |φ(ω )|2f (ω )2 + φ(ω )φ(ω )f (ω )2
+n2 k k n2 k n−k k
+k=1 k=1
+n
+1 (cid:88) 1
++ φ(ω )φ(ω )f (ω , −ω , ω ) + O( )
+n3 k1 k2 4 k1 k1 k2 n2
+k1,k2=1
+1 (cid:90) 2π 1 (cid:90) 2π
+= |φ(ω)|2f (ω)2dω + φ(ω)φ(2π − ω)f (ω)2dω
+n n
+0 0
+1 (cid:90) 2π (cid:90) 2π 1
++ φ(ω )φ(ω )f (ω , −ω , ω )dω dω + O( ), (11.30)
+n 1 2 4 1 1 2 1 2 n2
+0 0
+where f is the fourth order cumulant of {X }. From above we see that unless φ satisfies some
+4 t
+special conditions, var(A(φ, I )) contains the fourth order spectrum, which can be difficult to
+n
+estimate. There are bootstrap methods which can be used to estimate the variance or finite sample
+distribution, but simple bootstrap methods, such as the frequency domain bootstrap, cannot be
+applied to A(φ, I ), since it is unable to capture the fourth order cumulant structure. However, in
+n
+special cases the fourth order structure is disappears, we consider this case below and then discuss
+how this case can be generalised.
+Lemma 11.5.1 Suppose {X } is a linear time series, with spectral density f (ω). Let A(φ, I ) be
+t n
+defined as in (11.27) and suppose the condition
+(cid:90)
+A(φ, f ) = φ(ω)f (ω)dω = 0 (11.31)
+holds, then
+1 (cid:90) 2π 1 (cid:90) 2π
+var(A(φ, I )) = |φ(ω)|2f (ω)2dω + φ(ω)φ(2π − ω)f (ω)2dω.
+n
+n n
+0 0
+398
+
+--- physical page 400 ---
+PROOF. By using (11.30) we have
+var(A(φ, I ))
+n
+1 (cid:90) 2π 1 (cid:90) 2π
+= |φ(ω)|2f (ω)2dω + φ(ω)φ(2π − ω)f (ω)2dω
+n n
+0 0
+1 (cid:90) 2π (cid:90) 2π 1
+φ(ω )φ(ω )f (ω , −ω , ω ) + O( ).
+n 1 2 4 1 1 2 n2
+0 0
+But under linearity f (ω , −ω , ω ) = κ4 f (ω )f (ω ), substituting this into the above gives
+4 1 1 2 σ4 1 2
+var(A(φ, I ))
+n
+1 (cid:90) 2π 1 (cid:90) 2π
+= |φ(ω)|2f (ω)2dω + φ(ω)φ(2π − ω)f (ω)2dω
+n n
+0 0
+κ 1 (cid:90) 2π (cid:90) 2π (cid:18) 1 (cid:19)
+4
+φ(ω )φ(ω )f (ω )f (ω )dω dω + O
+σ4 n 1 2 1 2 1 2 n2
+0 0
+1 (cid:90) 2π 1 (cid:90) 2π
+= |φ(ω)|2f (ω)2dω + φ(ω)φ(2π − ω)f (ω)2dω
+n n
+0 0
+κ 4 1 (cid:12) (cid:12) (cid:90) 2π (cid:12) (cid:12) 2 (cid:18) 1 (cid:19)
++ (cid:12) φ(ω)f (ω)dω(cid:12) + O .
+σ4 n (cid:12) (cid:12) n2
+0
+Since (cid:82) φ(ω)f (ω)dω = 0 we have the desired result. (cid:3)
+Example 11.5.1 (The Whittle likelihood) Let us return to the Whittle likelihood in the case
+of linearity. In Lemma 11.4.3 we showed that the fourth order cumulant term does not play a role
+in the variance of the ARMA estimator. We now show that condition (11.31) holds.
+Consider the partial derivative of the Whittle likelihood
+n (cid:18) (cid:19)
+∇ Lw(θ) = (cid:88) ∇ θ f θ (ω k ) − I n (ω k ) ∇ f (ω ) .
+θ n f (ω ) f (ω )2 θ θ k
+θ k θ k
+k=1
+To show normality we consider the above at the true parameter θ, this gives
+n (cid:18) (cid:19)
+∇ Lw(θ) = (cid:88) ∇ θ f θ (ω k ) − I n (ω k ) ∇ f (ω ) .
+θ n f (ω ) f (ω )2 θ θ k
+θ k θ k
+k=1
+Only the second term of the above is random, therefore it is only this term that yields the variance.
+Let
+n
+A(f −2∇ f , I ) = 1 (cid:88) I n (ω k ) ∇ f (ω ).
+θ θ θ n n f (ω )2 θ θ k
+θ k
+k=1
+399
+
+--- physical page 401 ---
+To see whether this term satisfies the conditions of Lemma 11.5.1 we evaluate
+(cid:90) 2π f (ω)
+A(f −2∇ f , f ) = θ ∇ f (ω)
+θ θ θ θ f (ω)2 θ θ
+0 θ
+(cid:90) 2π
+= ∇ log f (ω)
+θ θ
+0
+(cid:90) 2π 1 (cid:90) 2π
+= ∇ log f (ω) = ∇ log f (ω)dω = 0,
+θ θ θ θ
+2π
+0 0
+by using Lemma 11.4.2. Thus we see that the derivative of the Whittle likelhood satisfies the
+condition (11.31). Therefore the zero cumulant term is really due to this property. (cid:3)
+The Whittle likelihood is a rather special example. However we now show that any statistic of
+the form A(φ, I ) can be transformed such that the resulting transformed statistic satisfies condition
+n
+(11.31). To find the suitable transformation we recall from Section 8.2.1 that the variance of c (r)
+(cid:98)n
+involves the fourth order cumulant, but under linearity the sample correlation ρ (r) = c (r)/c (0)
+(cid:98)n (cid:98)n (cid:98)n
+does given not. Returning to the frequency representation of the autocovariance given in (11.5) we
+observe that
+n/2 n
+1 1 (cid:88) 1 1 (cid:88)
+ρ (r) = I (ω ) exp(irω ) ≈ I (ω ) exp(irω ),
+(cid:98)n n k k n k k
+c (0) n c (0) n
+(cid:98)n (cid:98)n
+k=1 k=1
+(it does not matter whether we sum over n or n/2 for the remainder of this section we choose the
+case of summing over n). Motivated by this example we define the so called ‘ratio’ statistic
+n n
+1 (cid:88) I n (ω k )φ(ω k ) 1 (cid:88) I n (ω k )φ(ω k )
+A(cid:101)(φ, I
+n
+) =
+n k=1 (cid:98) c n (0)
+=
+n k=1 Fˆ n (2π)
+, (11.32)
+where Fˆ (2π) = 1 (cid:80)n I (ω ) = 1 (cid:80)n X2 = c (0). We show in the following lemma that
+n n k=1 n k n t=1 t (cid:98)n
+A(cid:101)(φ, I
+n
+) can be written in a form that ‘almost’ satisfies condition (11.31).
+Lemma 11.5.2 Let us suppose that A(cid:101)(φ, I
+n
+) satisfies (11.32) and
+n
+1 (cid:88) f (ω k )φ(ω k )
+A(cid:101)(φ, f ) = ,
+n F (2π)
+n
+k=1
+400
+
+--- physical page 402 ---
+where F (2π) = 1 (cid:80)n f (ω ). Then we can represent A˜(φ, I ) as
+n n j=1 k n
+n
+1 1 (cid:88)
+A(cid:101)(φ, I
+n
+) − A(cid:101)(φ, f ) =
+F (2π)Fˆ (2π) n
+ψ
+n
+(ω
+k
+)I
+n
+(ω
+k
+),
+n k=1
+where
+n n
+1 (cid:88) 1 (cid:88)
+ψ (ω ) = φ(ω )F (2π) − φ(ω )f (ω ) and ψ(ω )f (ω ) = 0. (11.33)
+n k k n j j k k
+n n
+j=1 k=1
+PROOF. Basic algebra gives
+n (cid:18) (cid:19)
+A˜(φ, I ) − A˜(φ, f ) = 1 (cid:88) φ(ω k )I n (ω k ) − φ(ω k )f (ω k )
+n n k=1 Fˆ n (2π) F n (2π)
+1 (cid:88) n (cid:18) φ(ω k )F n (2π)I n (ω k ) − φ(ω k )Fˆ n (2π)f (ω k ) (cid:19)
+=
+n F (2π)Fˆ (2π)
+k=1 n n
+n (cid:18) n (cid:19)
+1 (cid:88) 1 (cid:88) I n (ω k )
+= φ(ω )F (2π) − φ(ω )f (ω )
+n k n n k k F (2π)Fˆ (2π)
+k=1 k=1 n n
+n
+1 (cid:88) ψ(ω k )I n (ω k )
+= ,
+n F (2π)Fˆ (2π)
+k=1 n n
+where F (2π) and ψ are defined as above. To show (11.33), again we use basic algebra to give
+n
+n n (cid:18) n (cid:19)
+1 (cid:88) 1 (cid:88) 1 (cid:88)
+ψ(ω )f (ω ) = φ(ω)F (2π) − φ(ω )f (ω ) f (ω )
+k k n j j k
+n n n
+k=1 k=1 j=1
+n n n
+1 (cid:88) 1 (cid:88) 1 (cid:88)
+= φ(ω )f (ω )F (2π) − φ(ω )f (ω ) f (ω ) = 0.
+k k n k k j
+n n n
+k=1 k=1 j=1
+(cid:3)
+From the lemma above we see that A˜(φ, I ) − A˜(φ, f ) almost seems to satisfy the conditions in
+n
+Lemma 11.5.1, the only difference is the random term
+(cid:98)
+c
+n
+(0) = F(cid:98)n (2π) in the denominator. We now
+show that that we can replace F(cid:98)n (2π) with it’s limit and that error is asymptotically negligible.
+Let
+n
+1 1 (cid:88)
+A˜(φ, I
+n
+) − A˜(φ, f ) =
+F (2π)Fˆ (2π) n
+ψ
+n
+(ω
+k
+)I
+n
+(ω
+k
+) := B(cid:101)(ψ, I
+n
+)
+n n k=1
+401
+
+--- physical page 403 ---
+and
+n
+1 1 (cid:88)
+B(ψ , I ) = ψ(ω )I (ω ).
+n n F (2π)2 n k n k
+n
+k=1
+By using the mean value theorem (basically the Delta method) and expanding B(cid:101)(ψ
+n
+, I
+n
+) about
+B(ψ , I ) (noting that B(φ , f ) = 0) gives
+n n n
+B(cid:101)(ψ, I
+n
+) − B(ψ, I
+n
+)
+n
+= (cid:0) Fˆ (2π) − F (2π) (cid:1) 1 1 (cid:88) ψ (ω )I (ω ) = O ( 1 ),
+n n 3 n n k n k p n
+(cid:124) (cid:123)(cid:122) (cid:125) F n (2π) k=1
+Op(n−1/2) (cid:124) (cid:123)(cid:122) (cid:125)
+Op(n−1/2)
+where F
+n
+(2π) lies between F
+n
+(2π) and F(cid:98)n (2π). Therefore the limiting distribution variance of
+A˜(φ, I ) − A˜(φ, f ) is determined by
+n
+A(cid:101)(φ, I
+n
+) − A(cid:101)(φ, f ) = B(ψ
+n
+, I
+n
+) + O
+p
+(n−1/2).
+B(ψ , I ) does satisfy the conditions in (11.31) and the lemma below immediately follows.
+n n
+Lemma 11.5.3 Suppose that {X } is a linear time series, then
+t
+1 (cid:90) 2π 1 (cid:90) 2π 1
+var(B(ψ , I )) = |ψ(ω)|2f (ω)2dω + ψ(ω)ψ(2π − ω)f (ω)2dω + O( ),
+n n n n n2
+0 0
+where
+1 (cid:90) 2π
+ψ(ω) = φ(ω)F (2π) − φ(ω)f (ω)dω.
+2π
+0
+Therefore, the limiting variance of A(cid:101)(φ, I
+n
+) is
+1 (cid:90) 2π 1 (cid:90) 2π 1
+|ψ(ω)|2f (ω)2dω + ψ(ω)ψ(2π − ω)f (ω)2dω + O( ).
+n n n2
+0 0
+This is a more elegant explanation as to why under linearity the limiting variance of the correlation
+estimator does not contain the fourth order cumulant term. It also allows for a general class of
+statistics.
+402
+
+--- physical page 404 ---
+Remark 11.5.1 (Applications) As we remarked above, many statistics can be written as a ra-
+tio statistic. The advantage of this is that the variance of the limiting distribution is only in
+terms of the spectral densities, and not any other higher order terms (which are difficult to esti-
+mate). Another perk is that simple schemes such as the frequency domain bootstrap can be used
+to estimate the finite sample distributions of statistics which satisfy the assumptions in Lemma
+11.5.1 or is a ratio statistic (so long as the underlying process is linear), see Dahlhaus and Janas
+(1996) for the details. The frequency domain bootstrap works by constructing the DFT from the
+data {J (ω)} and dividing by the square root of either the nonparametric estimator of f or a
+n
+(cid:113)
+parametric estimator, ie. {J (ω)/ fˆ (ω)}, these are close to constant variance random variables.
+n n
+(cid:113) (cid:113)
+{Jˆ (ω ) = J (ω )/ fˆ (ω )} is bootstrapped, thus J ∗(ω ) = Jˆ∗(ω ) fˆ (ω ) is used as the bootstrap
+ε k n k n k n k ε k n k
+DFT. This is used to construct the bootstrap estimator, for example
+• The Whittle likelihood estimator.
+• The sample correlation.
+With these bootstrap estimators we can construct an estimator of the finite sample distribution.
+The nature of frequency domain bootstrap means that the higher order dependence structure is
+destroyed, eg. cum∗(J ∗(ω ), J ∗(ω ), . . . , J ∗(ω )) = 0 (where cum∗ is the cumulant with respect
+n k1 n k2 n kr
+to the bootstrap measure) if all the k s that are not the same. However, we know from Proposition
+i
+10.7.1 that for the actual DFT this is not the case, there is still some ‘small’ dependence, which
+can add up. Therefore, the frequency domain bootstrap is unable to capture any structure beyond
+the second order. This means for a linear time series which is not Gaussian the frequency domain
+bootstrap cannot approximate the distribution of the sample covariance (since it is asymptotically
+with normal with a variance which contains the forth order cumulant), but it can approximate the
+finite sample distribution of the correlation.
+Remark 11.5.2 (Estimating κ in the case of linearity) Suppose that {X } is a linear time
+4 t
+series
+∞
+(cid:88)
+X = ψ ε ,
+t j t−j
+j=−∞
+with E(ε ) = 0, var(ε ) = σ2 and cum (ε ) = κ . Then we can use the spectral density estimator to
+t t 4 t 4
+estimate κ without any additional assumptions on {X } (besides linearity). Let f (ω) denote the
+4 t
+403
+
+--- physical page 405 ---
+spectral density of {X } and g (ω) the spectral density of {X2}, then it can be shown that
+t 2 t
+2πg (0) − 4π (cid:82) 2π f (ω)2dω
+κ = 2 0 .
+4 (cid:0) (cid:82) 2π (cid:1)2
+f (ω)dω
+0
+Thus by estimating f and g we can estimate κ .
+2 4
+Alternatively, we can use the fact that for linear time series, the fourth order spectral density
+f (ω , ω , ω ) = κ A(ω )A(ω )A(ω )A(−ω − ω − ω ). Thus we have
+4 1 2 3 4 1 2 3 1 2 3
+σ4f (ω , −ω , ω )
+4 1 1 2
+κ = .
+4
+f (ω )f (ω )
+1 2
+This just demonstrates, there is no unique way to solve a statistical problem!
+11.6 Goodness of fit tests for linear time series models
+As with many other areas in statistics, we often want to test the appropriateness of a model. In this
+section we briefly consider methods for validating whether, say an ARMA(p, q), is the appropriate
+model to fit to a time series. One method is to fit the model to the data and the estimate the
+residuals and conduct a Portmanteau test (see Section 6, equation (8.15)) on the estimated residuals.
+It can be shown that if model fitted to the data is the correct one, the estimated residuals behave
+almost like the true residuals in the model and the Portmanteau test statistic
+h
+(cid:88)
+S = n |ρˆ (r)|2,
+h n
+r=1
+where ρˆ (r) = cˆ (r)/cˆ (0)
+n n n
+n−|r|
+1 (cid:88)
+cˆ (r) = εˆ εˆ
+n t t+r
+n
+t=1
+should be asymptotically a chi-squared. An alternative (but somehow equivalent) way to do the
+test, is through the DFTs. We recall if the time series is linear then (11.11) is true, thus
+I (ω)
+X = |J (ω)|2 + o (1).
+ε p
+f (ω)
+θ
+404
+
+--- physical page 406 ---
+Therefore, if we fit the correct model to the data we would expect that
+I (ω)
+X = |J (ω)|2 + o (1).
+ε p
+f (ω)
+θˆ
+where θˆ are the model parameter estimators. Now |J (ω)|2 has the special property that not only is
+ε
+it almost uncorrelated at various frequencies, but it is constant over all the frequencies. Therefore,
+we would expect that
+n/2
+1 √ (cid:88) (cid:0) I X (ω) − 2 (cid:1) → D N (0, 1)
+2π n f (ω)
+k=1
+θˆ
+Thus, as an alternative to the goodness fit test based on the portmanteau test statistic we can use
+the above as a test statistic, noting that under the alternative the mean would be different.
+11.7 Appendix
+Returning the the Gaussian likelihood for the ARMA process, defined in (9.25), we rewrite it as
+L (θ) = − (cid:0) det |R (θ)| + X(cid:48) R (θ)−1X (cid:1) = − (cid:0) det |R (f )| + X(cid:48) R (f )−1X (cid:1) , (11.34)
+n n n n n n θ n n θ n
+where R (f ) = (cid:82) f (ω) exp(i(s − t)ω)dω and X(cid:48) = (X , . . . , X ). We now show that L (θ) ≈
+n θ s,t θ n 1 n n
+−Lw(θ).
+n
+Lemma 11.7.1 Suppose that {X } is a stationary ARMA time series with absolutely summable
+t
+covariances and f (ω) is the corresponding spectral density function. Then
+θ
+det |R (f )| + X(cid:48) R (f )−1X = (cid:88) n (cid:18) log |f (ω )| + |J n (ω k )|2 (cid:19) + O(1),
+n θ n n θ n θ k f (ω )
+θ k
+k=1
+for large n.
+PROOF. There are various ways to precisely prove this result. All of them show that the Toeplitz
+matrix can in some sense be approximated by a circulant matrix. This result uses Szeg¨o’s identity
+(Grenander and Szeg¨o (1958)). The main difficulty in the proof is showing that R (f )−1 ≈
+n θ
+U (f −1), where U (f −1) = (cid:82) f (ω)−1 exp(i(s − t)ω)dω. An interesting derivation is given in
+n θ n θ s,t θ
+Brockwell and Davis (1998), Section 10.8. The main ingredients in the proof are:
+405
+
+--- physical page 407 ---
+1. For a sufficiently large m, R (f )−1 can be approximated by R (g )−1, where g is the
+n θ n m m
+spectral density of an mth order autoregressive process (this follows from Lemma 10.6.2),
+and showing that
+X(cid:48) R (f )−1X − X(cid:48) R (g )−1X = X(cid:48) (cid:2) R (f )−1 − R (g )−1(cid:3) X
+n n θ n n n m n n n θ n m n
+= X(cid:48) R (g )−1 [R (g ) − R (f )] R (f −1)X → 0.
+n n m n m n θ n θ n
+2. From Section 6.3, we recall if g is the spectral density of an AR(m) process, then for
+m
+n >> m, R (g )−1 will be bandlimited with most of its rows a shift of the other (thus with
+n m
+the exception of the first m and last m rows it is close to circulant).
+3. We approximate R (g )−1 with a circulant matrix, showing that
+n m
+X(cid:48) (cid:2) R (g )−1 − C (g−1) (cid:3) X → 0,
+n n m n m n
+where C (g−2) is the corresponding circulant matrix (where for 0 < |i−j| ≤ m and either i or
+n m
+j is greater than m, (C (g−1)) = 2 (cid:80)m φ φ −φ ) with the eigenvalues
+n ij k=|i−j| m,k m,k−|i−j|+1 m,|i−j|
+{g (ω )−1}n .
+m k k=1
+4. These steps show that
+X(cid:48) (cid:2) R (f )−1 − U (g−1) (cid:3) X → 0
+n n θ n m n
+as m → ∞ as n → ∞, which gives the result.
+(cid:3)
+Remark 11.7.1 (A heuristic derivation) We give a heuristic proof. Using the results in Sec-
+tion 10.2 we have see that R (f ) can be approximately written in terms of the eigenvalue and
+n θ
+eigenvectors of the circulant matrix associated with R (f ), that is
+n θ
+R (f ) ≈ F ∆(f )F¯ thus R (f )−1 ≈ F¯ ∆(f )−1F , (11.35)
+n θ n θ n n θ n θ n
+(n) (n) (n) (cid:80)(n−1)
+where ∆(f ) = diag(f (ω ), . . . , f (ω )), f (ω) = c (k) exp(ikω) → f (ω) and
+θ θ 1 θ n θ j=−(n−1) θ θ
+406
+
+--- physical page 408 ---
+ω = 2πk/n. Basic calculations give
+k
+X F¯ = (J (ω ), . . . , J (ω )). (11.36)
+n n n 1 n n
+Substituting (11.36) and (11.35) into (11.37) yields
+1 L (θ) ≈ − 1 (cid:88) n (cid:18) log f (ω ) + |J n (ω k )|2 (cid:19) = 1 Lw(θ). (11.37)
+n n n θ k f (ω ) n
+θ k
+k=1
+Hence using the approximation in (11.35) leads to a heuristic equivalence between the Whittle and
+Gaussian likelihood.
+407

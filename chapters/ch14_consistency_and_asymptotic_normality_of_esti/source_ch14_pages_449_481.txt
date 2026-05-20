@@ -1,0 +1,1599 @@
+--- physical page 449 ---
+Chapter 14
+Consistency and and asymptotic
+normality of estimators
+In the previous chapter we considered estimators of several different parameters. The hope is that
+as the sample size increases the estimator should get ‘closer’ to the parameter of interest. When we
+say closer we mean to converge. In the classical sense the sequence {x } converges to x (x → x),
+k k
+if |x − x| → 0 as k → ∞ (or for every ε > 0, there exists an n where for all k > n, |x − x| < ε).
+k k
+Of course the estimators we have considered are random, that is for every ω ∈ Ω (set of all out
+comes) we have an different estimate. The natural question to ask is what does convergence mean
+for random sequences.
+14.1 Modes of convergence
+We start by defining different modes of convergence.
+Definition 14.1.1 (Convergence) • Almost sure convergence We say that the sequence
+{X } converges almost sure to µ, if there exists a set M ⊂ Ω, such that P(M ) = 1 and for
+t
+every ω ∈ N we have
+X (ω) → µ.
+t
+448
+
+--- physical page 450 ---
+In other words for every ε > 0, there exists an N (ω) such that
+|X (ω) − µ| < ε, (14.1)
+t
+for all t > N (ω). Note that the above definition is very close to classical convergence. We
+a.s.
+denote X → µ almost surely, as X → µ.
+t t
+a.s.
+An equivalent definition, in terms of probabilities, is for every ε > 0 X → µ if
+t
+P (ω; ∩∞ ∪∞ {|X (ω) − µ| > ε}) = 0.
+m=1 t=m t
+It is worth considering briefly what ∩∞ ∪∞ {|X (ω) − µ| > ε} means. If ∩∞ ∪∞
+m=1 t=m t m=1 t=m
+{|X (ω) − µ| > ε} =(cid:54) (cid:11), then there exists an ω∗ ∈ ∩∞ ∪∞ {|X (ω) − µ| > ε} such that for
+t m=1 t=m t
+some infinite sequence {k }, we have |X (ω∗) − µ| > ε, this means X (ω∗) does not converge
+j kj t
+to µ. Now let ∩∞ ∪∞ {|X (ω) − µ| > ε} = A, if P (A) = 0, then for ‘most’ ω the sequence
+m=1 t=m t
+{X (ω)} converges.
+t
+• Convergence in mean square
+We say X → µ in mean square (or L convergence), if E(X − µ)2 → 0 as t → ∞.
+t 2 t
+• Convergence in probability
+Convergence in probability cannot be stated in terms of realisations X (ω) but only in terms
+t
+P
+of probabilities. X is said to converge to µ in probability (written X → µ) if
+t t
+P (|X − µ| > ε) → 0, t → ∞.
+t
+Often we write this as |X − µ| = o (1).
+t p
+If for any γ ≥ 1 we have
+E(X − µ)γ → 0 t → ∞,
+t
+then it implies convergence in probability (to see this, use Markov’s inequality).
+• Rates of convergence:
+(i) Suppose a → 0 as t → ∞. We say the stochastic process {X } is |X − µ| = O (a ),
+t t t p t
+449
+
+--- physical page 451 ---
+if the sequence {a−1|X − µ|} is bounded in probability (this is defined below). We see
+t t
+from the definition of boundedness, that for all t, the distribution of a−1|X − µ| should
+t t
+mainly lie within a certain interval.
+(ii) We say the stochastic process {X } is |X − µ| = o (a ), if the sequence {a−1|X − µ|}
+t t p t t t
+converges in probability to zero.
+Definition 14.1.2 (Boundedness) (i) Almost surely bounded If the random variable X
+is almost surely bounded, then for a positive sequence {e }, such that e → ∞ as k → ∞
+k k
+(typically e = 2k is used), we have
+k
+P (ω; {∪∞ {|X(ω)| ≤ e }}) = 1.
+k=1 k
+Usually to prove the above we consider the complement
+P ((ω; {∪∞ {|X| ≤ e }})c) = 0.
+k=1 k
+Since (∪∞ {|X| ≤ e })c = ∩∞ {|X| > e } ⊂ ∩∞ ∪∞ {|X| > e }, to show the above we
+k=1 k k=1 k k=1 m=k k
+show
+P (ω : {∩∞ ∪∞ {|X(ω)| > e }}) = 0. (14.2)
+k=1 m=k k
+We note that if (ω : {∩∞ ∪∞ {|X(ω)| > e }}) (cid:54)= (cid:11), then there exists a ω∗ ∈ Ω and an
+k=1 m=k k
+infinite subsequence k , where |X(ω∗)| > e , hence X(ω∗) is not bounded (since e → ∞). To
+j kj k
+prove (14.2) we usually use the Borel Cantelli Lemma. This states that if
+(cid:80)∞
+P (A ) < ∞,
+k=1 k
+the events {A } occur only finitely often with probability one. Applying this to our case,
+k
+if we can show that
+(cid:80)∞
+P (ω : {|X(ω)| > e |}) < ∞, then {|X(ω)| > e |} happens
+m=1 m m
+only finitely often with probability one. Hence if
+(cid:80)∞
+P (ω : {|X(ω)| > e |}) < ∞, then
+m=1 m
+P (ω : {∩∞ ∪∞ {|X(ω)| > e }}) = 0 and X is a bounded random variable.
+k=1 m=k k
+It is worth noting that often we choose the sequence e = 2k, in this case (cid:80)∞ P (ω :
+k m=1
+{|X(ω)| > e |}) = (cid:80)∞ P (ω : {log |X(ω)| > log 2k|}) ≤ CE(log |X|). Hence if we can
+m m=1
+show that E(log |X|) < ∞, then X is bounded almost surely.
+b
+(ii) Sequences which are bounded in probability A sequence is bounded in probability,
+450
+
+--- physical page 452 ---
+written X = O (1), if for every ε > 0, there exists a δ(ε) < ∞ such that P (|X | ≥ δ(ε)) < ε.
+t p t
+Roughly speaking this means that the sequence is only extremely large with a very small
+probability. And as the ‘largeness’ grows the probability declines.
+14.2 Sampling properties
+Often we will estimate the parameters by maximising (or minimising) a criterion. Suppose we have
+the criterion L (a) (eg. likelihood, quasi-likelihood, Kullback-Leibler etc) we use as an estimator
+n
+of a , aˆ where
+0 n
+aˆ = arg max L (a)
+n n
+a∈Θ
+and Θ is the parameter space we do the maximisation (minimisation) over. Typically the true
+parameter a should maximise (minimise) the ‘limiting’ criterion L.
+If this is to be a good estimator, as the sample size grows the estimator should converge (in
+some sense) to the parameter we are interesting in estimating. As we discussed above, there are
+various modes in which we can measure this convergence (i) almost surely (ii) in probability and
+(iii) in mean squared error. Usually we show either (i) or (ii) (noting that (i) implies (ii)), in time
+series its usually quite difficult to show (iii).
+Definition 14.2.1 (i) An estimator aˆ is said to be almost surely consistent estimator of a , if
+n 0
+there exists a set M ⊂ Ω, where P(M ) = 1 and for all ω ∈ M we have
+aˆ (ω) → a.
+n
+(ii) An estimator aˆ is said to converge in probability to a , if for every δ > 0
+n 0
+P (|aˆ − a| > δ) → 0 T → ∞.
+n
+To prove either (i) or (ii) usually involves verifying two main things, pointwise convergence and
+equicontinuity.
+451
+
+--- physical page 453 ---
+14.3 Showing almost sure convergence of an estimator
+We now consider the general case where L (a) is a ‘criterion’ which we maximise. Let us suppose
+n
+we can write L as
+n
+n
+1 (cid:88)
+L (a) = (cid:96) (a), (14.3)
+n t
+n
+t=1
+where for each a ∈ Θ, {(cid:96) (a)} is a ergodic sequence. Let
+t t
+L(a) = E((cid:96) (a)), (14.4)
+t
+we assume that L(a) is continuous and has a unique maximum in Θ. We define the estimator αˆ
+n
+where αˆ = arg min L (a).
+n a∈Θ n
+Definition 14.3.1 (Uniform convergence) L (a) is said to almost surely converge uniformly
+n
+to L(a), if
+a.s.
+sup |L (a) − L(a)| → 0.
+n
+a∈Θ
+In other words there exists a set M ⊂ Ω where P (M ) = 1 and for every ω ∈ M ,
+sup |L (ω, a) − L(a)| → 0.
+n
+a∈Θ
+Theorem 14.3.1 (Consistency) Suppose that aˆ = arg max L (a) and a = arg max L(a)
+n a∈Θ n 0 a∈Θ
+a.s.
+is the unique maximum. If sup |L (a) − L(a)| → 0 as n → ∞ and L(a) has a unique maximum.
+a∈Θ n
+a.s.
+Then Then aˆ → a as n → ∞.
+n 0
+PROOF. We note that by definition we have L (a ) ≤ L (aˆ ) and L(aˆ ) ≤ L(a ). Using this
+n 0 n n n 0
+inequality we have
+L (a ) − L(a ) ≤ L (aˆ ) − L(a ) ≤ L (aˆ ) − L(aˆ ).
+n 0 0 n n 0 n n n
+Therefore from the above we have
+|L (aˆ ) − L(a )| ≤ max {|L (a ) − L(a )|, |L (aˆ ) − L(aˆ )|} ≤ sup |L (a) − L(a)|.
+n T 0 n 0 0 n T n n
+a∈Θ
+452
+
+--- physical page 454 ---
+a.s.
+Hence since we have uniform converge we have |L (aˆ ) − L(a )| → 0 as n → ∞. Now since L(a)
+n n 0
+has a unique maximum, we see that |L (aˆ ) − L(a )| a → .s. 0 implies aˆ a → .s. a . (cid:3)
+n n 0 n 0
+We note that directly establishing uniform convergence is not easy. Usually it is done by assum-
+ing the parameter space is compact and showing point wise convergence and stochastic equiconti-
+nuity, these three facts imply uniform convergence. Below we define stochastic equicontinuity and
+show consistency under these conditions.
+Definition 14.3.2 The sequence of stochastic functions {f (a)} is said to be stochastically equicon-
+n n
+tinuous if there exists a set M ∈ Ω where P (M ) = 1 and for every ω ∈ M and and ε > 0, there
+exists a δ and such that for every ω ∈ M
+sup |f (ω, a ) − f (ω, a )| ≤ ε,
+n 1 n 2
+|a1−a2|≤δ
+for all n > N (ω).
+A sufficient condition for stochastic equicontinuity of f (a) (which is usually used to prove
+n
+equicontinuity), is that f (a) is in some sense Lipschitz continuous. In other words,
+n
+sup |f (a ) − f (a )| < K (cid:107)a − a (cid:107),
+n 1 n 2 n 1 2
+a1,a2∈Θ
+a.s.
+where k is a random variable which converges to a finite constant as n → ∞ (K → K as
+n n 0
+a.s.
+n → ∞). To show that this implies equicontinuity we note that K → K means that for every
+n 0
+ω ∈ M (P (M ) = 1) and γ > 0, we have |K (ω) − K | < γ for all n > N (ω). Therefore if we
+n 0
+choose δ = ε/(K + γ) we have
+0
+sup |f (ω, a ) − f (ω, a )| < ε,
+n 1 n 2
+|a1−a2|≤ε/(K0+γ)
+for all n > N (ω).
+In the following theorem we state sufficient conditions for almost sure uniform convergence. It
+is worth noting this is the Arzela-Ascoli theorem for random variables.
+Theorem 14.3.2 (The stochastic Ascoli Lemma) Suppose the parameter space Θ is compact,
+a.s.
+for every a ∈ Θ we have L (a) → L(a) and L (a) is stochastic equicontinuous. Then sup |L (a)−
+n n a∈Θ n
+a.s.
+L(a)| → 0 as n → ∞.
+453
+
+--- physical page 455 ---
+We use the theorem below.
+Corollary 14.3.1 Suppose that aˆ = arg max L (a) and a = arg max L(a), moreover L(a)
+n a∈Θ n 0 a∈Θ
+has a unique maximum. If
+a.s.
+(i) We have point wise convergence, that is for every a ∈ Θ we have L (a) → L(a).
+n
+(ii) The parameter space Θ is compact.
+(iii) L (a) is stochastic equicontinuous.
+n
+a.s.
+then aˆ → a as n → ∞.
+n 0
+PROOF. By using Theorem 14.3.2 three assumptions imply that | sup ||L (θ) − L(θ)| → 0, thus
+θ∈Θ n
+by using Theorem 14.3.1 we obtain the result.
+We prove Theorem 14.3.2 in the section below, but it can be omitted on first reading.
+14.3.1 Proof of Theorem 14.3.2 (The stochastic Ascoli theorem)
+We now show that stochastic equicontinuity and almost pointwise convergence imply uniform con-
+vergence. We note that on its own, pointwise convergence is a much weaker condition than uniform
+convergence, since for pointwise convergence the rate of convergence can be different for each pa-
+rameter.
+Before we continue a few technical points. We recall that we are assuming almost pointwise
+convergence. This means for each parameter a ∈ Θ there exists a set N ∈ Ω (with P (N ) = 1)
+a a
+such that for all ω ∈ N L (ω, a) → L(a). In the following lemma we unify this set. That is show
+a n
+(using stochastic equicontinuity) that there exists a set N ∈ Ω (with P (N ) = 1) such that for all
+ω ∈ N L (ω, a) → L(a).
+n
+Lemma 14.3.1 Suppose the sequence {L (a)} is stochastically equicontinuous and also pointwise
+n n
+convergent (that is L (a) converges almost surely to L(a)), then there exists a set M ∈ Ω where
+n
+P (M¯ ) = 1 and for every ω ∈ M¯ and a ∈ Θ we have
+|L (ω, a) − L(a)| → 0.
+n
+PROOF. Enumerate all the rationals in the set Θ and call this sequence {a } . Since we have almost
+i i
+sure convergence, this implies for every a there exists a set M where P (M ) = 1 and for every
+i ai ai
+454
+
+--- physical page 456 ---
+ω ∈ M we have |L (ω, a ) − L(a )| → 0. Define M = ∩M , since the number of sets is countable
+ai T i i ai
+P (M ) = 1 and for every ω ∈ M and a we have L (ω, a ) → L(a ).
+i n i i
+Since we have stochastic equicontinuity, there exists a set M˜ where P (M˜ ) = 1 and for every
+ω ∈ M˜ , {L (ω, ·)} is equicontinuous. Let M¯ = M˜ ∩ {∩M }, we will show that for all a ∈ Θ and
+n ai
+ω ∈ M¯ we have L (ω, a) → L(a). By stochastic equicontinuity for every ω ∈ M¯ and ε/3 > 0, there
+n
+exists a δ > 0 such that
+sup |L (ω, b ) − L (ω, b )| ≤ ε/3, (14.5)
+n 1 n 2
+|b1−b2|≤δ
+for all n > N (ω). Furthermore by definition of M¯ for every rational a ∈ Θ and ω ∈ N¯ we have
+j
+|L (ω, a ) − L(a )| ≤ ε/3, (14.6)
+n i i
+where n > N (cid:48)(ω). Now for any given a ∈ Θ, there exists a rational a such that (cid:107)a − a (cid:107) ≤ δ. Using
+i j
+this, (14.5) and (14.6) we have
+|L (ω, a) − L(a)| ≤ |L (ω, a) − L (ω, a )| + |L (ω, a ) − L(a )| + |L(a) − L(a )| ≤ ε,
+n n n i n i i i
+for n > max(N (ω), N (cid:48)(ω)). To summarise for every ω ∈ M¯ and a ∈ Θ, we have |L (ω, a) − L(a)| →
+n
+0. Hence we have pointwise covergence for every realisation in M¯ . (cid:3)
+We now show that equicontinuity implies uniform convergence.
+Proof of Theorem 14.3.2. Using Lemma 14.3.1 we see that there exists a set M¯ ∈ Ω with
+P (M¯ ) = 1, where L is equicontinuous and also pointwise convergent. We now show uniform
+n
+convergence on this set. Choose ε/3 > 0 and let δ be such that for every ω ∈ M¯ we have
+sup |L (ω, a ) − L (ω, a )| ≤ ε/3, (14.7)
+T 1 T 2
+|a1−a2|≤δ
+for all n > n(ω). Since Θ is compact it can be divided into a finite number of open sets. Construct
+the sets {O }p , such that Θ ⊂ ∪p O and sup (cid:107)x − y(cid:107) ≤ δ. Let {a }p be such that a ∈ O .
+i i=1 i=1 i x,y,i i i=1 i i
+We note that for every ω ∈ M¯ we have L (ω, a ) → L(a ), hence for every ε/3, there exists an
+n i i
+n (ω) such that for all n > n (ω) we have |L (ω, a ) − L(a )| ≤ ε/3. Therefore, since p is finite (due
+i i T i i
+455
+
+--- physical page 457 ---
+to compactness), there exists a n˜(ω) such that
+max |L (ω, a ) − L(a )| ≤ ε/3,
+n i i
+1≤i≤p
+for all n > n˜(ω) = max (n (ω)). For any a ∈ Θ, choose the i, such that open set O such that
+1≤i≤p i i
+a ∈ O . Using (14.7) we have
+i
+|L (ω, a) − L (ω, a )| ≤ ε/3,
+T T i
+for all n > n(ω). Altogether this gives
+|L (ω, a) − L(a)| ≤ |L (ω, a) − L (ω, a )| + |L (ω, a ) − L(a )| + |L(a) − L(a )| ≤ ε,
+T T T i T i i i
+for all n ≥ max(n(ω), n˜(ω)). We observe that max(n(ω), n˜(ω)) and ε/3 does not depend on a,
+therefore for all n ≥ max(n(ω), n˜(ω)) and we have sup |L (ω, a) − L(a)| < ε. This gives for every
+a n
+ω ∈ M¯ (P(M¯ ) = 1), sup |L (ω, a) − L(a)| → 0, thus we have almost sure uniform convergence. (cid:3)
+a n
+14.4 Toy Example: Almost sure convergence of the
+least squares estimator for an AR(p) process
+In Chapter ?? we will consider the sampling properties of many of the estimators defined in Chapter
+8. However to illustrate the consistency result above we apply it to the least squares estimator of
+the autoregressive parameters.
+To simply notation we only consider estimator for AR(1) models. Suppose that X satisfies
+t
+X = φX + ε (where |φ| < 1). To estimate φ we use the least squares estimator defined below.
+t t−1 t
+Let
+n
+1 (cid:88)
+L (a) = (X − aX )2, (14.8)
+n t t−1
+n − 1
+t=2
+we use φˆ as an estimator of φ, where
+n
+φˆ = arg min L (a), (14.9)
+n T
+a∈Θ
+456
+
+--- physical page 458 ---
+where Θ = [−1, 1].
+How can we show that this is consistent?
+• In the case of least squares for AR processes, aˆ has the explicit form
+T
+1 (cid:80)n X X
+φˆ = n−1 t=2 t t−1 .
+n 1 (cid:80)T −1 X2
+n−1 t=1 t
+By just applying the ergodic theorem to the numerator and denominator we get φˆ a → .s. φ.
+n
+It is worth noting, that unlike the Yule-Walker estimator
+(cid:12)
+(cid:12) n−
+1
+1
+(cid:80)n
+t=2
+XtXt−1 (cid:12)
+(cid:12) < 1 is not neces-
+1 (cid:80)n−1 X2
+n−1 t=1 t
+sarily true.
+• Here we will tackle the problem in a rather artifical way and assume that it does not have an
+explicit form and instead assume that φˆ is obtained by minimising L (a) using a numerical
+n n
+routine.
+• In order to derive the sampling properties of φˆ we need to directly study the least squares
+n
+criterion L (a). We will do this now in the least squares case.
+n
+We will first show almost sure convergence, which will involve repeated use of the ergodic
+theorem. We will then demonstrate how to show convergence in probability. We look at almost
+sure convergence as its easier to follow. Note that almost sure convergence implies convergence in
+probability (but the converse is not necessarily true).
+The first thing to do it let
+(cid:96) (a) = (X − aX )2.
+t t t−1
+Since {X } is an ergodic process (recall Example ??(ii)) by using Theorem ?? we have for a, that
+t
+{(cid:96) (a)} is an ergodic process. Therefore by using the ergodic theorem we have
+t t
+n
+1 (cid:88) a.s.
+L (a) = (cid:96) (a) → E((cid:96) (a)).
+n t 0
+n − 1
+t=2
+a.s.
+In other words for every a ∈ [−1, 1] we have that L (a) → E((cid:96) (a)) (almost sure pointwise conver-
+n 0
+gence).
+Since the parameter space Θ = [−1, 1] is compact and a is the unique minimum of (cid:96)(·) in the
+457
+
+--- physical page 459 ---
+parameter space, all that remains is to show show stochastic equicontinuity. From this we deduce
+almost sure uniform convergence.
+To show stochastic equicontinuity we expand L (a) and use the mean value theorem to obtain
+T
+L (a ) − L (a ) = ∇L (a¯)(a − a ), (14.10)
+n 1 n 2 T 1 2
+where a¯ ∈ [min[a , a ], max[a , a ]] and
+1 2 1 2
+n
+−2 (cid:88)
+∇L (a¯) = X (X − a¯X ).
+n t−1 t t−1
+n − 1
+t=2
+Because a¯ ∈ [−1, 1] we have
+n
+2 (cid:88)
+|∇L (a¯)| ≤ D , where D = (|X X | + X2 ).
+n n n n − 1 t−1 t t−1
+t=2
+Since {X } is an ergodic process, then {|X X | + X2 } is an ergodic process. Therefore, if
+t t t−1 t t−1
+var(ε ) < ∞, by using the ergodic theorem we have
+t
+D a → .s. 2E(|X X | + X2 ).
+n t−1 t t−1
+Let D := 2E(|X X | + X2 ). Therefore there exists a set M ∈ Ω, where P(M ) = 1 and for every
+t−1 t t−1
+ω ∈ M and ε > 0 we have
+|D (ω) − D| ≤ δ∗,
+T
+for all n > N (ω). Substituting the above into (14.10) we have
+|L (ω, a ) − L (ω, a )| ≤ D (ω)|a − a | ≤ (D + δ∗)|a − a |,
+n 1 n 2 n 1 2 1 2
+for all n ≥ N (ω). Therefore for every ε > 0, there exists a δ := ε/(D + δ∗) such that
+sup |L (ω, a ) − L (ω, a )| ≤ ε,
+n 1 n 2
+|a1−a2|≤ε/(D+δ∗)
+for all n ≥ N (ω). Since this is true for all ω ∈ M we see that {L (a)} is stochastically equicontin-
+n
+uous.
+458
+
+--- physical page 460 ---
+Theorem 14.4.1 Let φˆ be defined as in (14.9). Then we have φˆ a → .s. φ.
+n n
+PROOF. Since {L (a)} is almost sure equicontinuous, the parameter space [−1, 1] is compact and
+n
+we have pointwise convergence of L (a) a → .s. L(a), by using Theorem 14.3.1 we have that φˆ a → .s. a,
+n n
+where a = min L(a). Finally we need to show that a = φ. Since
+a∈Θ
+L(a) = E((cid:96) (a)) = −E(X − aX )2,
+0 1 0
+we see by differentiating L(a) with respect to a, that it is minimised at a = E(X X )/E(X2), hence
+0 1 0
+a = E(X X )/E(X2). To show that this is φ, we note that by the Yule-Walker equations
+0 1 0
+X = φX + (cid:15) ⇒ E(X X ) = φE(X2 ) + E((cid:15) X ) .
+t t−1 t t t−1 t−1 t t−1
+(cid:124) (cid:123)(cid:122) (cid:125)
+=0
+Therefore φ = E(X X )/E(X2), hence φˆ a → .s. φ. (cid:3)
+0 1 0 n
+We note that by using a very similar methods we can show strong consistency of the least
+squares estimator of the parameters in an AR(p) model.
+14.5 Convergence in probability of an estimator
+a.s.
+We described above almost sure (strong) consistency (aˆ → a ). Sometimes its not possible to show
+T 0
+strong consistency (eg. when ergodicity cannot be verified). As an alternative, weak consistency
+P
+where aˆ → a (convergence in probability), is shown. This requires a weaker set of conditions,
+T 0
+which we now describe:
+(i) The parameter space Θ should be compact.
+P
+(ii) Probability pointwise convergence: for every a ∈ Θ L (a) → L(a).
+n
+(iii) The sequence {L (a)} is equicontinuous in probability. That is for every (cid:15) > 0 and η > 0
+n
+there exists a δ such that
+(cid:32) (cid:33)
+lim P sup |L (a ) − L (a )| > (cid:15) < η. (14.11)
+n 1 n 2
+n→∞
+|a1−a2|≤δ
+P
+If the above conditions are satisified we have aˆ → a .
+T 0
+459
+
+--- physical page 461 ---
+Verifying conditions (ii) and (iii) may look a little daunting but by using Chebyshev’s (or
+Markov’s) inequality it can be quite straightforward. For example if we can show that for every
+a ∈ Θ
+E(L (a) − L(a))2 → 0 T → ∞.
+n
+Therefore by applying Chebyshev’s inequality we have for every ε > 0 that
+E(L (a) − L(a))2
+n
+P (|L (a) − L(a)| > ε) ≤ → 0 T → ∞.
+n ε2
+P
+Thus for every a ∈ Θ we have L (a) → L(a).
+n
+To show (iii) we often use the mean value theorem L (a). Using the mean value theorem we
+n
+have
+|L (a ) − L (a )| ≤ sup (cid:107)∇ L (a)(cid:107) (cid:107)a − a (cid:107).
+n 1 n 2 a n 2 1 2
+a
+Now if we can show that sup E sup (cid:107)∇ L (a)(cid:107) < ∞ (in other words it is uniformly bounded in
+n a a n 2
+probability over n) then we have the result. To see this observe that
+(cid:32) (cid:33)
+(cid:18) (cid:19)
+P sup |L (a ) − L (a )| > (cid:15) ≤ P sup (cid:107)∇ L (a)(cid:107) |a − a | > (cid:15)
+n 1 n 2 a n 2 1 2
+|a1−a2|≤δ a∈Ω
+sup E(|a − a | sup (cid:107)∇ L (a)(cid:107) )
+≤ n 1 2 a∈Ω a n 2 .
+(cid:15)
+Therefore by a careful choice of δ > 0 we see that (14.11) is satisfied (and we have equicontinuity
+in probability).
+14.6 Asymptotic normality of an estimator
+Once consistency of an estimator has been shown this paves the way to showing normality. To
+make the derivations simple we will assume that θ is univariate (this allows to easily use Taylor
+expansion) . We will assume that that the third derivative of the contrast function, L (θ), exists,
+n
+its expectation is bounded and it’s variance converges to zero as n → ∞. If this is the case we have
+have the following result
+460
+
+--- physical page 462 ---
+Lemma 14.6.1 Suppose that the third derivative of the contrast function L (θ) exists, for k =
+n
+0, 1, 2 E(
+∂kLn(θ)
+) =
+∂kL
+and var(
+∂kLn(θ)
+) → 0 as n → ∞ and
+∂3Ln(θ)
+is bounded by a random
+∂thetak ∂θk ∂thetak ∂theta3
+variable Z which is independent of n where E(Z ) < ∞ and var(Z ) → 0. Then we have
+n n n
+∂L (θ) ∂L (θ)
+(θˆ − θ ) = V (θ)−1 n + o (1) n ,
+n 0 p
+∂θ θ=θ0 ∂θ θ=θ0
+∂2L(θ)
+where V (θ ) = .
+0 ∂θ2 θ0
+PROOF. By the mean value theorem we have
+∂L (θ) ∂L (θ) ∂2L (θ) ∂2L (θ)
+n = n − (θˆ − θ ) n = −(θˆ − θ ) n (14.12)
+∂θ θ=θ0 ∂θ θ=θˆ n n 0 ∂θ2 θ=θ¯ n n 0 ∂θ2 θ=θ¯ n
+where θ¯ lies between θ and θˆ . We first study ∂2Ln(θ) . By using the man value theorem we
+n 0 n ∂θ2 θ=θ¯
+n
+have
+∂2L (θ) ∂2L (θ) ∂2L (θ)
+n = n + (θ¯ − θ ) n
+∂θ2 θ=θ¯ n ∂θ2 θ0 n 0 ∂θ2 θ=θ˜ n
+where θ˜ lies between θ and θ¯ . Since ∂2Ln(θ) → ∂2L(θ) = V (θ ), under the stated assumptions
+n 0 n ∂θ2 θ0 ∂θ2 θ0 0
+we have
+(cid:12) (cid:12) ∂ ∂ 2 θ L 2 θ=θ¯
+n
+− V (θ 0 ) (cid:12) (cid:12) ≤ |θ¯ n − θ 0 | (cid:12) (cid:12) ∂2 ∂ L θ n 2 (θ) θ=θ˜
+n
+(cid:12) (cid:12) ≤ |θ¯ n − θ 0 |W n .
+Therefore, by consistency of the estimator it is clear that
+∂2L
+→
+P
+V (θ ). Substituting this into
+∂θ2 θ=θ¯
+n
+0
+(14.12) we have
+∂L
+= −(θˆ − θ )(V (θ ) + o(1)),
+n 0 0
+∂θ θ=θ0
+since V (θ ) is bounded away from zero we have [ ∂2L ]−1 = V (θ )−1 + o (1) and we obtain the
+0 ∂θ2 θ=θ¯
+n
+0 p
+desired result. (cid:3)
+The above result means that the distribution of (θˆ − θ ) is determined by ∂L . In the
+n 0 ∂θ θ=θ0
+following section we show to show asymptotic normality of ∂L .
+∂θ θ=θ0
+461
+
+--- physical page 463 ---
+14.6.1 Martingale central limit theorem
+Remark 14.6.1 We recall that
+−2 (cid:80)n ε X
+(φˆ − φ) = − (cid:0) ∇2L (cid:1)−1 ∇L (φ) = n−1 t=2 t t−1 , (14.13)
+n n n 2 (cid:80)n X2
+n−1 t=2 t−1
+and that var( −2 (cid:80)n ε X ) = −2 (cid:80)n var(ε X ) = O( 1 ). This implies
+n−1 t=2 t t−1 n−1 t=2 t t−1 n
+(φˆ − φ) = O (n−1/2).
+n p
+Indeed the results also holds almost surely
+(φˆ − φ) = O(n−1/2). (14.14)
+n
+The same result is true for autoregressive processes of arbitrary finite order. That is
+√
+n(φˆ − φ) → D N (0, E(Γ )−1σ2). (14.15)
+p
+n
+14.6.2 Example: Asymptotic normality of the weighted periodogram
+Previously we have discussed the weight peiodogram, here we show normality of it, in the case
+(cid:80)
+that the time series X is zero mean linear time series (has the representation X = ψ ε ).
+t t j j t−j
+Recalling Lemma 11.2.2 we have
+n
+1 (cid:88)
+A(φ, I ) = φ(ω )I (ω )
+n k n k
+n
+k=1
+n
+1 (cid:88) 1
+= φ(ω )|A(ω )2|I (ω ) + o( ).
+k k ε k
+n n
+k=1
+Therefore we will show asymptotic normality of 1 (cid:80)n φ(ω )|A(ω )2|I (ω ), which will give asymp-
+n k=1 k k ε k
+totic normality of A(φ, I ). Expanding |I (ω ) and substituting this into
+n ε k
+1 (cid:80)n φ(ω )|A(ω )2|I (ω ) gives
+n k=1 k k ε k
+n n n n
+1 (cid:88) 1 (cid:88) 1 (cid:88) 1 (cid:88)
+φ(ω )|A(ω )2|I (ω ) = ε ε φ(ω )|A(ω )2 exp(iω (t − τ )) = ε ε g (t − τ )
+k k ε k t τ k k k t τ n
+n n n n
+k=1 t,τ=1 k=1 t,τ=1
+462
+
+--- physical page 464 ---
+where
+1 (cid:88) n 1 (cid:90) 2π 1
+g (t − τ ) = φ(ω )|A(ω )2 exp(iω (t − τ )) = φ(ω)|A(ω)|2 exp(iω(t − τ ))dω + O( ),
+n n k k k 2π n2
+0
+k=1
+(the rate for the derivative exchange is based on assuming that the second derivatives of A(ω) and
+φ exist and φ(0) = φ(2π)). We can rewrite 1 (cid:80)n ε ε g (t − τ ) as
+n t,τ=1 t τ n
+n
+1 (cid:88)
+[ε ε − E(ε ε )]g (t − τ )
+t τ t τ n
+n
+t,τ=1
+n (cid:18) (cid:19)
+= 1 (cid:88) [(ε2 − E(ε2)]g (0) + ε (cid:0) (cid:88) ε [g (t − τ ) − g (τ − t)] (cid:1)
+n t t n t τ n n
+t=1 τ<t
+n
+1 (cid:88)
+:= Z
+t,n
+n
+t=1
+where it is straightforward to show that {Z } are the sum of martingale differences. Thus we can
+t,n
+show that
+n n n
+1 (cid:88) (cid:0) 1 (cid:88) (cid:1) 1 (cid:88)
+√ ε ε g (t − τ ) − E √ ε ε g (t − τ ) = √ Z
+t τ n t τ n t,n
+n n n
+t,τ=1 t,τ=1 t=1
+satisfies the conditions of the martingale central limit theorem, which gives asymptotic normality
+of 1 (cid:80)n ε ε g (t − τ ) and thus A(φ, I ).
+n t,τ=1 t τ n n
+In the remainder of this chapter we obtain the sampling properties of the ARMA estimators
+defined in Sections 9.2.1 and 9.2.5.
+14.7 Asymptotic properties of the Hannan and Rissa-
+nen estimation method
+In this section we will derive the sampling properties of the Hannan-Rissanen estimator. We will
+obtain an almost sure rate of convergence (this will be the only estimator where we obtain an almost
+sure rate). Typically obtaining only sure rates can be more difficult than obtaining probabilistic
+rates, moreover the rates can be different (worse in the almost sure case). We now illustrate why
+that is with a small example. Suppose {X } are iid random variables with mean zero and variance
+t
+463
+
+--- physical page 465 ---
+one. Let S =
+(cid:80)n
+X . It can easily be shown that
+n t=1 t
+1 1
+var(S ) = therefore S = O ( √ ). (14.16)
+n n p
+n n
+However, from the law of iterated logarithm we have for any ε > 0
+(cid:112) (cid:112)
+P (S ≥ (1 + ε) 2n log log n infinitely often) = 0P (S ≥ (1 − ε) 2n log log n infinitely often) =(114. .17)
+n n
+Comparing (14.16) and (14.17) we see that for any given trajectory (realisation) most of the time
+n 1 S n will be within the O( √1 n ) bound but there will be excursions above when it to the O( log √ lo n g n
+bound. In other words we cannot say that
+n
+1 S
+n
+= ( √1
+n
+) almost surely, but we can say that This
+basically means that
+√
+1 2 log log n
+S = O( √ ) almost surely.
+n
+n n
+Hence the probabilistic and the almost sure rates are (slightly) different. Given this result is true
+for the average of iid random variables, it is likely that similar results will hold true for various
+estimators.
+In this section we derive an almost sure rate for Hannan-Rissanen estimator, this rate will
+be determined by a few factors (a) an almost sure bound similar to the one derived above (b)
+the increasing number of parameters p (c) the bias due to estimating only a finite number of
+n
+parameters when there are an infinite number in the model.
+We first recall the algorithm:
+(i) Use least squares to estimate {b }pn and define
+j j=1
+bˆ = Rˆ−1ˆr , (14.18)
+n n n
+where bˆ(cid:48) = (ˆb , . . . , ˆb ),
+n 1,n pn,n
+n T
+(cid:88) (cid:88)
+Rˆ = X X(cid:48) ˆr = X X
+n t−1 t−1 n t t−1
+t=pn+1 t=pn+1
+and X(cid:48) = (X , . . . , X ).
+t−1 t−1 t−pn
+464
+
+--- physical page 466 ---
+(ii) Estimate the residuals with
+pn
+(cid:88)
+ε˜ = X − ˆb X .
+t t j,n t−j
+j=1
+(iii) Now use as estimates of φ and θ φ˜ , ˜θ where
+0 0 n n
+n p q
+(cid:88) (cid:88) (cid:88)
+φ˜ , ˜θ = arg min (X − φ X − θ ε˜ )2. (14.19)
+n n t j t−j i t−i
+t=pn+1 j=1 i=1
+We note that the above can easily be minimised. In fact
+(φ˜ , ˜θ ) = R˜−1˜s
+n n n n
+where
+n n
+1 (cid:88) 1 (cid:88)
+R˜ = Y˜ Y˜ ˜s = Y˜ X ,
+n t t n t t
+n T
+t=pn+1 t=pn+1
+Y˜ (cid:48) = (X , . . . , X , ε˜ , . . . , ε˜ ). Let ϕˆ = (φ˜ , θ˜ ).
+t t−1 t−p t−1 t−q n n n
+We observe that in the second stage of the scheme where the estimation of the ARMA parameters
+are done, it is important to show that the empirical residuals are close to the true residuals. That
+is ε˜ = ε + o(1). We observe that from the definition of ε˜ , this depends on the rate of convergence
+t t t
+of the AR estimators ˆb
+j,n
+pn
+(cid:88)
+ε˜ = X − ˆb X
+t t j,n t−j
+j=1
+pn ∞
+(cid:88) (cid:88)
+= ε + (ˆb − b )X − b X . (14.20)
+t j,n j t−j j t−j
+j=1 j=pn+1
+Hence
+pn ∞
+(cid:12) (cid:12)εˆ t − ε t (cid:12) (cid:12) ≤ (cid:12) (cid:12) (cid:88) (ˆb j,n − b j )X t−j (cid:12) (cid:12) + (cid:12) (cid:12) (cid:88) b j X t−j (cid:12) (cid:12). (14.21)
+j=1 j=pn+1
+Therefore to study the asymptotic properties of ϕ˜ = φˆ , ˆθ we need to
+n n
+• Obtain a rate of convergence for sup |ˆb − b |.
+j j,n j
+465
+
+--- physical page 467 ---
+• Obtain a rate for |εˆ − ε |.
+t t
+• Use the above to obtain a rate for ϕ˜ = (φˆ , ˆθ ).
+n n n
+We first want to obtain the uniform rate of convergence for sup |ˆb − b |. Deriving this is
+j j,n j
+technically quite challanging. We state the rate in the following theorem, an outline of the proof
+can be found in Section 14.7.1. The proofs uses results from mixingale theory which can be found
+in Chapter B.
+Theorem 14.7.1 Suppose that {X } is from an ARMA process where the roots of the true char-
+t
+acteristic polynomials φ(z) and θ(z) both have absolute value greater than 1 + δ. Let bˆ be defined
+n
+as in (14.18), then we have almost surely
+(cid:32) (cid:114) (cid:33)
+(log log n)1+γ log n p3
+(cid:107)bˆ − b (cid:107) = O p2 + n + p ρpn
+n n 2 n n n n
+for any γ > 0.
+PROOF. See Section 14.7.1.
+Corollary 14.7.1 Suppose the conditions in Theorem 14.7.1 are satisfied. Then we have
+(cid:12) (cid:12)ε˜ t − ε t (cid:12) (cid:12) ≤ p n
+1≤
+m
+j
+a
+≤
+x
+pn
+|ˆb j,n − b j |Z t,pn + KρpnY t−pn , (14.22)
+where Z = 1 (cid:80)pn |X | and Y = (cid:80)pn ρj|X |,
+t,pn pn t=1 t−j t t=1 t
+n
+1 (cid:88) (cid:12) (cid:12)ε˜ t−i X t−j − ε t−i X t−j (cid:12) (cid:12) = O(p n Q(n) + ρpn) (14.23)
+n
+t=pn+1
+n
+1 (cid:88) (cid:12) (cid:12)ε˜ t−i ε˜ t−j − ε t−i ε˜ t−j (cid:12) (cid:12) = O(p n Q(n) + ρpn) (14.24)
+n
+t=pn+1
+(cid:113)
+where Q(n) = p2
+n
+(log log n
+n
+)1+γ log n + p
+n
+3 n + p
+n
+ρpn.
+PROOF. Using (14.21) we immediately obtain (14.22).
+466
+
+--- physical page 468 ---
+To obtain (14.23) we use (14.21) to obtain
+n n
+1 (cid:88) (cid:12) (cid:12) 1 (cid:88) (cid:12) (cid:12)
+(cid:12)ε˜ t−i X t−j − ε t−i X t−j(cid:12) ≤ |X t−j |(cid:12)ε˜ t−i − ε t−i(cid:12)
+n n
+t=pn+1 t=pn+1
+n n
+1 (cid:88) 1 (cid:88)
+≤ O(p Q(n)) |X ||Z | + O(ρpn) |X ||Y |
+n
+n
+t t,pn
+n
+t t−pn
+t=pn+1 t=pn+1
+= O(p Q(n) + ρpn).
+n
+To prove (14.24) we use a similar method, hence we omit the details. (cid:3)
+We apply the above result in the theorem below.
+Theorem 14.7.2 Suppose the assumptions in Theorem 14.7.1 are satisfied. Then
+(cid:32) (cid:114) (cid:33)
+(cid:13) (cid:13)ϕ˜ − ϕ (cid:13) (cid:13) = O p3 (log log n)1+γ log n + p4 n + p2 ρpn .
+n 0 2 n n n n
+for any γ > 0, where ϕ˜ = (φ˜ , ˜θ ) and ϕ = (φ , θ ).
+n n n 0 0 0
+PROOF. We note from the definition of ϕ˜ that
+n
+(cid:0) ϕ˜ − ϕ (cid:1) = R˜−1(cid:0) ˜s − R˜ ϕ˜ (cid:1) .
+n 0 n n n 0
+Now in the R˜ and ˜s we replace the estimated residuals ε˜ with the true unobserved residuals.
+n n n
+This gives us
+(cid:0) ϕ˜ − ϕ (cid:1) = R−1(cid:0) s − R ϕ (cid:1) + (R−1s − R˜−1˜s ) (14.25)
+n 0 n n n 0 n n n n
+n n
+1 (cid:88) 1 (cid:88)
+R = Y Y s = Y X ,
+n t t n t t
+n n
+t=max(p,q) t=max(p,q)
+Y(cid:48) = (X , . . . , X , ε , . . . , ε ) (recalling that Y(cid:48) = (X , . . . , X , ε˜ , . . . , ε˜ ). The
+t t−1 t−p t−1 t−q t t−1 t−p t−1 t−q
+error term is
+(R−1s − R˜−1˜s ) = R−1(R˜ − R )R˜−1s + R˜−1(s − ˜s ).
+n n n n n n n n n n n n
+Now, almost surely R−1, R˜−1 = O(1) (if E(R ) is non-singular). Hence we only need to obtain a
+n n n
+467
+
+--- physical page 469 ---
+bound for R˜ − R and s − ˜s . We recall that
+n n n n
+1 (cid:88)
+R˜ − R = (Y˜ Y˜ (cid:48) − Y Y(cid:48)),
+n n n t t t t
+t=pn+1
+hence the terms differ where we replace the estimated ε˜ with the true ε , hence by using (14.23)
+t t
+and (14.24) we have almost surely
+|R˜ − R | = O(p Q(n) + ρpn) and |˜s − s | = O(p Q(n) + ρpn).
+n n n n n n
+Therefore by substituting the above into (14.26) we obtain
+(cid:0) ϕ˜ − ϕ (cid:1) = R−1(cid:0) s − R ϕ (cid:1) + O(p Q(n) + ρpn). (14.26)
+n 0 n n n 0 n
+Finally using straightforward algebra it can be shown that
+n
+1 (cid:88)
+s − R ϕ = ε Y .
+n n n n t t
+t=max(p,q)
+(cid:113)
+(log log n)1+γ log n
+By using Theorem 14.7.3, below, we have s − R ϕ = O((p + q) ). Substituting
+n n n n
+(cid:113)
+(log log n)1+γ log n
+the above bound into (??), and noting that O(Q(n)) dominates O( ) gives
+n
+(cid:32) (cid:114) (cid:33)
+(cid:13) (cid:13)ϕ˜ − ϕ (cid:13) (cid:13) = O p3 (log log n)1+γ log n + p4 n + p2 ρpn
+n n 2 n n n n
+and the required result. (cid:3)
+ˆ
+14.7.1 Proof of Theorem 14.7.1 (A rate for (cid:107)b − b (cid:107) )
+T T 2
+We observe that
+bˆ − b = R−1(cid:0) ˆr − Rˆ b (cid:1) + (cid:0) Rˆ−1 − R−1(cid:1)(cid:0) ˆr − Rˆ b (cid:1)
+n n n n n n n n n n n
+468
+
+--- physical page 470 ---
+where b, R and r are deterministic, with b = (b . . . , b ), (R ) = E(X X ) and (r ) =
+n n n 1 pn n i,j i j n i
+E(X X ). Evaluating the Euclidean distance we have
+0 −i
+(cid:107)bˆ n − b n (cid:107) 2 ≤ (cid:107)R n −1(cid:107) spec (cid:13) (cid:13)ˆr n − Rˆ n b n (cid:13) (cid:13) 2 + (cid:107)R n −1(cid:107) spec (cid:107)Rˆ n −1(cid:107) spec (cid:13) (cid:13)Rˆ n − R n (cid:13) (cid:13) 2 (cid:13) (cid:13)ˆr n − Rˆ n b n (cid:13) (cid:13) 2 , (14.27)
+where we used that Rˆ−1 − Rˆ−1 = Rˆ−1(R − Rˆ )R−1 and the norm inequalities. Now by using
+n n n n n n
+Lemma 7.14.2 we have λ (R−1) > δ/2 for all T . Thus our aim is to obtain almost sure bounds
+min n
+for (cid:107)ˆr − Rˆ b (cid:107) and (cid:107)Rˆ − R (cid:107) , which requires the lemma below.
+n n n 2 n n 2
+Theorem 14.7.3 Let us suppose that {X } has an ARMA representation where the roots of the
+t
+characteristic polynomials φ(z) and θ(z) lie are greater than 1 + δ. Then
+(i)
+n (cid:114)
+1 (cid:88) (log log n)1+γ log n
+ε X = O( ) (14.28)
+t t−r
+n n
+t=r+1
+(ii)
+n (cid:114)
+1 (cid:88) (log log n)1+γ log n
+X X = O( ). (14.29)
+t−i t−j
+n n
+t=max(i,j)
+for any γ > 0.
+PROOF. The result is proved in Chapter B.2. (cid:3)
+To obtain the bounds we first note that if the there wasn’t an MA component in the ARMA pro-
+cess, in other words {X } was an AR(p) process with p ≥ p, then ˆr − Rˆ b = 1 (cid:80)n ε X ,
+t n n n n n t=pn+1 t t−r
+which has a mean zero. However because an ARMA process has an AR(∞) representation and we
+are only estimating the first p parameters, there exists a ‘bias’ in ˆr − Rˆ b . Therefore we obtain
+n n n n
+the decomposition
+n ∞ n ∞
+(ˆr − Rˆ b ) = 1 (cid:88) (cid:0) X − (cid:88) b X (cid:1) X + 1 (cid:88) (cid:88) b X X (14.30)
+n n n r t j t−j t−r j t−j t−r
+n n
+t=pn+1 j=1 t=pn+1 j=pn+1
+n n ∞
+1 (cid:88) 1 (cid:88) (cid:88)
+= ε X + b X X (14.31)
+t t−r j t−j t−r
+n n
+t=pn+1 t=pn+1 j=pn+1
+(cid:124) (cid:123)(cid:122) (cid:125) (cid:124) (cid:123)(cid:122) (cid:125)
+stochastic term bias
+469
+
+--- physical page 471 ---
+Therefore we can bound the bias with
+(cid:12) n (cid:12) n ∞
+(cid:12) (cid:12)
+(cid:12)
+(ˆr n − Rˆ n b n ) r −
+n
+1 (cid:88) ε t X t−r (cid:12) (cid:12)
+(cid:12)
+≤ Kρpn
+n
+1 (cid:88) |X t−r | (cid:88) ρj|X t−pn−j |. (14.32)
+t=pn+1 t=1 j=1
+Let Y = (cid:80)∞ ρj|X and S = 1 (cid:80)n |X | (cid:80)∞ ρj|X |. We note that {Y } and {X }
+t j=1 t−j n,k,r n t=1 t−r j=1 t−k−j t t
+are ergodic sequences. By applying the ergodic theorm we can show that for a fixed k and r,
+a.s.
+S → E(X Y ). Hence S are almost surely bounded sequences and
+n,k,r t−r t−k n,k,r
+n ∞
+1 (cid:88) (cid:88)
+ρpn |X | ρj|X | = O(ρpn).
+n
+t−r t−pn−j
+t=1 j=1
+Therefore almost surely we have
+n
+1 (cid:88)
+(cid:107)ˆr − Rˆ b (cid:107) = (cid:107) ε X (cid:107) + O(p ρpn).
+n n n 2 t t−1 2 n
+n
+t=pn+1
+Now by using (14.28) we have
+(cid:32) (cid:40)(cid:114) (cid:41)(cid:33)
+(log log n)1+γ log n
+(cid:107)ˆr − Rˆ b (cid:107) = O p + ρpn . (14.33)
+n n n 2 n
+n
+This gives us a rate for ˆr − Rˆ b . Next we consider Rˆ . It is clear from the definition of Rˆ that
+n n n n n
+almost surely we have
+n
+1 (cid:88)
+(Rˆ ) − E(X X ) = X X − E(X X )
+n i,j i j t−i t−j i j
+n
+t=pn+1
+1 (cid:88)
+n
+1 (cid:88)
+pn
+min(i, j)
+= [X X − E(X X )] − X X + E(X X )
+t−i t−j i j t−i t−j i j
+n n n
+t=min(i,j) t=min(i,j)
+T
+1 (cid:88) p n
+= [X X − E(X X )] + O( ).
+t−i t−j i j
+n n
+t=min(i,j)
+Now by using (14.29) we have almost surely
+(cid:114)
+p (log log n)1+γ log n
+|(Rˆ ) − E(X X )| = O( n + ).
+n i,j i j
+n n
+470
+
+--- physical page 472 ---
+Therefore we have almost surely
+(cid:32) (cid:40) (cid:114) (cid:41)(cid:33)
+p (log log n)1+γ log n
+(cid:107)Rˆ − R (cid:107) = O p2 n + . (14.34)
+n n 2 n n n
+We note that by using (14.27), (14.33) and (14.34) we have
+(cid:32) (cid:114) (cid:33)
+(log log n)1+γ log n p2
+(cid:107)bˆ − b (cid:107) ≤ (cid:107)R−1(cid:107) (cid:107)Rˆ−1(cid:107) O p2 + n + p ρpn .
+n n 2 n spec n spec n n n n
+As we mentioned previously, because the spectrum of X is bounded away from zero, λ (R )
+t min n
+is bounded away from zero for all T . Moreover, since λ (Rˆ ) ≥ λ (R ) − λ (Rˆ − R ) ≥
+min n min n max n n
+λ (R ) − tr((Rˆ − R )2), which for a large enough n is bounded away from zero. Hence we obtain
+min n n n
+almost surely
+(cid:32) (cid:114) (cid:33)
+(log log n)1+γ log n p3
+(cid:107)bˆ − b (cid:107) = O p2 + n + p ρpn , (14.35)
+n n 2 n n n n
+thus proving Theorem 14.7.1 for any γ > 0.
+14.8 Asymptotic properties of the GMLE
+Let us suppose that {X } satisfies the ARMA representation
+t
+p q
+(cid:88) (0) (cid:88) (0)
+X − φ X = ε + θ ε , (14.36)
+t i t−i t j t−j
+i=1 j=1
+and θ = (θ (0) , . . . , θ (0) ), φ = (φ (0) , . . . , φ (0) ) and σ2 = var(ε ). In this section we consider the
+0 1 q 0 1 p 0 t
+sampling properties of the GML estimator, defined in Section 9.2.1. We first recall the estimator.
+We use as an estimator of (θ , φ ), φˆ = (ˆθ , φˆ , σˆ ) = arg min L (φ, θ, σ), where
+0 0 n n n n (θ,φ)∈Θ n
+1 1 n (cid:88) −1 1 n (cid:88) −1 (X t+1 − X t ( + φ, 1 θ | ) t )2
+L (φ, θ, σ) = log r (σ, φ, θ) + . (14.37)
+n t+1
+n n n r (σ, φ, θ)
+t+1
+t=1 t=1
+To show consistency and asymptotic normality we will use the following assumptions.
+Assumption 14.8.1 (i) X is both invertible and causal.
+t
+471
+
+--- physical page 473 ---
+(ii) The parameter space should be such that all φ(z) and θ(z) in the parameter space have roots
+whose absolute value is greater than 1 + δ. φ (z) and θ (z) belong to this space.
+0 0
+Assumption 14.8.1 means for for some finite constant K and 1 ≤ ρ < 1, we have |φ(z)−1| ≤
+1+δ
+K (cid:80)∞ |ρj||zj| and |φ(z)−1| ≤ K (cid:80)∞ |ρj||Zj|.
+j=0 j=0
+To prove the result, we require the following approximations of the GML. Let
+t
+X˜ (φ,θ) = (cid:88) b (φ, θ)X . (14.38)
+t+1|t,... j t+1−j
+j=1
+This is an approximation of the one-step ahead predictor. Since the likelihood is constructed from
+the one-step ahead predictors, we can approximated the likelihood 1 L (φ, θ, σ) with the above and
+n n
+define
+T −1
+1 L˜ (φ, θ, σ) = log σ2 + 1 (cid:88) (X − X˜ (φ,θ) )2. (14.39)
+n n nσ2 t+1 t+1|t,...
+t=1
+We recall that X˜ (φ,θ) was derived from X (φ,θ) which is the one-step ahead predictor of X
+t+1|t,... t+1|t,... t+1
+given X , X , . . ., this is
+t t−1
+∞
+(φ,θ) (cid:88)
+X = b (φ, θ)X . (14.40)
+t+1|t,... j t+1−j
+j=1
+Using the above we define a approximation of 1 L (φ, θ, σ) which in practice cannot be obtained
+n n
+(since the infinite past of {X } is not observed). Let us define the criterion
+t
+T −1
+1 L (φ, θ, σ) = log σ2 + 1 (cid:88) (X − X (φ,θ) )2. (14.41)
+n n nσ2 t+1 t+1|t,...
+t=1
+In practice 1 L (φ, θ, σ) can not be evaluated, but it proves to be a convenient tool in obtaining
+n n
+the sampling properties of φˆ . The main reason is because 1 L (φ, θ, σ) is a function of {X } and
+n n n t
+{X
+(φ,θ)
+=
+(cid:80)∞
+b (φ, θ)X } both of these are ergodic (since the ARMA process is ergodic
+t+1|t,... j=1 j t+1−j
+when its roots lie outside the unit circle and the roots of φ, θ ∈ Θ are such that they lie outside
+the unit circle). In contrast looking at L (φ, θ, σ), which is comprised of {X }, which not an
+n t+1|t
+ergodic random variable because X is the best linear predictor of X given X , . . . , X (see the
+t+1 t+1 t 1
+number of elements in the prediction changes with t). Using this approximation really simplifies
+the proof, though it is possible to prove the result without using these approximations.
+472
+
+--- physical page 474 ---
+First we obtain the result for the estimators ϕˆ∗ = (θ∗ , φ∗ , σˆ ) = arg min L (φ, θ, σ) and
+n n n n (θ,φ)∈Θ n
+then show the same result can be applied to ϕˆ .
+n
+Proposition 14.8.1 Suppose {X } is an ARMA process which satisfies (14.36), and Assumption
+t
+14.8.1 is satisfied. Let X (φ,θ) , X˜ (φ,θ) and X (φ,θ) be the predictors defined in (??), (14.38) and
+t+1|t t+1|t,... t+1|t,...
+(14.40), obtained using the parameters φ = {φ } and θ = {θ }, where the roots the corresponding
+j i
+characteristic polynomial φ(z) and θ(z) have absolute value greater than 1 + δ. Then
+(cid:12) (cid:12)X t ( + φ, 1 θ | ) t − X˜ t ( + φ, 1 θ | ) t,... (cid:12) (cid:12) ≤ 1 ρ − t ρ (cid:88) t ρi|X i |, (14.42)
+i=1
+E(X (φ,θ) − X˜ (φ,θ) )2 ≤ Kρt, (14.43)
+t+1|t t+1|t,...
+∞ ∞
+(cid:12) (cid:12)X˜ t+1|t,... (1) − X t+1|t,... (cid:12) (cid:12) = (cid:12) (cid:12) (cid:88) b j (φ, θ)X t+1−j (cid:12) (cid:12) ≤ Kρt (cid:88) ρj|X −j |, (14.44)
+j=t+1 j=0
+E(X (φ,θ) − X˜ (φ,θ) )2 ≤ Kρt (14.45)
+t+1|t,... t+1|t,...
+and
+|r (σ, φ, θ) − σ2| ≤ Kρt (14.46)
+t
+for any 1/(1 + δ) < ρ < 1 and K is some finite constant.
+PROOF. The proof follows closely the proof of Proposition 14.8.1. First we define a separate
+ARMA process {Y }, which is driven by the parameters θ and φ (recall that {X } is drive by the
+t t
+parameters θ and φ ). That is Y satisfies Y −
+(cid:80)p
+φ Y = ε +
+(cid:80)q
+θ ε . Recalling that
+0 0 t t j=1 j t−j t j=1 j t−j
+Xφ,θ is the best linear predictor of X given X , . . . , X and the variances of {Y } (noting that
+t+1|t t+1 t 1 t
+it is the process driven by θ and φ), we have
+t ∞
+Xφ,θ = (cid:88) b (φ, θ)X + (cid:0) (cid:88) b (φ, θ)r(cid:48) (φ, θ)Σ (φ, θ)−1(cid:1) X , (14.47)
+t+1|t j t+1−j j t,j t t
+j=1 j=t+1
+473
+
+--- physical page 475 ---
+where Σ (φ, θ) = E(Y Y ), (r ) = E(Y Y ) and X(cid:48) = (X , . . . , X ). Therefore
+t s,t s t t,j i t−i −j t t 1
+∞
+Xφ,θ − X˜ = (cid:0) (cid:88) b r(cid:48) Σ (φ, θ)−1(cid:1) X .
+t+1|t t+1|t,... j t,j t t
+j=t+1
+Since the largest eigenvalue of Σ (φ, θ)−1 is bounded (see Lemma 7.14.2) and |(r ) | = |E(Y Y )| ≤
+t t,j i t−i −j
+Kρ|t−i+j| we obtain the bound in (14.42). Taking expectations, we have
+∞ ∞
+E(Xφ,θ − X˜ φ,θ )2 = (cid:0) (cid:88) b r(cid:48) (cid:1) Σ (φ, θ)−1Σ (φ , θ )Σ (φ, θ)−1(cid:0) (cid:88) b r (cid:1) .
+t+1|t t+1|t,... j t,j t t 0 0 t t+j t,j
+j=t+1 j=t+1
+Now by using the same arguments given in the proof of (7.23) we obtain (14.43).
+To prove (14.45) we note that
+∞ ∞
+(cid:88) (cid:88)
+E(X˜ (1) − X )2 = E( b (φ, θ)X )2 = E( b (φ, θ)X )2,
+t+1|t,... t+1|t,... j t+1−j t+j −j
+j=t+1 j=1
+now by using (4.23), we have |b (φ, θ)| ≤ Kρt+j, for 1 < ρ < 1, and the bound in (14.44).
+t+j 1+δ
+Using this we have E(X˜ (1) − X )2 ≤ Kρt, which proves the result. (cid:3)
+t+1|t,... t+1|t,...
+Using ε = X −
+(cid:80)∞
+b (φ , θ )X and substituting this into L (φ, θ, σ) gives
+t t j=1 j 0 0 t−j n
+∞
+1 L (φ, θ, σ) = log σ2 + 1 (cid:0) X − (cid:88) b (φ, θ)X (cid:1)2
+n n nσ2 t j t+1−j
+j=1
+T −1
+= 1 L (φ, θ, σ) log σ2 + 1 (cid:88) (cid:8) θ(B)−1φ(B)X (cid:9)(cid:8) θ(B)−1φ(B)X (cid:9)
+n n nσ2 t t
+t=1
+n n ∞
+= log σ2 + 1 (cid:88) ε2 + 2 (cid:88) ε (cid:0) (cid:88) b (φ, θ)X (cid:1)
+nσ2 t n t j t−j
+t=1 t=1 j=1
+n ∞
+1 (cid:88) (cid:0) (cid:88) (cid:1)2
++ (b (φ, θ) − b (φ , θ ))X .
+n j j 0 0 t−j
+t=1 j=1
+Remark 14.8.1 (Derivatives involving the Backshift operator) Consider the transformation
+∞ ∞
+1 (cid:88) (cid:88)
+X = θjBjX = θjX .
+t t t−j
+1 − θB
+j=0 j=0
+Suppose we want to differentiate the above with respect to θ, there are two ways this can be done.
+Either differentiate (cid:80)∞ θjX with respect to θ or differentiate 1 with respect to θ. In other
+j=0 t−j 1−θB
+474
+
+--- physical page 476 ---
+words
+∞
+d 1 −B (cid:88)
+X = X = jθj−1X .
+dθ 1 − θB t (1 − θB)2 t t−j
+j=0
+Often it is easier to differentiate the operator. Suppose that θ(B) = 1 + (cid:80)p θ Bj and φ(B) =
+j=1 j
+1 − (cid:80)q φ Bj, then we have
+j=1 j
+d φ(B) Bjφ(B) φ(B)
+X = − X = − X
+dθ θ(B) t θ(B)2 t θ(B)2 t−j
+j
+d φ(B) Bj 1
+X = − X = − X .
+dφ θ(B) t θ(B)2 t θ(B)2 t−j
+j
+Moreover in the case of squares we have
+d φ(B) φ(B) φ(B) d φ(B) φ(B) 1
+( X )2 = −2( X )( X ), ( X )2 = −2( X )( X ).
+dθ θ(B) t θ(B) t θ(B)2 t−j dφ θ(B) t θ(B) t θ(B)2 t−j
+j j
+Using the above we can easily evaluate the gradient of 1 L
+n n
+n
+1 2 (cid:88) φ(B)
+∇ L (φ, θ, σ) = − (θ(B)−1φ(B)X ) X
+n θi n σ2 t θ(B)2 t−i
+t=1
+n
+1 2 (cid:88) 1
+∇ L (φ, θ, σ) = − (θ(B)−1φ(B)X ) X
+n φj n nσ2 t θ(B) t−j
+t=1
+n ∞
+1 1 1 (cid:88) (cid:0) (cid:88) (cid:1)2
+∇ L (φ, θ, σ) = − X − b (φ, θ)X . (14.48)
+n σ2 n σ2 nσ4 t j t−j
+t=1 j=1
+Let ∇ = (∇ , ∇ , ∇ ). We note that the second derivative ∇2L can be defined similarly.
+φi θj σ2 n
+Lemma 14.8.1 Suppose Assumption 14.8.1 holds. Then
+1 1
+sup (cid:107) ∇L (cid:107) ≤ KS sup (cid:107) ∇3L (cid:107) ≤ KS (14.49)
+n 2 n n 2 n
+n n
+φ,θ∈Θ φ,θ∈Θ
+for some constant K,
+max(p,q) n
+1 (cid:88) (cid:88)
+S = Y Y (14.50)
+n
+n
+t−r1 t−r2
+r1,r2=0 t=1
+475
+
+--- physical page 477 ---
+where
+∞
+(cid:88)
+Y = K ρj · |X |.
+t t−j
+j=0
+for any 1 < ρ < 1.
+(1+δ)
+PROOF. The proof follows from the the roots of φ(z) and θ(z) having absolute value greater than
+1 + δ. (cid:3)
+Define the expectation of the likelihood L(φ, θ, σ)) = E( 1 L (φ, θ, σ)). We observe
+n n
+σ2 1
+L(φ, θ, σ)) = log σ2 + 0 + E(Z (φ, θ)2)
+σ σ2 t
+2
+where
+∞
+(cid:88)
+Z (φ, θ) = (b (φ, θ) − b (φ , θ ))X
+t j j 0 0 t−j
+j=1
+Lemma 14.8.2 Suppose that Assumption 14.8.1 are satisfied. Then for all θ, φ, θ ∈ Θ we have
+(i) 1 ∇iL (φ, θ, σ)) a → .s. ∇iL(φ, θ, σ)) for i = 0, 1, 2, 3.
+n n
+(ii) Let S defined in (14.50), then S
+a
+→
+.s.
+E(
+(cid:80)max(p,q) (cid:80)n
+Y Y ).
+n n r1,r2=0 t=1 t−r1 t−r2
+PROOF. Noting that the ARMA process {X } are ergodic random variables, then {Z (φ, θ)} and
+t t
+{Y } are ergodic random variables, the result follows immediately from the Ergodic theorem.
+t
+We use these results in the proofs below.
+Theorem 14.8.1 Suppose that Assumption 14.8.1 is satisfied. Let (ˆθ ∗ , φˆ∗ , σˆ∗ ) = arg min L (θ, φ, σ)
+n n n n
+(noting the practice that this cannot be evaluated). Then we have
+(i) (ˆθ ∗ , φˆ∗ , σˆ∗ ) a → .s. (θ , φ , σ ).
+n n n 0 0 0
+(ii) √ n(ˆθ ∗ − θ , φˆ∗ − θ ) → D N (0, σ2Λ−1), where
+n 0 n 0 0
+ 
+E(U U (cid:48)) E(V U (cid:48))
+t t t t
+Λ =  
+E(U V (cid:48)) E(V V (cid:48))
+t t t t
+and {U } and {V } are autoregressive processes which satisfy φ (B)U = ε and θ (B)V = ε .
+t t 0 t t 0 t t
+476
+
+--- physical page 478 ---
+PROOF. We prove the result in two stages below. (cid:3)
+PROOF of Theorem 14.8.1(i) We will first prove Theorem 14.8.1(i). Noting the results in
+Section 14.3, to prove consistency we recall that we must show (a) the (φ , θ , σ ) is the unique
+0 0 0
+minimum of L(·) (b) pointwise convergence 1 L(φ, θ, σ)) a → .s. L(φ, θ, σ)) and (b) stochastic equicon-
+T
+tinuity (as defined in Definition 14.3.2). To show that (φ , θ , σ ) is the minimum we note that
+0 0 0
+σ2 σ2
+L(φ, θ, σ)) − L(φ , θ , σ )) = log( ) + − 1 + E(Z (φ, θ)2).
+0 0 0 σ2 σ2 t
+0 0
+Since for all positive x, log x + x − 1 is a positive function and E(Z (φ, θ)2) = E( (cid:80)∞ (b (φ, θ) −
+t j=1 j
+b (φ , θ ))X )2 is positive and zero at (φ , θ , σ ) it is clear that φ , θ , σ is the minimum of
+j 0 0 t−j 0 0 0 0 0 0
+L. We will assume for now it is the unique minimum. Pointwise convergence is an immediate
+consequence of Lemma 14.8.2(i). To show stochastic equicontinuity we note that for any ϕ =
+1
+(φ , θ , σ ) and ϕ = (φ , θ , σ ) we have by the mean value theorem
+1 1 1 2 2 2 2
+L (φ , θ , σ ) − L (φ , θ , σ )) = (ϕ − ϕ )∇L (φ¯ , θ¯, σ¯).
+n 1 1 1 n 2 2 2 1 2 n
+Now by using (14.49) we have
+L (φ , θ , σ ) − L (φ , θ , σ )) ≤ S (cid:107)(φ − φ ), (θ − θ ), (σ − σ )(cid:107) .
+n 1 1 1 n 2 2 2 T 1 2 1 2 1 2 2
+By using Lemma 14.8.2(ii) we have S
+a
+→
+.s.
+E(
+(cid:80)max(p,q) (cid:80)n
+Y Y ), hence {S } is almost surely
+n r1,r2=0 t=1 t−r1 t−r2 n
+bounded. This implies that L is equicontinuous. Since we have shown pointwise convergence and
+n
+equicontinuity of L , by using Corollary 14.3.1, we almost sure convergence of the estimator. Thu
+n
+proving (i). (cid:3)
+PROOF of Theorem 14.8.1(ii) We now prove Theorem 14.8.1(i) using the Martingale central
+limit theorem (see Billingsley (1995) and Hall and Heyde (1980)) in conjunction with the Cramer-
+Wold device (see Theorem 9.1.1).
+Using the mean value theorem we have
+(cid:0) ϕˆ ∗ − ϕ (cid:1) = ∇2L∗ (ϕ¯ )−1∇L∗ (φ , θ , σ )
+n 0 n n n 0 0 0
+where ϕˆ ∗ = (φˆ ∗ , θˆ∗ , σˆ∗ ), ϕ = (φ , θ , σ ) and ϕ¯ = φ¯ , θ¯, σ¯ lies between ϕˆ ∗ and ϕ .
+n n n n 0 0 0 0 n n 0
+477
+
+--- physical page 479 ---
+Using the same techniques given in Theorem 14.8.1(i) and Lemma 14.8.2 we have pointwise
+convergence and equicontinuity of ∇2L . This means that ∇2L (ϕ¯ ) a → .s. E(∇2L (φ , θ , σ )) =
+n n n n 0 0 0
+1 Λ (since by definition of ϕ¯ ϕ¯ a → .s. ϕ ). Therefore by applying Slutsky’s theorem (since Λ is
+σ2 n n 0
+nonsingular) we have
+∇2L (ϕ¯ )−1 a → .s. σ2Λ−1. (14.51)
+n n
+Now we show that ∇L (ϕ ) is asymptotically normal. By using (14.48) and replacing X =
+n 0 t−i
+φ (B)−1θ (B)ε we have
+0 0 t−i
+n n
+1 2 (cid:88) (−1) −2 (cid:88)
+∇ L (φ , θ , σ ) = ε ε = ε V i = 1, . . . , q
+n θi n 0 0 0 σ2n t θ (B) t−i σ2n t t−i
+0
+t=1 t=1
+n T
+1 2 (cid:88) 1 2 (cid:88)
+∇ L (φ , θ , σ ) = ε ε = ε U j = 1, . . . , p
+n φj n 0 0 0 σ2n t φ (B) t−j σ2n t t−j
+0
+t=1 t=1
+T T
+1 1 1 (cid:88) 1 (cid:88)
+∇ L (φ , θ , σ ) = − ε2 = (σ2 − ε2),
+n σ2 n 0 0 0 σ2 σ4n σ4n
+t=1 t=1
+where U = 1 ε and V = 1 ε . We observe that 1 ∇L is the sum of vector martingale
+t φ0(B) t t θ0(B) t n n
+differences. If E(ε4) < ∞, it is clear that E((ε U )4) = E((ε4)E(U )4) < ∞, E((ε V )4) =
+t t t−j t t−j t t−i
+E((ε4)E(V )4) < ∞ and E((σ2 − ε2)2) < ∞. Hence Lindeberg’s condition is satisfied (see the
+t t−i t
+proof given in Section 9.1.6, for why this is true). Hence we have
+√
+D
+n∇L (φ , θ , σ ) → N (0, Λ).
+n 0 0 0
+Now by using the above and (14.51) we have
+√ √ √
+n (cid:0) ϕˆ ∗ − ϕ (cid:1) = n∇2L (ϕ¯ )−1∇L (ϕ ) ⇒ n (cid:0) ϕˆ ∗ − ϕ (cid:1) → D N (0, σ4Λ−1).
+n 0 n n n 0 n 0
+Thus we obtain the required result. (cid:3)
+The above result proves consistency and asymptotically normality of (ˆθ ∗ , φˆ∗ , σˆ∗ ), which is based
+n n n
+on L (θ, φ, σ), which in practice is impossible to evaluate. However we will show below that the
+n
+gaussian likelihood, L (θ, φ, σ) and is derivatives are sufficiently close to L (θ, φ, σ) such that
+n n
+the estimators (ˆθ ∗ , φˆ∗ , σˆ∗ ) and the GMLE, (ˆθ , φˆ , σˆ ) = arg min L (θ, φ, σ) are asymptotically
+n n n n n n n
+equivalent. We use Lemma 14.8.1 to prove the below result.
+478
+
+--- physical page 480 ---
+Proposition 14.8.2 Suppose that Assumption 14.8.1 hold and L (θ, φ, σ), L˜ (θ, φ, σ) and L (θ, φ, σ)
+n n n
+are defined as in (14.37), (14.39) and (14.41) respectively. Then we have for all (θ, φ) ∈ T heta we
+have almost surely
+1 1 1 1
+sup |∇(k)L˜(φ, θ, σ) − ∇kL (φ, θ, σ)| = O( ) sup |L˜ (φ, θ, σ) − L(φ, θ, σ)| = O( ),
+n n
+n n n n
+(φ,θ,σ) (φ,θ,σ)
+for k = 0, 1, 2, 3.
+PROOF. The proof of the result follows from (14.42) and (14.44). We show that result for
+sup 1 |L˜(φ, θ, σ) − L (φ, θ, σ)|, a similar proof can be used for the rest of the result.
+(φ,θ,σ) n n
+Let us consider the difference
+1
+L (φ, θ) − L (φ, θ) = (I + II + III ),
+n n n n n
+n
+where
+n−1 n−1
+I = (cid:88) (cid:8) r (φ, θ, σ) − σ2(cid:9) , II = (cid:88) 1 (X (φ,θ) − X (φ,θ) )2
+n t n r (φ, θ, σ) t+1 t+1|t
+t
+t=1 t=1
+n−1
+III = (cid:88) 1 (cid:8) 2X (X (φ,θ) − X˜ (φ,θ) ) + ((X (φ,θ) )2 − (X˜ (φ,θ) )2) (cid:9) .
+n σ2 t+1 t+1|t t+1|t,... t+1|t t+1|t,...
+t=1
+Now we recall from Proposition 14.8.1 that
+(cid:12) (cid:12)X t ( + φ, 1 θ | ) t − X˜ t ( + φ, 1 θ | ) t,... (cid:12) (cid:12) ≤ K · V t (1 ρ − t ρ)
+where V = (cid:80)t ρi|X |. Hence since E(X2) < ∞ and E(V 2) < ∞ we have that sup E|I | < ∞,
+t i=1 i t t n n
+sup E|II | < ∞ and sup E|III | < ∞. Hence the sequence {|I + II + III |} is almost surely
+n n n n n n n n
+bounded. This means that almost surely
+(cid:12) (cid:12) 1
+sup (cid:12)L
+n
+(φ, θ) − L
+n
+(φ, θ)(cid:12) = O( ).
+n
+φ,θ,σ
+Thus giving the required result. (cid:3)
+Now by using the above proposition the result below immediately follows.
+Theorem 14.8.2 Let (ˆθ, φˆ) = arg min L (θ, φ, σ) and (˜θ, φˆ) = arg min L˜ (θ, φ, σ)
+T T
+479
+
+--- physical page 481 ---
+(i) (ˆθ, φˆ) a → .s. (θ , φ ) and (˜θ, φ˜) a → .s. (θ , φ ).
+0 0 0 0
+√
+(ii) T (ˆθ − θ , φˆ − θ ) → D N (0, σ4Λ−1)
+T 0 T 0 0
+√
+and T (˜θ − θ , φ˜ − θ ) → D N (0, σ4Λ−1).
+T 0 T 0 0
+PROOF. The proof follows immediately from Proposition 14.8.1. (cid:3)
+480

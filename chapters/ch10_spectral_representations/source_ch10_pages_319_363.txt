@@ -1,0 +1,2285 @@
+--- physical page 319 ---
+Chapter 10
+Spectral Representations
+Prerequisites
+• Knowledge of complex numbers.
+• Have some idea of what the covariance of a complex random variable (we do define it below).
+• Some idea of a Fourier transform (a review is given in Section A.3).
+• The very useful result on the discrete Fourier transform:
+
+(cid:88) n (cid:18) 2πj (cid:19)  0 j (cid:54)= nZ
+exp it = . (10.1)
+n  n j ∈ Z
+t=1
+Objectives
+• Know the definition of the spectral density.
+• The spectral density is always non-negative and this is a way of checking that a sequence is
+actually non-negative definite (is a autocovariance).
+• The DFT of a second order stationary time series is almost uncorrelated.
+• The spectral density of an ARMA time series, and how the roots of the characteristic poly-
+nomial of an AR may influence the spectral density function.
+• There is no need to understand the proofs of either Bochner’s (generalised) theorem or the
+spectral representation theorem, just know what these theorems are. However, you should
+318
+
+--- physical page 320 ---
+(cid:80)
+know the proof of Bochner’s theorem in the simple case that |rc(r)| < ∞.
+r
+10.1 How we have used Fourier transforms so far
+We recall in Section 2.5 that we considered models of the form
+X = A cos (ωt) + B sin (ωt) + ε t = 1, . . . , n. (10.2)
+t t
+where ε are iid random variables with mean zero and variance σ2 and ω is unknown. We estimated
+t
+the frequency ω by taking the Fourier transform J
+n
+(ω) = √1
+n
+(cid:80)n
+t=1
+X
+t
+eitω and using as an estimator
+of ω, the value which maximised |J (ω)|2. As the sample size grows the peak (which corresponds
+n
+the frequency estimator) grows in size. Besides the fact that this corresponds to the least squares
+estimator of ω, we note that
+n
+1 1 (cid:88)
+√ J (ω ) = X exp(itω )
+n k t k
+n 2πn
+t=1
+n n
+1 (cid:88) t 1 (cid:88)
+= µ( ) exp(itω ) + ε exp(itω ) (10.3)
+k t k
+2πn n 2πn
+t=1 t=1
+(cid:124) (cid:123)(cid:122) (cid:125) (cid:124) (cid:123)(cid:122) (cid:125)
+=O(1) =Op(n−1/2) compare with
+n
+1 (cid:80)n
+t=1
+εt
+where ω = 2πk , is an estimator the the Fourier transform of the deterministic mean at frequency k.
+k n
+In the case that the mean is simply the sin function, there is only one frequency which is non-zero.
+A plot of one realization (n = 128), periodogram of the realization, periodogram of the iid noise
+and periodogram of the sin function is given in Figure 10.1. Take careful note of the scale (y-
+axis), observe that the periodogram of the sin function dominates the the periodogram of the noise
+(magnitudes larger). We can understand why from (10.3), where the asymptotic rates are given and
+we see that the periodogram of the deterministic signal is estimating n×Fourier coefficient, whereas
+the periodgram of the noise is O (1). However, this is an asymptotic result, for small samples sizes
+p
+you may not see such a big difference between deterministic mean and the noise. Next look at the
+periodogram of the noise we see that it is very erratic (we will show later that this is because it is
+an inconsistent estimator of the spectral density function), however, despite the erraticness, the
+amount of variation overall frequencies seems to be same (there is just one large peak - which could
+be explained by the randomness of the periodogram).
+Returning again to Section 2.5, we now consider the case that the sin function has been cor-
+319
+
+--- physical page 321 ---
+Time
+langis
+0 20 40 60 80 100 120
+4
+2
+0
+2−
+4−
+l l
+llllllllllllllllllllllllll lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll lllllllllllllllllllllllll
+0 1 2 3 4 5 6
+5.0
+4.0
+3.0
+2.0
+1.0
+0.0
+frequency
+SP
+l l l l
+l l
+l l l l l l l l l
+ll l l ll ll ll llllll ll ll ll l l ll
+l lll l l l llll l ll lll ll ll l l l l lll lllll ll l lll ll lllll ll lll l ll lllll lll l l l l ll ll lll ll l llll l l l lll l
+0 1 2 3 4 5 6
+030.0
+020.0
+010.0
+000.0
+frequency
+1P
+l l
+llllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll
+0 1 2 3 4 5 6
+5.0
+4.0
+3.0
+2.0
+1.0 0.0
+frequency
+2P
+Figure 10.1: Top Left: Realisation of (2.18) (2 sin( 2πt )) with iid noise, Top Right: Pe-
+8
+riodogram of sin + noise. Bottom Left: Periodogram of just the noise. Bottom Right:
+Periodogram of just the sin function.
+rupted by colored noise, which follows an AR(2) model
+ε = 1.5ε − 0.75ε + (cid:15) . (10.4)
+t t−1 t−2 t
+A realisation and the corresponding periodograms are given in Figure 10.2. The results are different
+to the iid case. The peak in the periodogram no longer corresponds to the period of the sin function.
+From the periodogram of the just the AR(2) process we observe that it erratic, just as in the iid
+case, however, there appears to be varying degrees of variation over the frequencies (though this
+is not so obvious in this plot). We recall from Chapters 2 and 3, that the AR(2) process has
+a pseudo-period, which means the periodogram of the colored noise will have pronounced peaks
+which correspond to the frequencies around the pseudo-period. It is these pseudo-periods which
+are dominating the periodogram, which is giving a peak at frequency that does not correspond to
+the sin function. However, asymptotically the rates given in (10.3) still hold in this case too. In
+other words, for large enough sample sizes the DFT of the signal should dominate the noise. To see
+that this is the case, we increase the sample size to n = 1024, a realisation is given in Figure 10.3.
+We see that the period corresponding the sin function dominates the periodogram. Studying the
+periodogram of just the AR(2) noise we see that it is still erratic (despite the large sample size),
+320
+
+--- physical page 322 ---
+but we also observe that the variability clearly changes over frequency.
+Time
+2langis
+0 20 40 60 80 100 120
+5
+0
+5−
+l l
+l l
+l l l l
+l l l l
+l l
+l l lll l l lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll l l lll l
+0 1 2 3 4 5 6
+2.1
+8.0
+4.0
+0.0
+frequency
+SP
+l l
+l l
+l l
+l l l l
+ll ll
+l l lll l l lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll l l lll l
+0 1 2 3 4 5 6
+2.1
+8.0
+4.0
+0.0
+frequency
+1P
+l l
+llllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll
+0 1 2 3 4 5 6
+5.0
+4.0
+3.0
+2.0
+1.0
+0.0
+frequency
+2P
+Figure 10.2: Top Left: Realisation of (2.18) (2 sin( 2πt )) with AR(2) noise (n = 128), Top
+8
+Right: Periodogram. Bottom Left: Periodogram of just the AR(2) noise. Bottom Right:
+Periodogram of the sin function.
+Time
+3langis
+0 200 400 600 800 1000
+01
+5
+0
+5− 01−
+l l
+l l
+llllll ll llllllllll l ll lllllllll l l l llllll l lll lllll llll l l l llll lll l l ll ll ll l l l ll ll l ll lll l l ll lllll ll l l l lll ll l l lllll l lllllllll l llllllllllll l lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll l llllllllllll l lllllllll l lllll l l ll lll l l l ll lllll ll l l lll ll l ll ll l l l ll ll ll l l lll llll l l l llll lllll lll l llllll l l l lllllllll ll l llllllllll ll lllll
+0 1 2 3 4 5 6
+5.0
+4.0
+3.0
+2.0
+1.0 0.0
+frequency
+SP
+l l
+ll ll
+lllll lllll lll lll
+lll lll lllll l ll ll l l l l lll l l ll l lll lll ll l l l llll l l l l ll ll lll l ll l l l l l l l l l ll l l l l l l l ll l l l ll lllllll ll l l ll l l l ll l l l lll l l l l l l l l ll l l lllll ll l l ll l lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll l ll l l ll lllll l l ll l l l l l l l l lll l l l ll l l l ll l l ll lllllll ll l l l ll l l l l l l l ll l l l l l l l l l ll l lll ll ll l l l l llll l l l ll lll lll l ll l l lll l l l l ll ll l llll
+0 1 2 3 4 5 6
+02.0
+51.0
+01.0
+50.0 00.0
+frequency
+1P
+l l
+llllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll
+0 1 2 3 4 5 6
+5.0
+4.0
+3.0
+2.0 1.0 0.0
+frequency
+2P
+Figure 10.3: Top Left: Realisation of (2.18) (2 sin( 2πt )) with AR(2) noise (n = 1024), Top
+8
+Right: Periodogram. Bottom Left: Periodogram of just the AR(2) noise. Bottom Right:
+Periodogram of the sin function.
+From now on we focus on the constant mean stationary time series (eg. iid noise and the AR(2))
+321
+
+--- physical page 323 ---
+(where the mean is either constant or zero). As we have observed above, the periodogram is the
+absolute square of the discrete Fourier Transform (DFT), where
+n
+1 (cid:88)
+J (ω ) = √ X exp(itω ). (10.5)
+n k t k
+2πn
+t=1
+This is simply a (linear) transformation of the data, thus it easily reversible by taking the inverse
+DFT
+√
+n
+2π (cid:88)
+X = √ J (ω ) exp(−itω ). (10.6)
+t n k k
+n
+t=1
+Therefore, just as one often analyzes the log transform of data (which is also an invertible trans-
+form), one can analyze a time series through its DFT.
+In Figure 10.4 we give plots of the periodogram of an iid sequence and AR(2) process defined
+in equation (10.4). We recall from Chapter 3, that the periodogram is an inconsistent estimator
+of the spectral density function f (ω) = (2π)−1 (cid:80)∞ c(r) exp(irω) and a plot of the spectral
+r=−∞
+density function corresponding to the iid and AR(2) process defined in (??). We will show later
+that by inconsistent estimator we mean that E[|J (ω )|2] = f (ω ) + O(n−1) but var[|J (ω )|2] (cid:57) 0
+n k k n k
+as n → ∞. this explains why the general ‘shape’ of |J (ω )|2 looks like f (ω ) but |J (ω )|2 is
+n k k n k
+extremely erratic and variable.
+l l
+ll
+l l l l
+l l
+l l l l l l l l l ll l l ll ll l l ll l l ll ll l l l l l l l l l l l l l l l l l l ll l l l l l l ll l l l l l l l l ll l l l l l lll l l l l l l l l l l l l ll ll l l l lll l l lll l l l l lll ll l l l ll l l l l l l l ll l l l ll ll l l ll l l l l l l l l l l l l l ll l ll l l l l l l l l l l l l l l ll l lll l l l l l ll l l ll l l l l l l l l l l l l l l l l ll l l l l l l l l l ll l l l l l l l l l ll l l l l l ll l l l l l l l l l l l ll l l l l l l ll l l l l lll l l lll ll l ll l l l l l l l l l l l l l l l l l l ll l l l ll l l l l l ll l l l l ll l l l l l l l l l l l l l l l l l l l ll l l l lllll llll l ll lll l lll l l ll l l l lll l l l l l l ll ll l l l l l l l l l l ll l l l lll l ll l l l l l l l l l lllll l l l ll l l lll ll l ll l l l l ll l l l l l l l l l l l l l l l ll l l l l l l ll l ll l l lll l lll l l lll l l l l l l lll l ll l l l ll l l l l l l l ll l ll l l l l l l l ll l l l l ll l l lll l l l l lll l l l l lll l l ll l l l l ll l l l l l l l ll l ll l l l l l l l ll l l l ll l lll l l l l l l lll l l lll l lll l l ll l ll l l l l l l ll l l l l l l l l l l l l l l l ll l l l l ll l ll lll l l ll l l l lllll l l l l l l l l l ll l lll l l l ll l l l l l l l l l l ll ll l l l l l l lll l l l ll l l lll l lll ll l llll lllll l l l ll l l l l l l l l l l l l l l l l l l l ll l l l l ll l l l l l ll l l l ll l l l l l l l l l l l l l l l l l l ll l ll lll l l lll l l l l ll l l l l l l ll l l l l l l l l l l l ll l l l l l ll l l l l l l l l l ll l l l l l l l l l ll l l l l l l l l l l l l l l l l ll l l ll l l l l l lll l ll l l l l l l l l l l l l l l ll l ll l l l l l l l l l l l l l ll l l ll ll l l l ll l l l l l l l ll l l l ll lll l l l l lll l l lll l l l ll ll l l l l l l l l l l l l lll l l l l l ll l l l l l l l l ll l l l l l l ll l l l l l l l l l l l l l l l l
+0 1 2 3 4 5 6
+800.0
+600.0
+400.0 200.0 000.0
+frequency
+1P
+l l
+l l
+l l l l l l ll ll l lll l lll l l l ll llll l l l lll ll l l l lll l l ll l l l l l l l l l l ll l l llllll l ll ll l l l l l l ll l ll l l l l l l l l l l ll l ll l l l ll l ll l l l l l l ll l l ll lllll l l ll l l l l llllllllll l l ll l l lllllllllllllllllllll lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll lllllllllllllllllllll l l ll l l llllllllll l l l l ll l l lllll ll l l ll l l l l l l ll l ll l l l ll l ll l l l l l l l l l l ll l ll l l l l l l ll ll l llllll l l ll l l l l l l l l l l ll l l lll l l l ll lll l l l llll ll l l l lll l lll
+0 1 2 3 4 5 6
+52.0
+02.0
+51.0 01.0 50.0 00.0
+frequency
+2P
+Figure 10.4: Left: Periodogram of iid noise. Right: Periodogram of AR(2) process.
+Remark 10.1.1 (Properties of the spectral density function) The spectral density function
+was first introduced in in Section 3.4. We recall that given an autoregressive process {c(k)}, the
+322
+
+--- physical page 324 ---
+0.0 0.1 0.2 0.3 0.4 0.5
+4.1
+2.1
+0.1
+8.0
+6.0
+frequency
+murtceps
+IID
+0.0 0.1 0.2 0.3 0.4 0.5
+06
+05
+04
+03
+02
+01
+0
+frequency
+murtceps
+Autoregressive (2)
+Figure 10.5: Left: Spectral density of iid noise. Right: Spectral density of AR(2), note that
+the interval [0, 1] corresponds to [0, 2π] in Figure 10.5
+spectral density is defined as
+∞
+1 (cid:88)
+f (ω) = c(r) exp(2πir).
+2π
+r=−∞
+And visa versa, given the spectral density we can recover the autocovariance via the inverse trans-
+(cid:82) 2π
+form c(r) = f (ω) exp(−2πirω)dω. We recall from Section 3.4 that the spectral density function
+0
+can be used to construct a valid autocovariance function since only a sequence whose Fourier trans-
+form is real and positive can be positive definite.
+In Section 7.8 we used the spectral density function to define conditions under which the variance
+covariance matrix of a stationary time series had minimum and maximim eigenvalues. Now from
+the discussion above we observe that the variance of the DFT is approximately the spectral density
+function (note that for this reason the spectral density is sometimes called the power spectrum).
+We now collect some of the above observations, to summarize some of the basic properties of
+the DFT:
+(i) We note that J (ω ) = J (ω ), therefore, all the information on the time series is contain
+n k n n−k
+in the first n/2 frequencies {J (ω ); k = 1, . . . , n/2}.
+n k
+(ii) If the time series E[X ] = µ and k (cid:54)= 0 then
+t
+n
+1 (cid:88)
+E[J (ω )] = √ µ exp(itω ) = 0.
+n k k
+n
+t=1
+323
+
+--- physical page 325 ---
+If k = 0 then
+1 (cid:88) n √
+E[J (ω )] = √ µ = nµ.
+n 0
+n
+t=1
+In other words, the mean of the DFT (at non-zero frequencies) is zero regardless of whether
+the time series has a zero mean (it just needs to have a constant mean).
+(iii) However, unlike the original stationary time series, we observe that the variance of the DFT
+depends on frequency (unless it is a white noise process) and that for k (cid:54)= 0, var[J (ω )] =
+n k
+E[|J (ω )|2] = f (ω ) + O(n−1).
+n k k
+The focus of this chapter will be on properties of the spectral density function (proving some
+of the results we stated previously) and on the so called Cramer representation (or spectral repre-
+sentation) of a second order stationary time series. However, before we go into these results (and
+proofs) we give one final reason why the analysis of a time series is frequently done by transforming
+to the frequency domain via the DFT. Above we showed that there is a one-to-one correspondence
+between the DFT and the original time series, below we show that the DFT almost decorrelates
+the stationary time series. In other words, one of the main advantages of working within the
+frequency domain is that we have transformed a correlated time series into something that it al-
+most uncorrelated (this also happens to be a heuristic reason behind the spectral representation
+theorem).
+10.2 The ‘near’ uncorrelatedness of the DFT
+−1/2
+Let X = {X ; t = 1, . . . , n} and Σ = var[X ]. It is clear that Σ X is an uncorrelated
+n t n n n n
+−1/2
+sequence. This means to formally decorrelate X we need to know Σ . However, if X is a
+n n t
+second order stationary time series, something curiously, remarkable happens. The DFT, almost
+uncorrelates the X . The implication of this is extremely useful in time series, and we shall be
+n
+using this transform in estimation in Chapter 11.
+We start by defining the Fourier transform of {X }n as
+t t=1
+n
+1 (cid:88) 2πt
+J (ω ) = √ X exp(ik ) k = 1, . . . , n,
+n k t
+2πn n
+t=1
+where the frequences ω = 2πk/n are often called the fundamental, Fourier frequencies. Note that
+k
+324
+
+--- physical page 326 ---
+in R (cid:80)n X exp(−ik 2πt ) is evaluated with the fft function for k = 0, 1 . . . , n − 1, where we
+t=1 t n
+observe that k = 0 is the same as k = n. To evaluate (cid:80)n X exp(ik 2πt ) for k = 0, 1, . . . , n − 1
+t=1 t n
+one needs to use the function fft(x,inverse = TRUE). Keep in mind that
+J (ω ) = J (ω ),
+n k n n−k
+so it does not matter which definition one uses.
+Below we state some of its properties.
+(cid:80)
+Lemma 10.2.1 Suppose {X } is a second order stationary time series, where |rc(r)| < ∞.
+t r
+Then we have
+
+cov(J ( 2πk 1 ), J ( 2πk 2 )) =  f ( 2π n k ) + O( n 1 ) k 1 = k 2
+n n
+n n  O( 1 ) 1 ≤ k (cid:54)= k ≤ n/2
+n 1 2
+where f (ω) = 1 (cid:80)∞ c(r) exp(irω). If one wants to consider the real and imaginary parts of
+2π r=−∞
+J (ω ) then
+n k
+
+cov(J ( 2πk 1 ), J ( 2πk 2 )) =  f ( 2π n k ) + O( n 1 ) k 1 = k 2
+n,C n,C
+n n  O( 1 ) 1 ≤ k (cid:54)= k ≤ n/2
+n 1 2
+
+cov(J ( 2πk 1 ), J ( 2πk 2 )) =  f ( 2π n k ) + O( n 1 ) k 1 = k 2
+n,S n,S
+n n  O( 1 ) 1 ≤ k (cid:54)= k ≤ n/2
+n 1 2
+and cov[J ( 2πk1 ), J ( 2πk2 )] = O(n−1) for 1 ≤ k , k ≤ n/2, where
+n,C n n,S n 1 2
+n n
+1 (cid:88) 1 (cid:88)
+J (ω ) = √ X cos(tω ), J (ω ) = √ X sin(tω ).
+n,C k t k n,S k t k
+2πn 2πn
+t=1 t=1
+We prove the result in Section 10.2.2.
+10.2.1 Testing for second order stationarity: An application of the
+near decorrelation property
+√
+We evaluate the DFT using the following piece of code (note that we do not standardize by 2π)
+325
+
+--- physical page 327 ---
+dft <- function(x){
+n=length(x)
+dft <- fft(x)/sqrt(n)
+return(dft)
+}
+We have shown above that {J (ω )} are close to uncorrelated and have variance close to f (ω ).
+n k k k
+This means that the ratio J (ω )/f (ω )1/2 are close to uncorrelated with variance close to one. Let
+n k k
+us treat
+J (ω )
+n k
+Z = ,
+k (cid:112)
+f (ω )
+k
+as the transformed random variables, noting that {Z } is complex, our aim is to show that the acf
+k
+corresponding to {Z } is close to zero. Of course, in practice we do not know the spectral density
+k
+function f , therefore we estimate it using the piece of code (where test is the time series)
+k<-kernel("daniell",6)
+temp2 <-spec.pgram(test,k, taper=0, log = "no")$spec
+n <- length(temp2)
+temp3 <- c(temp2[c(1:n)],temp2[c(n:1)])
+temp3 simply takes a local average of the periodogram about the frequency of interest (however
+it is worth noting that spec.pgram does not do precisely this, which can be a bit annoying). In
+Section 11.3 we explain why this is a consistent estimator of the spectral density function. Notice
+that we also double the length, because the estimator temp2 only gives estimates in the interval
+[0, π]. Thus our estimate of {Z
+k
+}, which we denote as Z(cid:98)k = J
+n
+(ω
+k
+)/f(cid:98)n (ω
+k
+)1/2 is
+temp1 <- dft(test); temp4 <- temp1/sqrt(temp3)
+We want to evaluate the covariance of {Z(cid:98)k } over various lags
+n n
+1 (cid:88) 1 (cid:88) J n (ω k )J n (ω k+r )
+C(cid:98)n (r) = Z(cid:98)k Z(cid:98)k+r =
+(cid:113)
+n n
+k=1 k=1 f(cid:98)n (ω k )f(cid:98)n (ω k+r )
+To speed up the evaluation, we use we can exploit the speed of the FFT, Fast Fourier Transform.
+326
+
+--- physical page 328 ---
+A plot of the AR(2) model
+ε = 1.5ε − 0.75ε + (cid:15) .
+t t−1 t−2 t
+together with the real and imaginary parts of its DFT autocovariance is given in Figure 10.6. We
+observe that most of the correlations lie between [−1.96, 1.96] (which corresponds to the 2.5% limits
+of a standard normal). Note that the 1.96 corresponds to the 2.5% limits, however this bound only
+holds if the time series is Gaussian. If the time series is non-Gaussian some corrections have to be
+made (see Dwivedi and Subba Rao (2011) and Jentsch and Subba Rao (2014)).
+Exercise 10.1 (a) Simulate an AR(2) process and run the above code using the sample size
+(i) n = 64 (however use k<-kernel("daniell",3))
+(ii) n = 128 (however use k<-kernel("daniell",4))
+Does the ‘near decorrelation property’ hold when the sample size is very small. Explain your
+answer by looking at the proof of the lemma.
+(b) Simulate a piecewise stationary time series (this is a simple example of a nonstationary time
+series) by stringing two stationary time series together. One example is
+ts1 = arima.sim(list(order=c(2,0,0), ar = c(1.5, -0.75)), n=128);
+ts2 = arima.sim(list(order=c(1,0,0), ar = c(0.7)), n=128)
+test = c(ts1/sd(ts1),ts2/sd(ts2))
+Make a plot of this time series. Calculate the DFT covariance of this time series, what do
+you observe in comparison to the stationary case?
+327
+
+--- physical page 329 ---
+Time
+1tset
+0 100 200 300 400 500
+5
+0
+5−
+01−
+l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l
+0 10 20 30 40 50
+4
+2 0 2−
+4−
+lagM
+Rvoctfd
+l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l
+l
+0 10 20 30 40 50
+4
+2 0 2−
+4−
+lagM
+Ivoctfd
+l l l
+l l
+lllllllllllllllllllllllllll
+llllllllllllllllllllllllllllllllllllllllllllllllllll
+lllllll
+ll
+ll
+l l l
+l
+l
+−2 −1 0 1 2
+2
+1
+0
+1−
+2−
+3−
+quant.theoretical
+1tfdgga
+√
+Figure 10.6: Top: Realization. Middle: Real and Imaginary of nC(cid:98) (r) plotted against the
+√ n
+‘lag’ r. Bottom: QQplot of the real and imaginary nC(cid:98) (r) against a standard normal.
+n
+10.2.2 Proof of Lemma 10.2.1
+We will calculate cov(J ( 2πk1 ), J ( 2πk2 )). The important aspect of this proof is that if we can
+n n n n
+isolate the exponentials, then we can use (10.1). It is this that gives rise to the near uncorrelatedness
+328
+
+--- physical page 330 ---
+property. Furthermore, since
+2π
+exp(i jk) = exp(ijω ) = exp(ikω ),
+k j
+n
+hence we can interchange the above terms. The proof hinges on the zeroing property of the DFT
+
+(cid:88) n (cid:18) 2πj (cid:19)  0 j ∈/ nZ
+exp it = .
+n  n j ∈ nZ
+t=1
+It is possible to prove this result separating the complex variable into sines and cosines, but the
+proof is cumbersome. Instead, we summarize some well known properties of covariances of complex
+random variables. Suppose A is a complex random variables, then var[A] must be positive (not
+complex!), thus we define
+(cid:104) (cid:105)
+var[A] = E (A − E[A])(A − E[A]) = E[AA] − |E[A]|2.
+Based on this definition the covariance between two complex random variables is
+(cid:104) (cid:105)
+cov[A, B] = cov (A − E[A])(B − E[B]) = E[AB] − E[A]E[B].
+Note that cov[A, B] = cov[B, A].
+Using this definitions we can write the covariance between two DFTs as
+(cid:18) (cid:19) n (cid:18) (cid:19)
+2πk 1 2πk 2 1 (cid:88) 2π
+cov J ( ), J ( ) = cov(X , X ) exp i(tk − τ k ) .
+n n t τ 1 2
+n n n n
+t,τ=1
+Next we change variables with r = t − τ , this gives (for 0 ≤ k , k < n)
+1 2
+(cid:18) (cid:19)
+2πk 2πk
+1 2
+cov J ( ), J ( )
+n n
+n n
+n−1 (cid:18) (cid:19) n−|r| (cid:18) (cid:19)
+1 (cid:88) 2πk 2 (cid:88) 2πit(k 1 − k 2 )
+= c(r) exp −ir exp ) .
+n n n
+r=−(n−1) t=1
+(cid:80)n−|r|
+Observe, if the limits of the inner sum were replaced with , then we can use the zero property
+t=1
+329
+
+--- physical page 331 ---
+of the DFTs. Thus in the next step we replace the limits of sum
+(cid:18) (cid:19) n−1 (cid:18) (cid:19) n (cid:18) (cid:19)
+2πk 1 2πk 2 (cid:88) 2πk 2 1 (cid:88) 2πit(k 1 − k 2 )
+cov J ( ), J ( ) = c(r) exp ir exp −R .
+n n n
+n n n n n
+r=−(n−1) t=1
+(cid:124) (cid:123)(cid:122) (cid:125)
+δ
+k1
+(k2)
+The remainder is what is additional term added to sum and is
+n−1 (cid:18) (cid:19) n (cid:18) (cid:19)
+1 (cid:88) 2πk 2 (cid:88) 2πit(k 1 − k 2 )
+R = c(r) exp −ir exp )
+n
+n n n
+r=−(n−1) t=n−|r|+1
+Thus |R | ≤ 1 (cid:80) |rc(r)| = O(n−1). Therefore
+n n |r|≤n
+(cid:18) (cid:19)
+2πk 2πk
+1 2
+cov J ( ), J ( )
+n n
+n n
+n−1 (cid:18) (cid:19) n−|r| (cid:18) (cid:19)
+1 (cid:88) 2πk 2 (cid:88) 2πit(k 1 − k 2 )
+= c(r) exp −ir exp ) .
+n n n
+r=−(n−1) t=1
+Observe, if the limits of the inner sum were replaced with
+(cid:80)n
+, then we can use the zero property
+t=1
+of the DFTs. Thus in the next step we replace the limits of sum
+(cid:18) (cid:19) n−1 (cid:18) (cid:19)
+2πk 1 2πk 2 (cid:88) 2πk 2
+cov J ( ), J ( ) = c(r) exp ir δ (k ) − R
+n
+n
+n
+n n
+k1 2 n
+r=−(n−1)
+= f (ω )δ (k ) + O(n−1),
+n k1 k1 2
+thus proving the result. (cid:3)
+10.2.3 The DFT and complete decorrelation
+The proof above is very “hands on”. But it does not adequately answer the question of where the
+O(n−1) actually comes from. Nor how it can be removed. It transpires that by using simple ideas
+from linear prediction (as described in Chapters 6 and 7), one can obtain a deep understanding on
+the role of the DFT in the analysis of stationary time series. These insights allow us to connect
+time domain estimation methods to the frequency domain estimation (described in Chapter 11).
+The ideas presented here are based on work done jointly with Junho Yang (see Subba Rao and
+Yang (2020)).
+As in the previous section, the derivations are based following simple identity on the special
+330
+
+--- physical page 332 ---
+zeroing property of sums of DFTs:
+
+1 (cid:88) n  0 k 1 − k 2 ∈/ nZ
+exp (itω ) = .
+n
+k1−k2
+ 1 k − k ∈ nZ
+t=1 1 2
+Let us return to the very simple calculations in the previous section. In particular, the product of
+the DFTs
+(cid:18) (cid:19) (cid:18) (cid:19) n
+J
+n
+2πk 1 J
+n
+2πk 2 = 1 (cid:88) X
+t
+X
+τ
+eitω k1 −iτω k2
+n n n
+t,τ=1
+n n
+1 (cid:88) (cid:88)
+= eit(ω k1 −ω k2 )X
+t
+X
+τ
+ei(t−τ)ω k2 . (10.7)
+n
+t=1 τ=1
+Thus the covariance between the DFTs is
+(cid:20) (cid:21) n n
+cov J
+n
+( 2πk 1 ), J
+n
+( 2πk 2 ) = 1 (cid:88) eit(ω k1 −ω k2 ) (cid:88) c(t − τ )ei(t−τ)ω k2 .
+n n n
+t=1 τ=1
+If the inner sum of the above were replaced with (cid:80)∞
+τ=−∞
+c(t − τ )ei(t−τ)ω k2 = f (ω
+k2
+), then we
+immediately have the decorrelation property; this is because the inner sum would not depend on t
+and the inner and outer sums can be separated out.
+A graphic for the inner summand in the term above is given Figure 10.7. The terms show
+what has been missed. The omission of these terms give rise to the O(n−1) error. Furthermore,
+we observe that when t = 1, there is large error as the term n−1 (cid:80)0 c(1 − τ )ei(1−τ)ω k has been
+τ=−∞
+omitted. However, if t is more central and far from the boundaries, then only the far left and
+right tails are omitted and the resulting error term is small. To remove the error term, we need a
+method for correcting for the red terms c(t − τ ) for all τ outside the observed domain of observation
+[1, 2, . . . , n − 1, n]. Of course, X is unknown outside the interval of observation. Nevertheless, one
+τ
+can still construct variables which yield c(t − τ ). To find these we review what we have learnt from
+linear prediction.
+We return to some results in Section 5.1.5. Define the space X, where X = sp(X , . . . , X )
+1 n
+and P (Y ) denote the linear projection of the random variable Y onto X. Then equation (5.6) in
+X
+Section 5.1.5 shows
+cov (P (Y ), X ) = cov(Y, X ) 1 ≤ (cid:96) ≤ n.
+X (cid:96) (cid:96)
+331
+
+--- physical page 333 ---
+Figure 10.7: An illustration of the correlation between two DFTs (with n = 5). The red
+terms are terms that have been omitted and contribute to the O(n−1) error.
+The above is a general result, we now apply it to the above problem. Suppose {X } be a second
+t
+order stationary time series and set X = sp(X , . . . , X ), these are the random variables in the
+1 n
+domain of observation. We define the random variables outside the domain of observation and let
+Y = X for τ (cid:54)= {1, . . . , n}. By using the above result we have
+τ
+cov (P (X ), X ) = cov(X , X ) = c(τ − t) 1 ≤ t ≤ n. (10.8)
+X τ t τ t
+Now P (X ) ∈ sp(X , . . . , X ), this tells us we can correct the boundary by including random
+X τ 1 n
+variables that belong the domain of observation.
+Worked Example: AR(1) Suppose that X = φX + ε where |φ| < 1. We have learn from Section
+t t−1 t
+6.2.2 (on partial covariance of a time series) that second order stationarity of a time series implies
+that the coefficients for forecasting into the future and forecasting into the past are the same.
+Further, we have shown in Section 7.2 that prediction/forecasting for AR(p) models are simply the
+AR(p) coefficients. Using these two facts the best linear predictor of X given {X }n is
+τ t t=1
+P (X ) = φX and P (X ) = φrX for r ≥ 1 (10.9)
+X n+1 n X n+r n
+P (X ) = φX and P (X ) = φ|r|X for r ≥ 1.
+X 0 1 X 1−r 1
+See Figure 10.8 for a graphic of the above.
+332
+
+--- physical page 334 ---
+Figure 10.8
+It is straightfoward to verify (10.8) for the AR(1) model. We have shown in Section 6.1.2 for r ≥ 1
+that
+φ|r|
+cov (X , X ) = .
+n n+r 1 − φ2
+On the other hand using the predictor in (10.9) we have
+φ|r|
+cov (X , P (X )) = φ|r|var[X ] = .
+n X n+r n 1 − φ2
+And we observe the two expression match. (cid:3)
+The above calculations show P (X ) is a “proxy” for X , that is only in terms of the observed
+X τ τ
+data, but also contains all the required information on X . Thus turning to (10.7) we replace one
+τ
+of the DFTs
+n n
+1 (cid:88) (cid:88)
+eit(ω k1 −ω k2 )X
+t
+X
+τ
+ei(t−τ)ω k2
+n
+t=1 τ=1
+with
+n n n
+1 (cid:88) (cid:88) 1 (cid:88) (cid:88)
+eit(ω k1 −ω k2 )X
+t
+X
+τ
+ei(t−τ)ω k2 + eit(ω k1 −ω k2 )X
+t
+P
+X
+(X
+τ
+)ei(t−τ)ω k2
+n n
+t=1 τ=1 t=1 τ(cid:54)={1,...,n}
+n ∞
+1 (cid:88) (cid:88)
+= eit(ω k1 −ω k2 )X
+t
+P
+X
+(X
+τ
+)ei(t−τ)ω k2 ,
+n
+t=1 τ=−∞
+where we note that the last line of the above is the best linear predictor P (X ) = X if τ ∈
+X τ τ
+{1, . . . , n}. The above can be written as a product:
+n ∞ (cid:32) n (cid:33) (cid:32) ∞ (cid:33)
+1 (cid:88) (cid:88) 1 (cid:88) 1 (cid:88)
+eit(ω k1 −ω k2 )X
+t
+P
+X
+(X
+τ
+)ei(t−τ)ω k2 = √ X
+t
+eitω k1 √ P
+X
+(X
+τ
+)e−iτω k1 .
+n n n
+t=1 τ=−∞ t=1 τ=−∞
+333
+
+--- physical page 335 ---
+The first term on the right hand side of the above is the regular DFT. The second term is a variant
+of the regular DFT which includes the regular DFT but linearly predicts outside the boundary (we
+call this the complete DFT):
+∞
+1 (cid:88) 1 (cid:88)
+J(cid:101)n (ω; f ) = J
+n
+(ω) + √ P
+X
+(X
+τ
+)eiτω = √ P
+X
+(X
+τ
+)eiτω.
+n n
+τ(cid:54)={1,2,...,n} τ=−∞
+The calculations above show that
+n
+1 (cid:88)
+cov[J
+n
+(ω
+k1
+), J(cid:101)n (ω
+k2
+; f )] =
+n
+eit(ω k1 −ω k2 )f (ω
+k2
+)
+t=1
+n
+1 (cid:88)
+= f (ω
+k2
+)
+n
+eit(ω k1 −ω k2 ) = f (ω
+k2
+)δ
+k1
+(k
+2
+).
+t=1
+We summarize the result in the following Lemma.
+(cid:80)
+Lemma 10.2.2 Suppose {X } is a second order stationary time series, where |rc(r)| < ∞ and
+t r
+(cid:80)
+f = c(r) exp(irω). Then we have
+∈Z
+
+cov (cid:20) J (cid:18) 2πk 1 (cid:19) , J (cid:18) 2πk 2 ; f (cid:19)(cid:21) =  f ( 2π n k ) k 1 = k 2 .
+n n
+n n
+ 0 1 ≤ k (cid:54)= k ≤ n/2
+1 2
+Worked Example: AR(1) For the AR(1) model, it can easily be shown that
+(cid:32) (cid:33)
+φ 1 ei(n+1)ω
+J(cid:101)n (ω; f ) = J
+n
+(ω) + √ X
+1
++ X
+n
+,
+n φ(ω) φ(ω)
+where φ(ω) = 1 − φe−iω. We observe that the predictive contribution is actually rather small (if n
+is large). (cid:3)
+As the contribution of the prediction term in the complete DFT is actually quite small O(n−1/2).
+It is this that allows us to focus the time series analysis on just the regular DFT (with the cost of
+a O(n−1) bias).
+334
+
+--- physical page 336 ---
+10.3 Summary of spectral representation results
+In this section we summarize some spectral properties. We do this by considering the DFT of the
+data {J (ω )}n . It is worth noting that to calculate {J (ω )}n is computationally very fast and
+n k k=1 n k k=1
+requires only O(n log n) computing operations (see Section A.5, where the Fast Fourier Transform
+is described).
+10.3.1 The spectral (Cramer’s) representation theorem
+We observe that for any sequence {X }n that it can be written as the inverse transform for
+t t=1
+1 ≤ t ≤ n
+n
+1 (cid:88)
+X = √ J (ω ) exp(−itω ), (10.10)
+t n k k
+n
+k=1
+which can be written as an integral
+n (cid:90) 2π
+(cid:88)
+X = exp(−itω ) [Z (ω ) − Z (ω )] = exp(−itω)dZ (ω), (10.11)
+t k n k n k−1 n
+0
+k=2
+where Z
+n
+(ω) = √1
+n
+(cid:80)(cid:98)
+k=
+2 ω π
+1
+n(cid:99) J
+n
+(ω
+k
+).
+The second order stationary property of X means that the DFT J (ω ) is close to an uncorre-
+t n k
+lated sequence or equivalently the process Z (ω) has near ‘orthogonal’ increments, meaning that for
+n
+any two non-intersecting intervals [ω , ω ] and [ω , ω ] that Z (ω ) − Z (ω ) and Z (ω ) − Z (ω ).
+1 2 3 4 n 2 n 1 n 4 n 3
+The spectral representation theorem generalizes this result, it states that for any second order
+stationary time series {X } there exists an a process {Z(ω); ω ∈ [0, 2π]} where for all t ∈ Z
+t
+(cid:90) 2π
+X = exp(−itω)dZ(ω) (10.12)
+t
+0
+and Z(ω) has orthogonal increments, meaning that for any two non-intersecting intervals [ω , ω ]
+1 2
+and [ω , ω ] E[Z(ω ) − Z(ω )][Z(ω ) − Z(ω )] = 0.
+3 4 2 1 2 1
+We now explore the relationship between the DFT with the orthogonal increment process.
+335
+
+--- physical page 337 ---
+Using (10.12) we see that
+1 (cid:88) n 1 (cid:90) 2π (cid:32) (cid:88) n (cid:33)
+J (ω ) = √ X exp(itω ) = √ exp(it[ω − ω]) dZ(ω)
+n k t k k
+2πn 2πn
+0
+t=1 t=1
+1 (cid:90) 2π (cid:16) (cid:17)
+= √ ei(n+1)(ω k −ω0)/2D (ω − ω) dZ(ω),
+n/2 k
+2πn
+0
+where D (x) = sin[((n + 1)/2)x]/ sin(x/2) is the Dirichlet kernel (see Priestley (1983), page
+n/2
+419). We recall that the Dirichlet kernel limits to the Dirac-delta function, therefore very crudely
+speaking we observe that the DFT is an approximation of the orthogonal increment localized about
+ω (though mathematically this is not strictly correct).
+k
+10.3.2 Bochner’s theorem
+This is a closely related result that is stated in terms of the so called spectral distribution. First the
+heuristics. We see that from Lemma 10.2.1 that the DFT J (ω ), is close to uncorrelated. Using
+n k
+this and inverse Fourier transforms we see that for 1 ≤ t, τ ≤ n we have
+n n
+1 (cid:88) (cid:88)
+c(t − τ ) = cov(X , X ) = cov (J (ω ), J (ω )) exp(−itω + iτ ω )
+t τ
+n
+n k1 n k2 k1 k2
+k1=1 k2=1
+n
+1 (cid:88)
+≈ var(J (ω )) exp(−i(t − τ )ω ). (10.13)
+n k k
+n
+k=1
+Let F (ω) = 1 (cid:80)(cid:98) 2 ω π n(cid:99) var[J (ω )], then the above can be written as
+n n k=1 n k
+(cid:90) 2π
+c(t − τ ) ≈ exp(−i(t − τ )ω)dF (ω),
+n
+0
+where we observe that F (ω) is a positive function which in non-decreasing over ω. Bochner’s
+n
+theorem is an extension of this is states that for any autocovariance function {c(k)} we have the
+representation
+(cid:90) 2π (cid:90) 2π
+c(t − τ ) = exp(−i(t − τ )ω)f (ω)dω = exp(−i(t − τ )ω)dF (ω).
+0 0
+where F (ω) is a positive non-decreasing bounded function. Moreover, F (ω) = E(|Z(ω)|2). We note
+that if the spectral density function exists (which is only true if (cid:80) |c(r)|2 < ∞) then F (ω) =
+r
+(cid:82) ω
+f (λ)dλ.
+0
+336
+
+--- physical page 338 ---
+Remark 10.3.1 The above results hold for both linear and nonlinear time series, however, in the
+case that X has a linear representation
+t
+∞
+(cid:88)
+X = ψ ε ,
+t j t−j
+j=−∞
+then X has the particular form
+t
+(cid:90)
+X = A(ω) exp(−ikω)dZ(ω), (10.14)
+t
+where A(ω) =
+(cid:80)∞
+ψ exp(ijω) and Z(ω) is an orthogonal increment process, but in addition
+j=−∞ j
+E(|dZ(ω)|2) = dω ie. the variance of increments do not vary over frequency (as this varying has
+been absorbed by A(ω), since F (ω) = |A(ω)|2).
+We mention that a more detailed discussion on spectral analysis in time series is give in Priestley
+(1983), Chapters 4 and 6, Brockwell and Davis (1998), Chapters 4 and 10, Fuller (1995), Chapter
+3, Shumway and Stoffer (2006), Chapter 4. In many of these references they also discuss tests for
+periodicity etc (see also Quinn and Hannan (2001) for estimation of frequencies etc.).
+10.4 The spectral density and spectral distribution
+10.4.1 The spectral density and some of its properties
+Finally, having made ourselves familiar with the DFT and the spectral density function we can prove
+Theorem 3.4.2, which relates the autocovariance with the positiveness of its Fourier transform. In
+the following lemma we consider absolutely summable autocovariances, in a later theorem (called
+Bochner’s theorem) we show that any valid autocovariance has this representation.
+Theorem 10.4.1 (Positiveness of the spectral density) Suppose the coefficients {c(k)} are
+(cid:80)
+absolutely summable (that is |c(k)| < ∞). Then the sequence {c(k)} is positive semi-definite if
+k
+an only if the function f (ω), where
+∞
+1 (cid:88)
+f (ω) = c(k) exp(ikω)
+2π
+k=−∞
+337
+
+--- physical page 339 ---
+is nonnegative. Moreover
+(cid:90) 2π
+c(k) = exp(−ikω)f (ω)dω. (10.15)
+0
+It is worth noting that f is called the spectral density corresponding to the covariances {c(k)}.
+PROOF. We first show that if {c(k)} is a non-negative definite sequence, then f (ω) is a nonnegative
+function. We recall that since {c(k)} is non-negative then for any sequence x = (x , . . . , x ) (real
+1 N
+or complex) we have
+(cid:80)n
+x c(s − t)x¯ ≥ 0 (where x¯ is the complex conjugate of x ). Now we
+s,t=1 s s s s
+consider the above for the particular case x = (exp(iω), . . . , exp(inω)). Define the function
+n
+1 (cid:88)
+f (ω) = exp(isω)c(s − t) exp(−itω).
+n
+2πn
+s,t=1
+Thus by definition f (ω) ≥ 0. We note that f (ω) can be rewritten as
+n n
+(n−1) (cid:18) (cid:19)
+1 (cid:88) n − |k|
+f (ω) = c(k) exp(ikω).
+n
+2π n
+k=−(n−1)
+Comparing f (ω) = 1 (cid:80)∞ c(k) exp(ikω) with f (ω) we see that
+2π k=−∞ n
+(n−1)
+(cid:12) 1 (cid:12) (cid:88) (cid:12) 1 (cid:12) (cid:88) |k| (cid:12)
+(cid:12)f (ω) − f n (ω) ≤ (cid:12) c(k) exp(ikω)(cid:12) + (cid:12) c(k) exp(ikω)(cid:12)
+2π 2π n
+|k|≥n k=−(n−1)
+:= I + II .
+n n
+Since
+(cid:80)∞
+|c(k)| < ∞ it is clear that I → 0 as n → ∞. Using Lemma A.1.1 we have II → 0
+k=−∞ n n
+as n → ∞. Altogether the above implies
+(cid:12) (cid:12)
+(cid:12)f (ω) − f
+n
+(ω)(cid:12) → 0 as n → ∞. (10.16)
+Now it is clear that since for all n, f (ω) are nonnegative functions, the limit f must be nonnegative
+n
+(if we suppose the contrary, then there must exist a sequence of functions {f (ω)} which are not
+n
+k
+necessarily nonnegative, which is not true). Therefore we have shown that if {c(k)} is a nonnegative
+definite sequence, then f (ω) is a nonnegative function.
+We now show the converse, that is the Fourier coefficients of any non-negative (cid:96) function f (ω) =
+2
+1 (cid:80)∞ c(k) exp(ikω), is a positive semi-definite sequence. Writing c(k) = (cid:82) 2π f (ω) exp(ikω)dω
+2π k=−∞ 0
+338
+
+--- physical page 340 ---
+we substitute this into Definition 3.4.1 to give
+(cid:88) n x c(s − t)x¯ = (cid:90) 2π f (ω) (cid:8) (cid:88) n x exp(i(s − t)ω)x¯ (cid:9) dω = (cid:90) 2π f (ω) (cid:12) (cid:12) (cid:12) (cid:88) n x exp(isω) (cid:12) (cid:12) (cid:12) 2 dω ≥ 0.
+s s s s (cid:12) s (cid:12)
+0 0 (cid:12) (cid:12)
+s,t=1 s,t=1 s=1
+Hence we obtain the desired result. (cid:3)
+The above theorem is very useful. It basically gives a simple way to check whether a sequence
+{c(k)} is non-negative definite or not (hence whether it is a covariance function - recall Theo-
+rem 3.4.1). See Brockwell and Davis (1998), Corollary 4.3.2 or Fuller (1995), Theorem 3.1.9, for
+alternative explanations.
+Example 10.4.1 Consider the empirical covariances (here we gives an alternative proof to Remark
+8.2.1) defined in Chapter 8
+
+ 1 (cid:80)n−|k| X X |k| ≤ n − 1
+cˆ (k) = n t=1 t t+|k| ,
+n
+ 0 otherwise
+we give an alternative proof to Lemma 8.2.1 to show that {cˆ (k)} is non-negative definite sequence.
+n
+To show that the sequence we take the Fourier transform of cˆ (k) and use Theorem 10.4.1. The
+n
+Fourier transform of {cˆ (k)} is
+n
+(n−1) (n−1) n−|k| n
+(cid:88) (cid:88) 1 (cid:88) 1 (cid:12) (cid:88) (cid:12)
+exp(ikω)cˆ n (k) = exp(ikω) n X t X t+|k| = n (cid:12) X t exp(itω)(cid:12) ≥ 0.
+k=−(n−1) k=−(n−1) t=1 t=1
+Since the above is non-negative, this means that {cˆ (k)} is a non-negative definite sequence.
+n
+We now state a useful result which relates the largest and smallest eigenvalue of the variance
+of a stationary process to the smallest and largest values of the spectral density (we recall we used
+this in Lemma 7.14.2).
+Lemma 10.4.1 Suppose that {X } is a stationary process with covariance function {c(k)} and
+k
+spectral density f (ω). Let Σ = var(X ), where X = (X , . . . , X ). Suppose inf f (ω) ≥ m > 0
+n n n 1 n ω
+and sup f (ω) ≤ M < ∞ Then for all n we have
+ω
+λ (Σ ) ≥ inf f (ω) and λ (Σ ) ≤ sup f (ω).
+min n max n
+ω ω
+339
+
+--- physical page 341 ---
+PROOF. Let e be the eigenvector with smallest eigenvalue λ corresponding to Σ . Then using
+1 1 n
+(cid:82)
+c(s − t) = f (ω) exp(i(s − t)ω)dω we have
+n (cid:90) n
+(cid:88) (cid:88)
+λ (Σ ) = e(cid:48) Σ e = e¯ c(s − t)e = f (ω) e¯ exp(i(s − t)ω)e dω =
+min n 1 n 1 s,1 t,1 s,1 t,1
+s,t=1 s,t=1
+(cid:90) 2π (cid:12) (cid:12)(cid:88) n (cid:12) (cid:12) 2 (cid:90) 2π (cid:12) (cid:12)(cid:88) n (cid:12) (cid:12) 2
+= f (ω) (cid:12) e exp(isω)(cid:12) dω ≥ inf f (ω) (cid:12) e exp(isω)(cid:12) dω = inf f (ω),
+(cid:12) s,1 (cid:12) (cid:12) s,1 (cid:12)
+0 (cid:12) (cid:12) ω 0 (cid:12) (cid:12) ω
+s=1 s=1
+since by definition (cid:82) | (cid:80)n e exp(isω)|2dω = (cid:80)n |e |2 = 1 (using Parseval’s identity). Using
+s=1 s,1 s=1 s,1
+a similar method we can show that λ (Σ ) ≤ sup f (ω). (cid:3)
+max n
+We now state a version of the above result which requires weaker conditions on the autocovari-
+ance function (only that they decay to zero).
+Lemma 10.4.2 Suppose the covariance {c(k)} decays to zero as k → ∞, then for all n, Σ =
+n
+var(X ) is a non-singular matrix (Note we do not require the stronger condition the covariances
+n
+are absolutely summable).
+PROOF. See Brockwell and Davis (1998), Proposition 5.1.1. (cid:3)
+10.4.2 The spectral distribution and Bochner’s (Hergoltz) theo-
+rem
+Theorem 10.4.1 hinges on the result that f (ω) = (cid:80)(n−1) (1 − |r|/n)eirω has a well defined
+n r=−(n−1)
+pointwise limit as n → ∞, this only holds when the sequence {c(k)} is absolutely summable. Of
+course this may not always be the case. An extreme example is the time series X = Z. Clearly
+t
+this is a stationary time series and its covariance is c(k) = var(Z) = 1 for all k. In this case the
+autocovariance sequence {c(k) = 1; k ∈ Z}, is not absolutely summable, hence the representation
+of the covariance in Theorem 10.4.1 does not apply. The reason is because the Fourier transform
+of the infinite sequence {c(k) = 1; k ∈ Z} is not well defined (clearly {c(k) = 1} does not belong
+k
+to (cid:96) ).
+1
+However, we now show that Theorem 10.4.1 can be generalised to include all non-negative
+definite sequences and stationary processes, by considering the spectral distribution rather than
+the spectral density.
+340
+
+--- physical page 342 ---
+Theorem 10.4.2 A function {c(k)} is non-negative definite sequence if and only if
+(cid:90) 2π
+c(k) = exp(−ikω)dF (ω), (10.17)
+0
+where F (ω) is a right-continuous (this means that F (x + h) → F (x) as 0 < h → 0), non-decreasing,
+non-negative, bounded function on [−π, π] (hence it has all the properties of a distribution and it
+can be consider as a distribution - it is usually called the spectral distribution). This representation
+is unique.
+This is a very constructive result. It shows that the Fourier coefficients of any distribution function
+form a non-negative definite sequence, and thus, if c(k) = c(−k) (hence is symmetric) correspond
+to the covarance function of a random process. In Figure 10.9 we give two distribution functions.
+the top plot is continuous and smooth, therefore it’s derivative will exist, be positive and belong
+to (cid:96) . So it is clear that its Fourier coefficients form a non-negative definite sequence. The inter-
+2
+esting aspect of Thereom 10.4.2 is that the Fourier coefficients corresponding to the distribution
+function in the second plot also forms a non-negative definite sequence even though the derivative
+of this distribution function does not exist. However, this sequence will not belong to (cid:96) (ie. the
+2
+correlations function will not decay to zero as the lag grows).
+Figure 10.9: Both plots are of non-decreasing functions, hence are valid distribution func-
+tions. The top plot is continuous and smooth, thus its derivative (the spectral density
+function) exists. Whereas the bottom plot is not (spectral density does not exist).
+341
+
+--- physical page 343 ---
+Example 10.4.2 Using the above we can construct the spectral distribution for the (rather silly)
+time series X = Z. Let F (ω) = 0 for ω < 0 and F (ω) = var(Z) for ω ≥ 0 (hence F is the step
+t
+function). Then we have
+(cid:90)
+cov(X , X ) = var(Z) = exp(−ikω)dF (ω).
+t t+k
+Example 10.4.3 Consider the second order stationary time series
+X = U cos(λt) + U sin(λt),
+t 1 2
+where U and U are iid random variables with mean zero and variance σ2 and λ the frequency. It
+1 2
+can be shown that
+σ2
+cov(X , X ) = [exp(iλk) + exp(−iλk)] .
+t t+k
+2
+Observe that this covariance does not decay with the lag k. Then
+(cid:90) 2π
+cov(X , X ) = var(Z) = exp(−ikω)dF (ω).
+t t+k
+0
+where
+
+ 0 ω < −λ
+
+
+
+F (ω) = σ2/2 −λ ≤ ω < λ
+
+
+  σ2 λ ≥ ω.
+10.5 The spectral representation theorem
+We now state the spectral representation theorem and give a rough outline of the proof.
+Theorem 10.5.1 If {X } is a second order stationary time series with mean zero, and spectral
+t
+distribution F (ω), and the spectral distribution function is F (ω), then there exists a right contin-
+uous, orthogonal increment process {Z(ω)} (that is E[(Z(ω ) − Z(ω )(Z(ω ) − Z(ω ))] = 0, when
+1 2 3 4
+the intervals [ω , ω ] and [ω , ω ] do not overlap) such that
+1 2 3 4
+(cid:90) 2π
+X = exp(−itω)dZ(ω), (10.18)
+t
+0
+342
+
+--- physical page 344 ---
+where for ω ≥ ω , E|Z(ω ) − Z(ω )|2 = F (ω ) − F (ω ) (noting that F (0) = 0). (One example
+1 2 1 2 1 2
+of a right continuous, orthogonal increment process is Brownian motion, though this is just one
+example, and usually Z(ω) will be far more general than Brownian motion).
+Heuristically we see that (10.18) is the decomposition of X in terms of frequencies, whose
+t
+amplitudes are orthogonal. In other words X is decomposed in terms of frequencies exp(itω)
+t
+which have the orthogonal amplitudes dZ(ω) ≈ (Z(ω + δ) − Z(ω)).
+Remark 10.5.1 Note that so far we have not defined the integral on the right hand side of (10.18).
+It is known as a stochastic integral. Unlike many deterministic functions (functions whose derivative
+exists), one cannot really suppose dZ(ω) ≈ Z(cid:48)(ω)dω, because usually a typical realisation of Z(ω)
+will not be smooth enough to differentiate. For example, it is well known that Brownian is quite
+‘rough’, that is a typical realisation of Brownian motion satisfies |B(t , ω¯) − B(t , ω¯)| ≤ K(ω¯)|t −
+1 2 1
+t |γ, where ω¯ is a realisation and γ ≤ 1/2, but in general γ will not be larger. The integral
+t
+(cid:82)
+g(ω)dZ(ω) is well defined if it is defined as the limit (in the mean squared sense) of discrete
+sums. More precisely, let Z (ω) =
+(cid:80)n
+Z(ω )I (ω) =
+(cid:80)(cid:98)nω/2π(cid:99)
+[Z(ω ) − Z(ω )], then
+n k=1 k ωnk−1,ωnk k=1 k k−1
+(cid:90) n
+(cid:88)
+g(ω)dZ (ω) = g(ω ){Z(ω ) − Z(ω )}.
+n k k k−1
+k=1
+(cid:82) (cid:82) (cid:82)
+The limit of g(ω)dZ (ω) as n → ∞ is g(ω)dZ(ω) (in the mean squared sense, that is E[ g(ω)dZ(ω)−
+n
+(cid:82) g(ω)dZ (ω)]2). Compare this with our heuristics in equation (10.11).
+n
+For a more precise explanation, see Parzen (1959), Priestley (1983), Sections 3.6.3 and Section
+4.11, page 254, and Brockwell and Davis (1998), Section 4.7. For a very good review of elementary
+stochastic calculus see Mikosch (1999).
+A very elegant explanation on the different proofs of the spectral representation theorem is given
+in Priestley (1983), Section 4.11. We now give a rough outline of the proof using the functional
+theory approach.
+Remark 10.5.2 We mention that the above representation applies to both stationary and nonsta-
+tionary time series. What makes the exponential functions {exp(ikω)} special is if a process is
+stationary then the representation of c(k) := cov(X , X ) in terms of exponentials is guaranteed:
+t t+k
+(cid:90) 2π
+c(k) = exp(−ikω)dF (ω). (10.19)
+0
+343
+
+--- physical page 345 ---
+Therefore there always exists an orthogonal random function {Z(ω)} such that
+(cid:90)
+X = exp(−itω)dZ(ω).
+t
+Indeed, whenever the exponential basis is used in the definition of either the covariance or the
+process {X }, the resulting process will always be second order stationary.
+t
+Brockwell and Davis (1998), Proposition 4.8.2 states an interesting consequence of the spectral
+representation theorem. Suppose that {X } is a second order stationary time series with spectral
+t
+distribution F (ω). If F (ω) has a discontinuity at λ , then X almost surely has the representation
+0 t
+(cid:90) 2π
+X = eitωdZ(ω) + eitλ0 (cid:0) Z(λ+) − Z(λ−) (cid:1)
+t 0 0
+0
+where Z(λ−) and Z(λ+) denote the left and right limit. This result means that discontinuities in
+0 0
+the spectral distribution mean that the corresponding time series contains a deterministic sinusoid
+functions i.e.
+X = A cos(λ t) + B sin(λ t) + ε
+t 0 0 t
+where ε is a stationary time series. We came across this “feature” in Section 2.5. If the spectral
+t
+distribution contains a discontinuity, then “formally” the spectral density (which is the derivative
+of the spectral distribution) is the dirac-delta function at the discontinuity. The periodogram is a
+“crude” (inconsistent) estimator of the spectral density function, however it captures the general
+features of the underlying spectral density. Look at Figures 2.11-2.13, observe that there is a large
+peak corresponding the deterministic frequency and that this peak grows taller as the sample size
+n grows. This large peak is limiting to the dirac delta function.
+Finally we state Brockwell and Davis (1998), Proposition 4.9.1, which justifies our use of the
+DFT. Brockwell and Davis (1998), Proposition 4.9.1 states that if {X } is a second order stationary
+t
+time series with spectral distribution F and ν and ν are continuity points of F then
+1 2
+1 (cid:88) (cid:90) ν2
+X exp(itω)dω → Z(ν ) − Z(ν ),
+t 2 1
+2π
+|t|≤n
+ν1
+where the convergence is in mean squared.
+344
+
+--- physical page 346 ---
+Let ω = 2πk/n, then using this result we have
+k
+1 (cid:88) √ (cid:88) (cid:90) ω k+1 √
+√ X exp(itω ) ≈ n X exp(itω)dω ≈ n [Z(ω ) − Z(ω )] ,
+t k t k+1 k
+2π n
+ω
+|t|≤n |t|≤n k
+√
+without the scaling factor n, the above would limit to zero. Thus as claimed previously, the DFT
+estimates the “increments”.
+10.6 The spectral density functions of MA, AR and
+ARMA models
+We obtain the spectral density function for MA(∞) processes. Using this we can easily obtain the
+spectral density for ARMA processes. Let us suppose that {X } satisfies the representation
+t
+∞
+(cid:88)
+X = ψ ε (10.20)
+t j t−j
+j=−∞
+where {ε } are iid random variables with mean zero and variance σ2 and (cid:80)∞ |ψ | < ∞. We
+t j=−∞ j
+recall that the covariance of above is
+∞
+(cid:88)
+c(k) = E(X X ) = ψ ψ . (10.21)
+t t+k j j+k
+j=−∞
+Since
+(cid:80)∞
+|ψ | < ∞, it can be seen that
+j=−∞ j
+∞
+(cid:88) (cid:88) (cid:88)
+|c(k)| ≤ |ψ | · |ψ | < ∞.
+j j+k
+k k j=−∞
+Hence by using Theorem 10.4.1, the spectral density function of {X } is well defined. There
+t
+are several ways to derive the spectral density of {X }, we can either use (10.21) and f (ω) =
+t
+1 (cid:80) c(k) exp(ikω) or obtain the spectral representation of {X } and derive f (ω) from the spectral
+2π k t
+representation. We prove the results using the latter method.
+345
+
+--- physical page 347 ---
+10.6.1 The spectral representation of linear processes
+Since {ε } are iid random variables, using Theorem 10.5.1 there exists an orthogonal random
+t
+function {Z(ω)} such that
+(cid:90) 2π
+ε = exp(−itω)dZ (ω).
+t ε
+0
+Since E(ε ) = 0 and E(ε2) = σ2 multiplying the above by ε , taking expectations and noting that
+t t t
+due to the orthogonality of {Z (ω)} we have E(dZ (ω )dZ (ω )) = 0 unless ω = ω we have that
+ε ε 1 ε 2 1 2
+E(|dZ (ω)|2) = σ2dω, hence f (ω) = (2π)−1σ2.
+ε ε
+Using the above we obtain the following spectral representation for {X }, where X is a linear
+t t
+time series
+ 
+(cid:88) ∞ (cid:90) 2π  (cid:88) ∞ 
+X = ψ ε ψ exp(ijω) exp(−itω)dZ (ω).
+t j t−j j ε
+0  
+j=∞ j=−∞
+Hence
+(cid:90) 2π (cid:90) 2π
+X = A(ω) exp(−itω)dZ (ω) = exp(−itω)dZ (ω) (10.22)
+t ε X
+0 0
+where A(ω) =
+(cid:80)∞
+ψ exp(ijω) and Z (ω) = A(ω)Z (ω). We note that this is the unique
+j=−∞ j X ε
+spectral representation of X .
+t
+Definition 10.6.1 (The Cramer Representation) We mention that the representation in (10.22)
+of a stationary process is usually called the Cramer representation of a stationary process, where
+(cid:90) 2π
+X = A(ω) exp(−itω)dZ(ω),
+t
+0
+where {Z(ω) : 0 ≤ ω ≤ 2π} are orthogonal functions.
+Exercise 10.2 (i) Suppose that {X } has an MA(1) representation X = θε + ε . What is
+t t t t−1
+its Cramer’s representation?
+(ii) Suppose that {X } has a causal AR(1) representation X = φX + ε . What is its Cramer’s
+t t t−1 t
+representation?
+346
+
+--- physical page 348 ---
+10.6.2 The spectral density of a linear process
+Multiplying (10.22) by X and taking expectations gives
+t+k
+(cid:90) 2π
+E(X X ) = c(k) = A(ω )A(−ω ) exp(−i(t + k)ω + itω )E(dZ(ω )dZ(ω )).
+t t+k 1 2 1 2 1 2
+0
+Due to the orthogonality of {Z(ω)} we have E(dZ(ω )dZ(ω )) = 0 unless ω = ω , altogether this
+1 2 1 2
+gives
+(cid:90) 2π (cid:90) 2π
+E(X X ) = c(k) = |A(ω)|2 exp(−ikω)E(|dZ(ω)|2) = f (ω) exp(−ikω)dω,
+t t+k
+0 0
+where f (ω) = σ2 |A(ω)|2. Comparing the above with (10.15) we see that f (·) is the spectral density
+2π
+function.
+The spectral density function corresponding to the linear process defined in (10.20) is
+σ2
+(cid:88)
+∞
+f (ω) = | ψ exp(−ijω)|2.
+j
+2π
+j=−∞
+Remark 10.6.1 (An alternative, more hands on proof ) An alternative proof which avoids
+the Cramer representation is to use that the acf of a linear time series is c(r) = σ2 (cid:80) ψ ψ (see
+k j j+r
+Lemma 6.1.1). Thus by definition the spectral density function is
+∞
+1 (cid:88)
+f (ω) = c(r) exp(irω)
+2π
+r=−∞
+σ2
+(cid:88)
+∞
+(cid:88)
+∞
+= ψ ψ exp(irω).
+j j+r
+2π
+r=−∞ j=−∞
+Now make a change of variables s = j + r this gives
+(cid:12) (cid:12)2
+f (ω) =
+σ2
+(cid:88)
+∞
+(cid:88)
+∞
+ψ j ψ s exp(i(s − j)ω) =
+σ2 (cid:12)
+(cid:12) (cid:12) (cid:88)
+∞
+ψ j eijω
+(cid:12)
+(cid:12) (cid:12) =
+σ2
+|A(ω)|2.
+2π 2π (cid:12) (cid:12) 2π
+s=−∞ j=−∞ (cid:12)j=−∞ (cid:12)
+Example 10.6.1 Let us suppose that {X } is a stationary ARM A(p, q) time series (not necessarily
+t
+invertible or causal), where
+p q
+(cid:88) (cid:88)
+X − ψ X = θ ε ,
+t j t−j j t−j
+j=1 j=1
+347
+
+--- physical page 349 ---
+{ε } are iid random variables with E(ε ) = 0 and E(ε2) = σ2. Then the spectral density of {X } is
+t t t t
+σ2 |1 + (cid:80)q
+j=1
+θ
+j
+exp(ijω)|2
+f (ω) =
+2π |1 − (cid:80)q φ exp(ijω)|2
+j=1 j
+We note that because the ARMA is the ratio of trignometric polynomials, this is known as a rational
+spectral density.
+Remark 10.6.2 The roots of the characteristic function of an AR process will have an influence
+on the location of peaks in its corresponding spectral density function. To see why consider the
+AR(2) model
+X = φ X + φ X + ε ,
+t 1 t−1 2 t−2 t
+where {ε } are iid random variables with zero mean and E(ε2) = σ2. Suppose the roots of the
+t
+characteristic polynomial φ(B) = 1 − φ B − φ B2 lie outside the unit circle and are complex
+1 2
+conjugates where λ = r exp(iθ) and λ = r exp(−iθ). Then the spectral density function is
+1 2
+σ2
+f (ω) =
+|1 − r exp(i(θ − ω))|2|1 − r exp(i(−θ − ω)|2
+σ2
+= .
+[1 + r2 − 2r cos(θ − ω)][1 + r2 − 2r cos(θ + ω)]
+If r > 0, the f (ω) is maximum when ω = θ, on the other hand if, r < 0 then the above is maximum
+when ω = θ − π. Thus the peaks in f (ω) correspond to peaks in the pseudo periodicities of the
+time series and covariance structure (which one would expect), see Section 6.1.2. How pronounced
+these peaks are depend on how close r is to one. The close r is to one the larger the peak. We
+can generalise the above argument to higher order Autoregressive models, in this case there may be
+multiple peaks. In fact, this suggests that the larger the number of peaks, the higher the order of the
+AR model that should be fitted.
+348
+
+--- physical page 350 ---
+10.6.3 Approximations of the spectral density to AR and MA
+spectral densities
+In this section we show that the spectral density
+∞
+1 (cid:88)
+f (ω) = c(r) exp(irω)
+2π
+r=−∞
+can be approximated to any order by the spectral density of an AR(p) or MA(q) process.
+We do this by truncating the infinite number of covariances by a finite number, however, this
+does not necessarily lead to a positive definite spectral density. This can easily be proven by noting
+that
+m (cid:90) 2π
+(cid:88)
+f(cid:101)m (ω) = c(r) exp(irω) = f (λ)D
+m
+(ω − λ)dλ,
+r=−m 0
+where D (λ) = sin[(n + 1/2)λ]/ sin(λ/2). Observe that D (·) can be negative, which means that
+m m
+f(cid:101)m (ω) can be negative despite f being positive.
+Example 10.6.2 Consider the AR(1) process X = 0.75X + ε where var[ε ] = 1. In Lemma
+t t−1 t t
+6.1.1 we showed that the autcovariance corresponding to this model is c(r) = [1 − 0.752]−10.75|r|.
+Let us define a process whose autocorrelation is c˜(0) = [1 − 0.752]−1, c(1) = c(−1) = [1 −
+0.752]−10.75 and c˜(r) = 0 for |r| > 1. The ‘spectral density’ of this process is
+(cid:18) (cid:19)
+1 3
+f(cid:101)m (ω) =
+1 − 0.752
+1 + 2 ×
+4
+cos[ω] .
+It is clear that this function can be zero for some values of ω. This means that {c˜(r)} is not a well
+defined covariance function, hence there does not exist a time series with this covariance structure.
+In other words, simply truncating an autocovariance is not enough to guarantee that it positive
+definite sequence.
+Instead we consider a slight variant on this and define
+m (cid:18) (cid:19)
+1 (cid:88) |r|
+1 − c(r) exp(irω)
+2π m
+r=−m
+which is positive.
+349
+
+--- physical page 351 ---
+Remark 10.6.3 We note that f is known as a Ces´aro sum because it can be written as
+m
+m (cid:18) (cid:19) m
+1 (cid:88) |r| 1 (cid:88)
+f
+m
+(ω) = 1 − c(r) exp(irω) = f(cid:101)n (ω), (10.23)
+2π m m
+r=−m n=0
+where f(cid:101)n (·) =
+2
+1
+π
+(cid:80)n
+r=−n
+c(r) exp(irω). Strangely, there is no guarantee that the truncated Fourier
+transform f(cid:101)n is not negative, however f
+n
+(·) is definitely positive. There are are a few ways to prove
+this:
+(i) The first method we came across previously, var[J (ω)] = f (ω), it is clear that using this
+n n
+construction inf f (ω) ≥ 0.
+ω n
+(ii) By using (10.23) we can write f (·) as
+m
+(cid:90) 2π
+f (ω) = f (λ)F (ω − λ)dλ,
+m m
+0
+(cid:16) (cid:17)2
+where F (λ) = 1 (cid:80)m D (λ) = 1 sin(nλ/2) and D (λ) = (cid:80)r exp(ijω) (these are
+m m r=−m r m sin(λ/2) r j=−r
+the Fejer and Dirichlet kernels respectively). Since both f and F are positive, then f has
+m m
+to be positive.
+The Cesaro sum is special in the sense that
+sup |f (ω) − f (ω)| → 0, as m → ∞. (10.24)
+m
+ω
+Thus for a large enough m, f (ω) will be within δ of the spectral density f . Using this we can
+m
+prove the results below.
+(cid:80)
+Lemma 10.6.1 Suppose that |c(r)| < ∞, f is the spectral density of the covariances and
+r
+inf f (ω) > 0. Then for every δ > 0, there exists a m such that |f (ω) − f (ω)| < δ and
+ω∈[0,2π] m
+f (ω) = σ2|ψ(ω)|2, where ψ(ω) = (cid:80)m ψ exp(ijω). Thus we can approximate the spectral density
+m j=0 j
+of f with the spectral density of a MA.
+PROOF. We show that there exists an MA(m) which has the spectral density f (ω), where f is
+m m
+defined in (10.23). Thus by (10.24) we have the result.
+Before proving the result we note that if a “polynomial” is of the form
+m
+p(z) = a +
+(cid:88)
+a
+(cid:0)
+z +
+z−1(cid:1)
+0 j
+j=1
+350
+
+--- physical page 352 ---
+then it has the factorization p(z) = C (cid:81)m [1 − λ z][1 − λ−1z], where λ is such that |λ | < 1.
+j=1 j j j j
+Furthermore, if {a }m are real and zmp(z) has no roots on the unit circle, then the coefficients of
+j j=0
+the polynomial
+(cid:81)m
+[1 − λ z] are real. The above claims are true because
+j=1 j
+(i) To prove that p(z) = C (cid:81)m [1−λ z][1−λ−1z], we note that zmp(z) is a 2m-order polynomial.
+j=1 j j
+Thus it can be factorized. If there exists a root λ whose inverse is not a root, then the resulting
+polynomial will have not have the symmetric structure.
+(ii) By the complex conjugate theorem, since zmp(z) has real coefficients, then its complex roots
+must be conjugates. Moreover, since no roots lie on the unit circle, then no conjugates lie on
+the unit circle. Thus the coefficients of
+(cid:81)m
+[1 − λ z] are real (if it did lie on the unit circle,
+j=1 j
+then we can distribute the two roots between the two polynomials).
+Thus setting z = eiω
+m m
+(cid:88) (cid:89) (cid:104) (cid:105)
+a exp(irω) = C [1 − λ exp(iω)] 1 − λ−1 exp(−iω) .
+r j j
+r=−m j=1
+for some finite constant C. We use the above result. Since inf f (ω) > 0 and setting a =
+m r
+[1 − |r|n−1]c(r), we can write f as
+m
+   
+m m
+(cid:89) (cid:89)
+f m (ω) = K  (1 − λ− j 1 exp(iω))  (1 − λ j exp(−iω))
+j=1 j=1
+= A(ω)A(−ω) = |A(ω)|2,
+where
+m
+(cid:89)
+A(z) = (1 − λ−1z).
+j
+j=1
+Since A(z) is an mth order polynomial where all the roots are greater than 1, we can always
+construct an MA(m) process which has A(z) as its ‘transfer’ function. Thus there exists an MA(m)
+process which has f (ω) as its spectral density function. (cid:3)
+m
+Remark 10.6.4 (i) The above result requires that inf f (ω) > 0, in order to ensure that f (ω)
+ω m
+is strictly positive. This assumption can be relaxed (and the proof becomes a little more
+complicated), see Brockwell and Davis (1998), Theorem 4.4.3.
+351
+
+--- physical page 353 ---
+(ii)
+(cid:80)
+Lemma 10.6.2 Suppose that |c(r)| < ∞ and f is corresponding the spectral density function
+r
+where inf f (ω) > 0. Then for every δ > 0, there exists a m such that |f (ω) − g (ω)| < δ and
+ω m
+g (ω) = σ2|φ(ω)−1|2, where φ(ω) = (cid:80)m φ exp(ijω) and the roots of φ(z) lie outside the unit
+m j=0 j
+circle. Thus we can approximate the spectral density of f with the spectral density of a causal
+autoregressive process.
+PROOF. We first note that we can write
+(cid:12) (cid:12)f (ω) − g m (ω) (cid:12) (cid:12) = f (ω)|g m (ω)−1 − f (ω)−1|g m (ω).
+Since f (·) ∈ L and is bounded away from zero, then f −1 ∈ L and we can write f −1 as
+2 2
+∞
+(cid:88)
+f −1(ω) = d exp(irω),
+r
+r=∞
+where d are the Fourier coefficients of f −1. Since f is positive and symmetric, then f −1 is pos-
+r
+itive and symmetric such that f −1(ω) = (cid:80)∞ d eirω and {d } is a positive definite symmetric
+r=−∞ r r
+sequence. Thus we can define the positive function g where
+m
+(cid:18) (cid:19)
+(cid:88) |r|
+g−1(ω) = 1 − d exp(irω)
+m m r
+|r|≤m
+and is such that |g−1(ω) − f −1(ω)| < δ, which implies
+m
+(cid:12) (cid:12)f (ω) − g m (ω) (cid:12) (cid:12) ≤ [ (cid:88) |c(r)|]2δ.
+r
+Now we can apply the same arguments to prove to Lemma 10.6.1 we can show that g−1 can be
+m
+factorised as g−1(ω) = C|φ (ω)|2 (where φ is an mth order polynomial whose roots lie outside
+m m m
+the unit circle). Thus g (ω) = C|φ (ω)|−2 and we obtain the desired result. (cid:3)
+m m
+10.7 Cumulants and higher order spectrums
+We recall that the covariance is a measure of linear dependence between two random variables.
+Higher order cumulants are a measure of higher order dependence. For example, the third order
+352
+
+--- physical page 354 ---
+cumulant for the zero mean random variables X , X , X is
+1 2 3
+cum(X , X , X ) = E(X X X )
+1 2 3 1 2 3
+and the fourth order cumulant for the zero mean random variables X , X , X , X is
+1 2 3 4
+cum(X , X , X , X ) = E(X X X X ) − E(X X )E(X X ) − E(X X )E(X X ) − E(X X )E(X X ).
+1 2 3 4 1 2 3 4 1 2 3 4 1 3 2 4 1 4 2 3
+From the definition we see that if X , X , X , X are independent then cum(X , X , X ) = 0 and
+1 2 3 4 1 2 3
+cum(X , X , X , X ) = 0.
+1 2 3 4
+Moreover, if X , X , X , X are Gaussian random variables then cum(X , X , X ) = 0 and
+1 2 3 4 1 2 3
+cum(X , X , X , X ) = 0. Indeed all cumulants higher than order two is zero. This comes from
+1 2 3 4
+the fact that cumulants are the coefficients of the power series expansion of the logarithm of the
+characteristic function of {X }, which is
+t
+1
+g (t) = i µ(cid:48) t − t(cid:48) Σ t.
+X
+2 (cid:124)(cid:123)(cid:122)(cid:125)
+(cid:124)(cid:123)(cid:122)(cid:125)
+cumulant
+mean
+Since the spectral density is the Fourier transform of the covariance it is natural to ask whether
+one can define the higher order spectral density as the fourier transform of the higher order cumu-
+lants. This turns out to be the case, and the higher order spectra have several interesting properties.
+Let us suppose that {X } is a stationary time series (notice that we are assuming it is strictly sta-
+t
+tionary and not second order). Let κ (t, s) = cum(X , X , X ), κ (t, s, r) = cum(X , X , X , X )
+3 0 t s 3 0 t s r
+and κ (t , . . . , t ) = cum(X , X , . . . , X ) (noting that like the covariance the higher order cu-
+q 1 q−1 0 t1 tq
+mulants are invariant to shift). The third, fourth and the general qth order spectras is defined
+as
+∞ ∞
+(cid:88) (cid:88)
+f (ω , ω ) = κ (s, t) exp(isω + itω )
+3 1 2 3 1 2
+s=−∞ t=−∞
+∞ ∞ ∞
+(cid:88) (cid:88) (cid:88)
+f (ω , ω , ω ) = κ (s, t, r) exp(isω + itω + irω )
+4 1 2 3 4 1 2 3
+s=−∞ t=−∞ r=−∞
+∞
+(cid:88)
+f (ω , ω , . . . , ω ) = κ (t , t , . . . , t ) exp(it ω + it ω + . . . + it ω ).
+q 1 2 q−1 q 1 2 q−1 1 1 2 2 q−1 q−1
+t1,...,tq−1=−∞
+Example 10.7.1 (Third and Fourth order spectral density of a linear process) Let us sup-
+353
+
+--- physical page 355 ---
+pose that {X } satisfies
+t
+∞
+(cid:88)
+X = ψ ε
+t j t−j
+j=−∞
+where (cid:80)∞ |ψ | < ∞, E(ε ) = 0 and E(ε4) < ∞. Let A(ω) = (cid:80)∞ ψ exp(ijω). Then it is
+j=−∞ j t t j=−∞ j
+straightforward to show that
+f (ω) = σ2|A(ω)|2
+f (ω , ω ) = κ A(ω )A(ω )A(−ω − ω )
+3 1 2 3 1 2 1 2
+f (ω , ω , ω ) = κ A(ω )A(ω )A(ω )A(−ω − ω − ω ),
+4 1 2 3 4 1 2 3 1 2 3
+where κ = cum(ε , ε , ε ) and κ = cum(ε , ε , ε , ε ).
+3 t t t 4 t t t t
+We see from the example, that unlike the spectral density, the higher order spectras are not
+necessarily positive or even real.
+A review of higher order spectra can be found in Brillinger (2001). Higher order spectras have
+several applications especially in nonlinear processes, see Subba Rao and Gabr (1984). We will
+consider one such application in a later chapter.
+Using the definition of the higher order spectrum we can now generalise Lemma 10.2.1 to higher
+order cumulants (see Brillinger (2001), Theorem 4.3.4).
+Proposition 10.7.1 {X } is a strictly stationary time series, where for all 1 ≤ i ≤ q − 1 we
+t
+have
+(cid:80)∞
+|(1 + t )κ (t , . . . , t )| < ∞ (note that this is simply a generalization of the
+t1,...,tq−1=∞ i q 1 q−1
+(cid:80)
+covariance assumption |rc(r)| < ∞). Then we have
+r
+n
+1 (cid:88) 1
+cum(J (ω ), . . . , J (ω )) = f (ω , . . . , ω ) exp(ij(ω − . . . − ω )) + O( )
+n k1 n kq nq/2 q k2 kq k1 kq nq/2
+j=1
+
+ 1 f (ω , . . . , ω ) + O( 1 ) (cid:80)q k = nZ
+= n(q−1)/2 q k2 kq nq/2 i=1 i
+ O( 1 ) otherwise
+nq/2
+where ω = 2πki .
+ki n
+354
+
+--- physical page 356 ---
+10.8 Extensions
+10.8.1 The spectral density of a time series with randomly missing
+observations
+Let us suppose that {X } is a second order stationary time series. However {X } is not observed at
+t t
+everytime point and there are observations missing, thus we only observe X at {τ } . Thus what is
+t k k
+observed is {X }. The question is how to deal with this type of data. One method was suggested
+τ
+k
+in ?. He suggested that the missingness mechanism {τ } be modelled stochastically. That is define
+k
+the random process {Y } which only takes the values {0, 1}, where Y = 1 if X is observed, but
+t t t
+Y = 0 if X is not observed. Thus we observe {X Y } = {X } and also {Y } (which is the time
+t t t t t t t
+k
+points the process is observed). He also suggests modelling {Y } as a stationary process, which is
+t
+independent of {X } (thus the missingness mechanism and the time series are independent).
+t
+The spectral densities of {X Y }, {X } and {Y } have an interest relationship, which can be
+t t t t
+exploited to estimate the spectral density of {X } given estimators of the spectral densities of {X Y }
+t t t
+and {X } (which we recall are observed). We first note that since {X } and {Y } are stationary,
+t t t
+then {X Y } is stationary, furthermore
+t t
+cov(X Y , X Y ) = cov(X , X )cov(Y , Y ) + cov(X , Y )cov(Y , X ) + cum(X , Y , X , Y )
+t t τ τ t τ t τ t τ t τ t t τ τ
+= cov(X , X )cov(Y , Y ) = c (t − τ )c (t − τ )
+t τ t τ X Y
+where the above is due to independence of {X } and {Y }. Thus the spectral density of {X Y } is
+t t t t
+∞
+1 (cid:88)
+f (ω) = cov(X Y , X Y ) exp(irω)
+XY 0 0 r r
+2π
+r=−∞
+∞
+1 (cid:88)
+= c (r)c (r) exp(irω)
+X Y
+2π
+r=−∞
+(cid:90)
+= f (λ)f (ω − λ)dω,
+X Y
+where f (λ) = 1 (cid:80)∞ c (r) exp(irω) and f (λ) = 1 (cid:80)∞ c (r) exp(irω) are the spectral
+X 2π r=−∞ X Y 2π r=−∞ Y
+densities of the observations and the missing process.
+355
+
+--- physical page 357 ---
+10.9 Appendix: Some proofs
+PROOF of Theorem 10.4.2. We first show that if {c(k)} is non-negative definite sequence, then
+(cid:82) 2π
+we can write c(k) = exp(ikω)dF (ω), where F (ω) is a distribution function.
+0
+To prove the result we adapt some of the ideas used to prove Theorem 10.4.1. As in the proof
+of Theorem 10.4.1 define the (nonnegative) function
+n (n−1) (cid:18) (cid:19)
+1 (cid:88) 1 (cid:88) n − |k|
+f (ω) = var[J (ω)] = exp(isω)c(s − t) exp(−itω) = c(k) exp(ikω).
+n n
+2πn 2π n
+s,t=1 k=−(n−1)
+If {c(k)} is not absolutely summable, the limit of f (ω) is no longer well defined. Instead we consider
+n
+its integral, which will always be a distribution function (in the sense that it is nondecreasing and
+bounded). Let us define the function F (ω) whose derivative is f (ω), that is
+n n
+(cid:90) ω ω 2 n (cid:88) −1 (cid:16) r (cid:17) sin(ωr)
+F (ω) = f (λ)dλ = c(0) + 1 − c(r) 0 ≤ λ ≤ 2π.
+n n
+2π 2π n r
+0
+r=1
+Since f (λ) is nonnegative, F (ω) is a nondecreasing function. Furthermore it is bounded since
+n n
+(cid:90) 2π
+F (2π) = f (λ)dλ = c(0).
+n n
+0
+Hence F satisfies all properties of a distribution and can be treated as a distribution function.
+n
+This means that we can apply Helly’s theorem to the sequence {F } . We first recall that if {x }
+n n n
+are real numbers defined on a compact set X ⊂ R, then there exists a subsequence {x } which
+nm m
+has a limit in the set X (this is called the Bolzano-Weierstrass theorem). An analogous result
+exists for measures, this is called Helly’s theorem (see Ash (1972), page 329). It states that for
+any sequence of distributions {G } defined on [0, 2π], were G (0) = 0 and sup G (2π) < M < ∞,
+n n n n
+there exists a subsequence {n } where G (x) → G(x) as m → ∞ for each x ∈ [0, 2π] at which
+m m nm
+G is continuous. Furthermore, since G (x) → G(x) (pointwise as m → ∞), this implies (see
+nm
+Varadhan, Theorem 4.1 for equivalent forms of convergence) that for any bounded sequence h we
+have that
+(cid:90) (cid:90)
+h(x)dG (x) → h(x)dG(x) as m → ∞.
+nm
+We now apply this result to {F } . Using Helly’s theorem there exists a subsequence of distributions
+n n
+356
+
+--- physical page 358 ---
+{F } which has a pointwise limit F . Thus for any bounded function h we have
+nm m
+(cid:90) (cid:90)
+h(x)dF (x) → h(x)dF (x) as m → ∞. (10.25)
+nm
+We focus on the function h(x) = exp(−ikω). It is clear that for every k and n we have
+
+(cid:90) 2π (cid:90) 2π  (1 − |k| )c(k) |k| ≤ n
+exp(−ikω)dF (ω) = exp(ikω)f (ω)dω = n (10.26)
+n n
+0 0  0 |k| ≥ n
+Define the sequence
+(cid:90) 2π (cid:18) |k| (cid:19)
+d = exp(ikω)dF (ω) = 1 − c(k).
+n,k n
+n
+0
+We observe that for fixed k, {d ; n ∈ Z} is a Cauchy sequence, where
+n,k
+d → d = c(k) (10.27)
+n,k k
+as n → ∞.
+Now we use (10.25) and focus on the convergent subsequence {n } . By using (10.25) we have
+m m
+(cid:90) (cid:90)
+d = exp(−ikx)dF (x) → exp(−ikx)dF (x) as m → ∞
+nm,k nm
+and by (10.27) d → c(k) as m → ∞. Thus
+nm,k
+(cid:90)
+c(k) = exp(−ikx)dF (x).
+This gives the first part of the assertion.
+To show the converse, that is {c(k)} is a non-negative definite sequence when c(k) is defined as
+(cid:82)
+c(k) = exp(ikω)dF (ω), we use the same method given in the proof of Theorem 10.4.1, that is
+n (cid:90) 2π n
+(cid:88) (cid:8) (cid:88) (cid:9)
+x c(s − t)x¯ = x exp(−i(s − t)ω)x¯ dF (ω)
+s s s s
+0
+s,t=1 s,t=1
+(cid:90) 2π (cid:12) (cid:12)(cid:88) n (cid:12) (cid:12) 2
+= (cid:12) x exp(−isω)(cid:12) dF (ω) ≥ 0,
+(cid:12) s (cid:12)
+0 (cid:12) (cid:12)
+s=1
+since F (ω) is a distribution.
+357
+
+--- physical page 359 ---
+Finally, if {c(k)} were absolutely summable, then we can use Theorem 10.4.1 to write c(k) =
+(cid:82) 2π exp(−ikω)dF (ω), where F (ω) = (cid:82) ω f (λ)dλ and f (λ) = 1 (cid:80)∞ c(k) exp(ikω). By using
+0 0 2π k=−∞
+Theorem 10.4.1 we know that f (λ) is nonnegative, hence F (ω) is a distribution, and we have the
+result. (cid:3)
+Rough PROOF of the Spectral Representation Theorem To prove the result we first
+define two Hilbert spaces H and H , where H one contains deterministic functions and H contains
+1 2 1 2
+random variables.
+First we define the space
+H = sp{eitω; t ∈ Z}
+1
+with inner-product
+(cid:90) 2π
+(cid:104)f, g(cid:105) = f (x)g(x)dF (x) (10.28)
+0
+(and of course distance (cid:104)f − g, f − g(cid:105) = (cid:82) 2π |f (x) − g(x)|2dF (x)) it is clear that this inner product
+0
+is well defined because (cid:104)f, f (cid:105) ≥ 0 (since F is a measure). It can be shown (see Brockwell and Davis
+(cid:110) (cid:111)
+(1998), page 144) that H = g; (cid:82) 2π |g(ω)|2dF (ω) < ∞ 1. We also define the space
+1 0
+H = sp{X ; t ∈ Z}
+2 t
+with inner-product cov(X, Y ) = E[XY ] − E[X]E[Y ].
+Now let us define the linear mapping T : H → H
+1 2
+n n
+(cid:88) (cid:88)
+T ( a exp(ikω)) = a X , (10.29)
+j j k
+j=1 j=1
+for any n (it is necessary to show that this can be extended to infinite n, but we won’t do so here).
+We will shown that T defines an isomorphism (ie. it is a one-to-one linear mapping that preserves
+norm). To show that it is a one-to-one mapping see Brockwell and Davis (1998), Section 4.7. It is
+clear that it is linear, there all that remains is to show that the mapping preserves inner-product.
+1Roughly speaking it is because all continuous functions on [0, 2π] are dense in L ([0, 2π], B, F ) (using
+2
+the metric (cid:107)f − g(cid:107) = (cid:104)f − g, f − g(cid:105) and the limit of Cauchy sequences). Since all continuous function can be
+written as linear combinations of the Fourier basis, this gives the result.
+358
+
+--- physical page 360 ---
+(cid:80)
+Suppose f, g ∈ H , then there exists coefficients {f } and {g } such that f (x) = f exp(ijω)
+1 j j j j
+(cid:80)
+and g(x) = g exp(ijω). Hence by definition of T in (10.29) we have
+j j
+(cid:88) (cid:88) (cid:88)
+(cid:104)T f, T g(cid:105) = cov( f X , g X ) = f g cov(X , X ) (10.30)
+j j j j j1 j2 j1 j2
+j j j1,j2
+Now by using Bochner’s theorem (see Theorem 10.4.2) we have
+(cid:90) 2π (cid:90) 2π
+(cid:0) (cid:88) (cid:1)
+(cid:104)T f, T g(cid:105) = f g exp(i(j − j )ω) dF (ω) = f (x)g(x)dF (x) = (cid:104)f, g(cid:105).
+j1 j2 1 2
+0 0
+j1,j2
+(10.31)
+Hence < T f, T g >=< f, g >, so the inner product is preserved (hence T is an isometry).
+Altogether this means that T defines an isomorphism betwen H and H . Therefore all functions
+1 2
+which are in H have a corresponding random variable in H which has similar properties.
+1 2
+For all ω ∈ [0, 2π], it is clear that the identity functions I (x) ∈ H . Thus we define the
+[0,ω] 1
+random function {Z(ω); 0 ≤ ω ≤ 2π}, where T (I (·)) = Z(ω) ∈ H (since T is an isomorphism).
+[0,ω] 2
+Since that mapping T is linear we observe that
+T (I ) = T (I − I ) = T (I ) − T (I ) = Z(ω ) − Z(ω ).
+[ω1,ω2] [0,ω1] [0,ω2] [0,ω1] [0,ω2] 1 2
+Moreover, since T preserves the norm for any non-intersecting intervals [ω , ω ] and [ω , ω ] we have
+1 2 3 4
+cov ((Z(ω ) − Z(ω ), (Z(ω ) − Z(ω )) = (cid:104)T (I ), T (I )(cid:105) = (cid:104)I , I (cid:105)
+1 2 3 4 [ω1,ω2] [ω3,ω4] [ω1,ω2] [ω3,ω4]
+(cid:90)
+= I (ω)I (ω)dF (ω) = 0.
+[ω1,ω2] [ω3,ω4]
+Therefore by construction {Z(ω); 0 ≤ ω ≤ 2π} is an orthogonal increment process, where
+E|Z(ω ) − Z(ω )|2 = < T (I ), T (I ) >=< I , I >
+2 1 [ω1,ω2] [ω1,ω2] [ω1,ω2] [ω1,ω2]
+(cid:90) 2π (cid:90) ω2
+= I dF (ω) = dF (ω) = F (ω ) − F (ω ).
+[ω1,ω2] 2 1
+0 ω1
+Having defined the two spaces which are isomorphic and the random function {Z(ω); 0 ≤ ω ≤
+2π} and function I (x) which have orthogonal increments, we can now prove the result. Since
+[0,ω]
+dI (s) = δ (s)ds, where δ (s) is the dirac delta function, any function g ∈ L [0, 2π] can be
+[0,ω] ω ω 2
+359
+
+--- physical page 361 ---
+represented as
+(cid:90) 2π
+g(ω) = g(s)dI (s).
+[ω,2π]
+0
+Thus for g(ω) = exp(−itω) we have
+(cid:90) 2π
+exp(−itω) = exp(−its)dI (s).
+[ω,2π]
+0
+Therefore
+(cid:18)(cid:90) 2π (cid:19) (cid:90) 2π
+T (exp(−itω)) = T exp(−its)dI (s) = exp(−its)T [dI (s)]
+[ω,2π] [ω,2π]
+0 0
+(cid:90) 2π
+= exp(−its)dT [I (s)],
+[ω,2π]
+0
+where the mapping goes inside the integral due to the linearity of the isomorphism. Using that
+I (s) = I (ω) we have
+[ω,2π] [0,s]
+(cid:90) 2π
+T (exp(−itω)) = exp(−its)dT [I (ω)].
+[0,s]
+0
+By definition we have T (I (ω)) = Z(s) which we substitute into the above to give
+[0,s]
+(cid:90) 2π
+X = exp(−its)dZ(s),
+t
+0
+which gives the required result.
+Note that there are several different ways to prove this result. (cid:3)
+It is worth taking a step back from the proof and see where the assumption of stationarity crept
+in. By Bochner’s theorem we have that
+(cid:90)
+c(t − τ ) = exp(−i(t − τ )ω)dF (ω),
+where F is a distribution. We use F to define the space H , the mapping T (through {exp(ikω)} ),
+1 k
+the inner-product and thus the isomorphism. However, it was the construction of the orthogonal
+random functions {Z(ω)} that was instrumental. The main idea of the proof was that there are
+functions {φ (ω)} and a distribution H such that all the covariances of the stochastic process {X }
+k t
+360
+
+--- physical page 362 ---
+can be written as
+(cid:90) 2π
+E(X X ) = c(t, τ ) = φ (ω)φ (ω)dH(ω),
+t τ t τ
+0
+where H is a measure. As long as the above representation exists, then we can define two spaces
+H and H where {φ } is the basis of the functional space H and it contains all functions f such
+1 2 k 1
+that (cid:82) |f (ω)|2dH(ω) < ∞ and H is the random space defined by sp(X ; t ∈ Z). From here we can
+2 t
+(cid:80)
+define an isomorphism T : H → H , where for all functions f (ω) = f φ (ω) ∈ H
+1 2 k k k 1
+(cid:88)
+T (f ) = f X ∈ H .
+k k 2
+k
+An important example is T (φ ) = X . Now by using the same arguments as those in the proof
+k k
+above we have
+(cid:90)
+X = φ (ω)dZ(ω)
+t t
+where {Z(ω)} are orthogonal random functions and E|Z(ω)|2 = H(ω). We state this result in the
+theorem below (see Priestley (1983), Section 4.11).
+Theorem 10.9.1 (General orthogonal expansions) Let {X } be a time series (not necessarily
+t
+second order stationary) with covariance {E(X X ) = c(t, s)}. If there exists a sequence of functions
+t τ
+{φ (·)} which satisfy for all k
+k
+(cid:90) 2π
+|φ (ω)|2dH(ω) < ∞
+k
+0
+and the covariance admits the representation
+(cid:90) 2π
+c(t, s) = φ (ω)φ (ω)dH(ω), (10.32)
+t s
+0
+where H is a distribution then for all t we have the representation
+(cid:90)
+X = φ (ω)dZ(ω) (10.33)
+t t
+where {Z(ω)} are orthogonal random functions and E|Z(ω)|2 = H(ω). On the other hand if X
+t
+361
+
+--- physical page 363 ---
+has the representation (10.33), then c(s, t) admits the representation (10.32).
+362

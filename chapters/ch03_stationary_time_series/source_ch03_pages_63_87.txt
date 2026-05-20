@@ -1,0 +1,1105 @@
+--- physical page 63 ---
+Chapter 3
+Stationary Time Series
+3.1 Preliminaries
+The past two chapters focussed on the data. It did not study the properties at the population
+level (except for a brief discussion on period estimation). By population level, we mean what
+would happen if the sample size is “infinite”. We formally define the tools we will need for such an
+analysis below.
+Different types of convergence
+a.s.
+(i) Almost sure convergence: X → a as n → ∞ (in this course a will always be a constant).
+n
+This means for every ω ∈ Ω X (ω) → a, where P (Ω) = 1 as n → ∞ (this is classical limit of
+n
+a sequence, see Wiki for a definition).
+P
+(ii) Convergence in probability: X → a. This means that for every ε > 0, P (|X − a| > ε) → 0
+n n
+as n → ∞ (see Wiki)
+(iii) Convergence in mean square X → 2 a. This means E|X − a|2 → 0 as n → ∞ (see Wiki).
+n n
+(iv) Convergence in distribution. This means the distribution of X converges to the distribution
+n
+of X, ie. for all x where F is continuous, we have F (x) → F (x) as n → ∞ (where F and
+X n X n
+F are the distribution functions of X and X respectively). This is the simplest definition
+X n
+(see Wiki).
+• Implies:
+– (i), (ii) and (iii) imply (iv).
+62
+
+--- physical page 64 ---
+– (i) implies (ii).
+– (iii) implies (ii).
+• Comments:
+– Central limit theorems require (iv).
+– It is often easy to show (iii) (since this only requires mean and variance calculations).
+The “O (·)” notation.
+p
+• We use the notation |θ(cid:98)n − θ| = O
+p
+(n−1/2) if there exists a random variable A (which does
+not depend on n) such that |θ(cid:98)n − θ| ≤ An−1/2.
+Example of when you can use O
+p
+(n−1/2). If E[θ(cid:98)n ] = 0 but var[θ(cid:98)n ] ≤ Cn−1. Then we can say
+that E|θ(cid:98) − θ| ≤ Cn−1/2 and thus |θ(cid:98) − θ| = O
+p
+(n−1/2).
+Definition of expectation
+• Suppose X is a random variable with density f , then
+X
+(cid:90) ∞
+E(X) = xf (x)dx.
+X
+−∞
+If E[X ] = µ, then the sample mean X¯ = n−1 (cid:80)n X is an (unbiased) estimator of µ
+i i=1 i
+(unbiased because E[X¯ ] = µ); most estimators will have a bias (but often it is small).
+• Suppose (X, Y ) is a bivariate random variable with joint density f , then
+X,Y
+(cid:90) ∞ (cid:90) ∞
+E(XY ) = xyf (x, y)dxdy.
+X,Y
+−∞ −∞
+Definition of covariance
+• The covariance is defined as
+cov(X, Y ) = E ((X − E(X))(Y − E(Y ))) = E(XY ) − E(X)E(Y ).
+• The variance is var(X) = E(X − E(X))2 = E(X2) = E(X)2.
+• Observe var(X) = cov(X, X).
+63
+
+--- physical page 65 ---
+• Rules of covariances. If a, b, c are finite constants and X, Y, Z are random variables with
+E(X2) < ∞, E(Y 2) < ∞ and E(Z2) < ∞ (which immediately implies their means are finite).
+Then the covariance satisfies the linearity property
+cov (aX + bY + c, Z) = acov(X, Z) + bcov(Y, Z).
+Observe the shift c plays no role in the covariance (since it simply shifts the data).
+• The variance of vectors. Suppose that A is a matrix and X a random vector with variance/-
+covariance matrix Σ. Then
+var(AX) = Avar(X)A(cid:48) = AΣA(cid:48), (3.1)
+which can be proved using the linearity property of covariances.
+• The correlation between X and Y is
+cov(X, Y )
+cor(X, Y ) =
+(cid:112)
+var(X)var(Y )
+and lies between [−1, 1]. If var(X) = var(Y ) then cor(X, Y ) is the coefficient of the best
+linear predictor of X given Y and visa versa.
+What is covariance and correlation The covariance and correlation measure the linear dependence
+between two random variables. If you plot realisations of the bivariate random variable (X, Y ) (X
+on x-axis and Y on y-axis), then the best line of best fit
+Y(cid:98) = β
+0
++ β
+1
+X
+gives the best linear predictor of Y given X. β is closely related to the covariance. To see how,
+1
+consider the following example. Given the observation {(X , Y ); i = 1, . . . , n} the gradient of the
+i i
+linear of the line of best fit is
+(cid:80)n (X − X¯ )(Y − Y¯ )
+β(cid:98)1 = i=
+(cid:80)
+1
+n
+i
+(X − X¯
+i
+)2
+.
+i=1 i
+64
+
+--- physical page 66 ---
+As the sample size n → ∞ we recall that
+cov(X, Y )
+P
+β(cid:98)1 → = β
+1
+.
+var(Y )
+β = 0 if and only if cov(X, Y ) = 0. The covariance between two random variables measures the
+1
+amount of predictive information (in terms of linear prediction) one variable contains about the
+other. The coefficients in a regression are not symmetric i.e. P (Y ) = β X, whereas P (X) = γ Y
+X 1 Y 1
+and in general β (cid:54)= γ . The correlation
+1 1
+cov(X, Y )
+cor(X, Y ) =
+(cid:112)
+var(X)var(Y )
+is a symmetric measure of dependence between the two variables.
+Exercise 3.1 (Covariance calculations practice) Suppose {ε } are uncorrelated random vari-
+t
+ables with E[ε ] = 0 and E[ε2] = σ2
+t t
+• Let X = ε + 0.5ε . Evaluate cov(X , X ) for r = 0, ±1, ±2, ±3, ±4, ±5.
+t t t−1 t t+r
+• Let X = (cid:80)∞ ρjε where |ρ| < 1. Evaluate cov(X , X ) for r ∈ Z (0, ±1, ±2, ±3, ±4, . . .).
+t j=0 t−j t t+r
+Cumulants: A measure of higher order dependence The covariance has a very simple geometric in-
+terpretation. But it only measures linear dependence. In time series and many applications in
+signal processing, more general measures of dependence are needed. These are called cumulants
+and can simultaneously measure dependence between several variables or variables with themselves.
+They generalize the notion of a covariance, but as far as I am aware don’t have the nice geometric
+interpretation that a covariance has.
+3.1.1 Formal definition of a time series
+When we observe the time series {x }, usually we assume that {x } is a realisation from a random
+t t
+process {X }. We formalise this notion below. The random process {X ; t ∈ Z} (where Z denotes
+t t
+the integers) is defined on the probability space {Ω, F , P }. We explain what these mean below:
+(i) Ω is the set of all possible outcomes. Suppose that ω ∈ Ω, then {X (ω)} is one realisation
+t
+from the random process. For any given ω, {X (ω)} is not random. In time series we will
+t
+usually assume that what we observe x = X (ω) (for some ω) is a typical realisation. That
+t t
+65
+
+--- physical page 67 ---
+is, for any other ω∗ ∈ Ω, X (ω∗) will be different, but its general or overall characteristics
+t
+will be similar.
+(ii) F is known as a sigma algebra. It is a set of subsets of Ω (though not necessarily the set of
+all subsets, as this can be too large). But it consists of all sets for which a probability can
+be assigned. That is if A ∈ F , then a probability is assigned to the set A.
+(iii) P is the probability measure over the sigma-algebra F . For every set A ∈ F we can define a
+probability P (A).
+There are strange cases, where there is a subset of Ω, which is not in the sigma-algebra F ,
+where P (A) is not defined (these are called non-measurable sets). In this course, we not have
+to worry about these cases.
+This is a very general definition. But it is too general for modelling. Below we define the notion
+of stationarity and weak dependence, that allows for estimators to have a meaningful interpretation.
+3.2 The sample mean and its standard error
+We start with the simplest case, estimating the mean when the data is dependent. This is usually
+estimated with the sample mean. However, for the sample mean to be estimating something
+reasonable we require a very weak form of stationarity. That is the time series has the same mean
+for all t i.e.
+X = µ + (X − µ),
+t t
+(cid:124)(cid:123)(cid:122)(cid:125) (cid:124) (cid:123)(cid:122) (cid:125)
+=E(Xt) =εt
+where µ = E(X ) for all t. This is analogous to say that the independent random variables {X }
+t t
+all have a common mean. Under this assumption X¯ is an unbiased estimator of µ. Next, our aim
+is to obtain conditions under which X¯ is a “reasonable” estimator of the mean.
+Based on just one realisation of a time series we want to make inference about the parameters
+associated with the process {X }, such as the mean. We recall that in classical statistics we usually
+t
+assume we observe several independent realisations, {X } all with the same distribution, and use
+t
+X¯ = 1 (cid:80)n X to estimate the mean. Roughly speaking, with several independent realisations we
+n t=1 t
+are able to sample over the entire probability space and thus obtain a “good” (meaning consistent
+or close to true mean) estimator of the mean. On the other hand, if the samples were highly
+66
+
+--- physical page 68 ---
+dependent, then it is likely that {X } is concentrated over a small part of the probability space. In
+t
+this case, the sample mean will not converge to the mean (be close to the true mean) as the sample
+size grows.
+The mean squared error a measure of closeness One classical measure of closeness between an es-
+timator and a parameter is the mean squared error
+(cid:104) (cid:105)2 (cid:104) (cid:105)2
+E θ(cid:98)n − θ = var(θ(cid:98)n ) + E(θ(cid:98)n ) − θ .
+If the estimator is an unbiased estimator of θ then
+(cid:104) (cid:105)2
+E θ(cid:98)n − θ = var(θ(cid:98)n ).
+Returning to the sample mean example suppose that {X } is a time series wher E[X ] = µ for all
+t t
+t. Then tt is clear that this is an unbiased estimator of µ and
+E (cid:2) X¯ − µ (cid:3)2 = var(X¯ ).
+n n
+To see whether it converges in mean square to µ we evaluate its
+ 
+1
+ 
+ 1 
+var(X¯ ) = n−2(1, . . . , 1) var(X n )    . .    ,
+(cid:124) (cid:123)(cid:122) (cid:125)  . 
+matrix, Σ  
+1
+where
+ 
+cov(X , X ) cov(X , X ) cov(X , X ) . . . cov(X , X )
+1 1 1 2 1 3 1 n
+ 
+ cov(X , X ) cov(X , X ) cov(X , X ) . . . cov(X , X ) 
+ 2 1 2 2 2 3 2 n 
+ 
+var(X ) =  cov(X , X ) cov(X , X ) cov(X , X ) . . . cov(X , X )  .
+n  3 1 3 2 3 3 3 n 
+   . . . . . . . . . . . . · · ·   
+ 
+cov(X , X ) cov(X , X ) . . . . . . cov(X , X )
+n 1 n 2 n n
+67
+
+--- physical page 69 ---
+Thus
+n n n n
+1 (cid:88) 1 (cid:88) 2 (cid:88) (cid:88)
+var(X¯ ) = cov(X , X ) var(X ) + cov(X , X )
+n2 t τ n2 t n2 t τ
+t,τ=1 t=1 t=1 τ=t+1
+n n−1 n−|r|
+1 (cid:88) 2 (cid:88) (cid:88)
+= var(X ) + cov(X , X ). (3.2)
+n2 t n2 t t+r
+t=1 r=1 t=1
+A typical time series is a half way house between “fully” dependent data and independent data.
+Unlike classical statistics, in time series, parameter estimation is based on only one realisation
+x = X (ω) (not multiple, independent, replications). Therefore, it would appear impossible to
+t t
+obtain a good estimator of the mean. However good estimators of the mean are still possible,
+based on just one realisation of the time series so long as certain assumptions are satisfied (i) the
+process has a constant mean (a type of stationarity) and (ii) despite the fact that each time series is
+generated from one realisation there is ‘short’ memory in the observations. That is, what is observed
+today, x has little influence on observations in the future, x (when k is relatively large). Hence,
+t t+k
+even though we observe one tragectory, that trajectory traverses much of the probability space.
+The amount of dependency in the time series determines the ‘quality’ of the estimator. There are
+several ways to measure the dependency. We know that the most common is the measure of linear
+dependency, known as the covariance. Formally, the covariance in the stochastic process {X } is
+t
+defined as
+cov(X , X ) = E [(X − E(X )) (X − E (X ))] = E(X X ) − E(X )E(X ).
+t t+k t t t+k t+k t t+k t t+k
+Noting that if {X } has zero mean, then the above reduces to cov(X , X ) = E(X X ).
+t t t+k t t+k
+Remark 3.2.1 (Covariance in a time series) To illustrate the covariance within a time series
+setting, we generate the time series
+(cid:18) (cid:19)
+2π
+X = 1.8 cos X − 0.92X + ε (3.3)
+t t−1 t−2 t
+5
+for t = 1, . . . , n. A scatter plot of X against X for r = 1, . . . , 4 and n = 200 is given in Figure
+t t+r
+3.1. The corresponding sample autocorrelation (ACF) plot (as defined in equation (3.7) is given in
+Figure 3.2). Focus on the lags r = 1, . . . , 4 in the ACF plot. Observe that they match what is seen
+in the scatter plots.
+68
+
+--- physical page 70 ---
+l
+ll l l l l l l l l l l l l l l l l l lll l l l l l l l l l l ll l l l l lll l l l l l l ll l l l l l ll l l l l l l l l l l l l ll l ll l l l l ll ll l l l l l l l ll l l l l l l l l ll l l l l l l l l l l l l l l l l ll l l l l ll l l l l l l l l l l l l l l l l l l l l l l l l l l l ll l l l l l l l l l l l l l l l l l ll lll l ll l l l l l l l l l l l l l l ll l
+−4 −2 0 2 4
+4 2 0 2− 4−
+lag0
+1gal
+l
+ll l l l l l l l l l l l l l l l l l ll l l l l l ll l l l ll l l l l l l llll l ll l ll ll l l l l l l ll l l l l l l l l ll l l l l l l l lll l l l l l l ll l l l l l l ll llll l l ll l l ll l l l l l l l l l l l l l l l l l l l ll l l l l l l ll ll l l l l l l l l lll l l l l l l l l l l l lll ll l l l l l l l ll l l l ll l l l l l l l l l l l l l l l l
+−4 −2 0 2 4
+4 2 0 2− 4−
+lag0
+2gal
+l
+l l lll l l l l l l l l l l l ll ll l l l l l l l l l l l l l ll l l l ll l l llll l l l ll l l l ll ll l l l l l lllll l l l l l l l l l l l l l l l l l l l l l l l l l lll l l l l l ll l l l l ll l l l l l l l l l l l l l l l l l l l l l l l l l ll l l l ll l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l l ll l l l l l l l l l l l llll l l ll l l
+−4 −2 0 2 4
+4 2 0 2− 4−
+lag0
+3gal
+l
+l l l l l l l l l l ll l l l l ll l l l l l l l l ll l l l l l l l l l l l l l l l ll ll l l l ll l l l l ll l l l l l l l ll l ll l l l l l l ll l ll l l l l l l l l l l l l l l l l l l l ll l l l l l l l l l l l l l l lll l l l l l l l l ll l l l l l l lll l l l l ll l ll l l l l l l l l ll l l l l l l l l l l l l l l l l l l ll l ll l l l l l l l l l l l ll l l
+−4 −2 0 2 4
+4 2 0 2− 4−
+lag0
+4gal
+Figure 3.1: From model (3.3). Plot of X against X for r = 1, . . . , 4. Top left: r = 1. Top
+t t+r
+right: r = 2, Bottom left: r = 3 and Bottom right: r = 4.
+0 5 10 15 20
+0.1
+5.0
+0.0
+5.0−
+Lag
+FCA
+Series dependent
+Figure 3.2: ACF plot of realisation from model (3.3).
+Using the expression in (3.4) we can deduce under what conditions on the time series we can
+obtain a reasonable estimator of the mean. If the covariance structure decays at such a rate that
+the sum of all lags is finite, that is
+∞
+(cid:88)
+sup |cov(X , X )| < ∞,
+t t+r
+t
+r=−∞
+69
+
+--- physical page 71 ---
+often called short memory), then the variance is
+n n−1 n−|r|
+1 (cid:88) 2 (cid:88) (cid:88)
+var(X¯ ) ≤ var(X ) + |cov(X , X )|
+n2 t n2 t t+r
+t=1 r=1 t=1
+n n−1 ∞
+1 (cid:88) 2 (cid:88) (cid:88)
+≤ var(X ) + |cov(X , X )| ≤ Cn−1 = O(n−1). (3.4)
+n2 t n2 t t+r
+t=1 t=1 r=1
+(cid:124) (cid:123)(cid:122) (cid:125)
+finite for all t and n
+This rate of convergence is the same as if {X } were iid/uncorrelated data. However, if the corre-
+t
+lations are positive it will be larger than the case that {X } are uncorrelated.
+t
+However, even with this assumption we need to be able to estimate var(X¯ ) in order to test/-
+construct CI for µ. Usually this requires the stronger assumption of stationarity, which we define
+in Section 3.3.
+Remark 3.2.2 It is worth bearing in mind that the covariance only measures linear dependence.
+For some statistical analysis, such as deriving an expression for the variance of an estimator, the
+covariance is often sufficient as a measure. However, given cov(X , X ) we cannot say anything
+t t+k
+about cov(g(X ), g(X )), where g is a nonlinear function. There are occassions where we require
+t t+k
+a more general measure of dependence (for example, to show asymptotic normality). Examples of
+more general measures include mixing (and other related notions, such as Mixingales, Near-Epoch
+dependence, approximate m-dependence, physical dependence, weak dependence), first introduced by
+Rosenblatt in the 50s (Rosenblatt and Grenander (1997)). In this course we will not cover mixing.
+3.2.1 The variance of the estimated regressors in a linear regres-
+sion model with correlated errors
+Let us return to the parametric models discussed in Section 2.1. The general model is
+p
+(cid:88)
+Y = β + β u + ε = β(cid:48)u + ε ,
+t 0 j t,j t t t
+j=1
+where E[ε ] = 0 and we will assume that {u } are nonrandom regressors. Note this includes the
+t t,j
+parametric trend models discussed in Section 2.1. We use least squares to estimate β
+n
+(cid:88)
+L (β) = (Y − β(cid:48)u )2,
+n t t
+t=1
+70
+
+--- physical page 72 ---
+with
+βˆ = arg min L (β).
+n n
+Using that
+ 
+∂Ln(β)
+
+∂β1
+
+∇ β L n (β) = ∂L n (β) =    ∂L ∂ n β . ( 2 β)    = −2 (cid:88) n (Y t − β(cid:48)u t )u t ,
+∂β  . 
+ .  t=1
+ 
+∂Ln(β)
+∂βp
+we have
+n n
+(cid:88) (cid:88)
+βˆ = arg min L (β) = ( u u(cid:48) )−1 Y u ,
+n n t t t t
+t=1 t=1
+since we solve ∂Ln(βˆ n ) = 0. To evaluate the variance of βˆ we can either
+∂β n
+• Directly evaluate the variance of βˆ = ( (cid:80)n u u(cid:48) )−1 (cid:80)n Y u . But this is very special for
+n t=1 t t t=1 t t
+linear least squares.
+• Or use an expansion of
+∂Ln(β)
+, which is a little longer but generalizes to more complicate
+∂β
+estimators and criterions.
+We will derive an expression for βˆ − β. By using ∂Ln(β) we can show
+n ∂β
+∂L
+∂
+n (
+β
+βˆ n ) − ∂L
+∂
+n
+β
+(β) = −2 (cid:88) n (Y
+t
+− β(cid:98) (cid:48)
+n
+u
+t
+)u
+t
++ 2 (cid:88) n (Y
+t
+− β(cid:48)u
+t
+)u
+t
+t=1 t=1
+n
+(cid:104) (cid:105)(cid:48) (cid:88)
+= 2 βˆ − β u u(cid:48) . (3.5)
+n t t
+t=1
+On the other hand, because
+∂Ln(βˆ
+n
+)
+= 0 we have
+∂β
+∂L (βˆ ) ∂L (β) ∂L (β)
+n n − n = − n
+∂β ∂β ∂β
+n n
+(cid:88) (cid:88)
+= [Y − β(cid:48)u ] u = u ε . (3.6)
+t t t t t
+(cid:124) (cid:123)(cid:122) (cid:125)
+t=1 t=1
+εt
+71
+
+--- physical page 73 ---
+Equating (3.5) and (3.6) gives
+n n
+(cid:104) (cid:105)(cid:48) (cid:88) (cid:88)
+βˆ − β u u(cid:48) = u(cid:48) ε
+n t t t t
+t=1 t=1
+(cid:32) n (cid:33)−1 n (cid:32) n (cid:33)−1 n
+(cid:104) (cid:105) (cid:88) (cid:88) 1 (cid:88) 1 (cid:88)
+⇒ βˆ − β = u u(cid:48) u ε = u u(cid:48) u ε .
+n t t t t n t t n t t
+t=1 t=1 t=1 t=1
+Using this expression we can see that
+(cid:32) n (cid:33)−1 (cid:32) n (cid:33) (cid:32) n (cid:33)−1
+(cid:104) (cid:105) 1 (cid:88) 1 (cid:88) 1 (cid:88)
+var βˆ − β = u u(cid:48) var u ε u u(cid:48) .
+n n t t n t t n t t
+t=1 t=1 t=1
+Finally we need only evaluate var (cid:0) 1 (cid:80)n u ε (cid:1) which is
+n t=1 t t
+(cid:32) n (cid:33) n
+1 (cid:88) 1 (cid:88)
+var u ε = cov[ε , ε ]u u(cid:48)
+n t t n2 t τ t τ
+t=1 t,τ=1
+n n n
+1 (cid:88) 1 (cid:88) (cid:88)
+= var[ε ]u u(cid:48) + cov[ε , ε ]u u(cid:48) .
+n2 t t t n2 t τ t τ
+t=1 t=1 τ(cid:54)=t
+(cid:124) (cid:123)(cid:122) (cid:125) (cid:124) (cid:123)(cid:122) (cid:125)
+expression if independent additional term due to correlation in the errors
+This expression is analogous to the expression for the variance of the sample mean in (3.4) (make
+a comparision of the two).
+Under the assumption that (cid:0) 1 (cid:80)n u u(cid:48) (cid:1) is non-singular, sup (cid:107)u (cid:107) < ∞ and sup (cid:80)∞ |cov(ε , ε )| <
+n t=1 t t t t 1 t τ=−∞ t τ
+(cid:104) (cid:105)
+∞, we can see that var βˆ − β = O(n−1). Estimation of the variance of β(cid:98) is important and re-
+n n
+quires one to estimate var (cid:0) 1 (cid:80)n u ε (cid:1) . This is often done using the HAC estimator. We describe
+n t=1 t t
+how this is done in Section 8.5.
+3.3 Stationary processes
+We have established that one of the main features that distinguish time series analysis from classical
+methods is that observations taken over time (a time series) can be dependent and this dependency
+tends to decline the further apart in time these two observations. However, to do any sort of analysis
+of this time series we have to assume some sort of invariance in the time series, for example the mean
+or variance of the time series does not change over time. If the marginal distributions of the time
+series were totally different no sort of inference would be possible (suppose in classical statistics you
+72
+
+--- physical page 74 ---
+were given independent random variables all with different distributions, what parameter would
+you be estimating, it is not possible to estimate anything!).
+The typical assumption that is made is that a time series is stationary. Stationarity is a rather
+intuitive concept, it is an invariant property which means that statistical characteristics of the time
+series do not change over time. For example, the yearly rainfall may vary year by year, but the
+average rainfall in two equal length time intervals will be roughly the same as would the number of
+times the rainfall exceeds a certain threshold. Of course, over long periods of time this assumption
+may not be so plausible. For example, the climate change that we are currently experiencing is
+causing changes in the overall weather patterns (we will consider nonstationary time series towards
+the end of this course). However in many situations, including short time intervals, the assumption
+of stationarity is quite a plausible. Indeed often the statistical analysis of a time series is done
+under the assumption that a time series is stationary.
+3.3.1 Types of stationarity
+There are two definitions of stationarity, weak stationarity which only concerns the covariance of a
+process and strict stationarity which is a much stronger condition and supposes the distributions
+are invariant over time.
+Definition 3.3.1 (Strict stationarity) The time series {X } is said to be strictly stationary
+t
+if for any finite sequence of integers t , . . . , t and shift h the distribution of (X , . . . , X ) and
+1 k t1 t k
+(X , . . . , X ) are the same.
+t1+h t
+k
++h
+The above assumption is often considered to be rather strong (and given a data it is very
+hard to check). Often it is possible to work under a weaker assumption called weak/second order
+stationarity.
+Definition 3.3.2 (Second order stationarity/weak stationarity) The time series {X } is said
+t
+to be second order stationary if the mean is constant for all t and if for any t and k the covariance
+between X and X only depends on the lag difference k. In other words there exists a function
+t t+k
+c : Z → R such that for all t and k we have
+c(k) = cov(X , X ).
+t t+k
+73
+
+--- physical page 75 ---
+Remark 3.3.1 (Strict and second order stationarity) (i) If a process is strictly stationar-
+ity and E|X2| < ∞, then it is also second order stationary. But the converse is not necessarily
+t
+true. To show that strict stationarity (with E|X2| < ∞) implies second order stationarity,
+t
+suppose that {X } is a strictly stationary process, then
+t
+cov(X , X ) = E(X X ) − E(X )E(X )
+t t+k t t+k t t+k
+(cid:90)
+(cid:2) (cid:3)
+= xy P (dx, dy) − P (dx)P (dy)
+Xt,X
+t+k
+Xt X
+t+k
+(cid:90)
+= xy [P (dx, dy) − P (dx)P (dy)] = cov(X , X ),
+X0,X k X0 X k 0 k
+where P and P is the joint distribution and marginal distribution of X , X respec-
+Xt,X t+k Xt t t+k
+tively. The above shows that cov(X , X ) does not depend on t and {X } is second order
+t t+k t
+stationary.
+(ii) If a process is strictly stationary but the second moment is not finite, then it is not second
+order stationary.
+(iii) It should be noted that a weakly stationary Gaussian time series is also strictly stationary too
+(this is the only case where weakly stationary implies strictly stationary).
+Example 3.3.1 (The sample mean and its variance under second order stationarity) Returning
+the variance of the sample mean discussed (3.4), if a time series is second order stationary, then
+the sample mean X¯ is estimating the mean µ and the variance of X¯ is
+n n−1 n−r
+1 (cid:88) 2 (cid:88) (cid:88)
+var(X¯ ) = var(X ) + cov(X , X )
+n2 t n2 t t+r
+(cid:124) (cid:123)(cid:122) (cid:125) (cid:124) (cid:123)(cid:122) (cid:125)
+t=1 r=1 t=1
+c(0) =c(r)
+n (cid:18) (cid:19)
+1 2 (cid:88) n − r
+= c(0) + c(r),
+n n n
+r=1
+(cid:124) (cid:123)(cid:122) (cid:125)
+=1−r/n
+where we note that above is based on the expansion in (3.4). We approximate the above, by using that
+the covariances
+(cid:80)
+|c(r)| < ∞. Therefore for all r, (1−r/n)c(r) → c(r) and |
+(cid:80)n
+(1−|r|/n)c(r)| ≤
+r r=1
+(cid:80)
+|c(r)|, thus by dominated convergence (see Appendix A)
+(cid:80)n
+(1 − r/n)c(r) →
+(cid:80)∞
+c(r). This
+r r=1 r=1
+implies that
+∞ ∞
+1 2 (cid:88) 1 (cid:88) 1
+var(X¯ ) ≈ c(0) + c(r) = c(r) = O( ).
+n n n n
+r=1 r=−∞
+74
+
+--- physical page 76 ---
+The above is often called the long term variance. The above implies that
+E(X¯ − µ)2 = var(X¯ ) → 0, n → ∞,
+which we recall is convergence in mean square. This immediately implies convergence in probability
+X¯ → P µ.
+The example above illustrates how second order stationarity gives an elegant expression for the
+variance and can be used to estimate the standard error associated with X¯ .
+Example 3.3.2 In Chapter 8 we consider estimation of the autocovariance function. However for
+now rely on the R command acf. For the curious, it evaluates ρ(r) = c(r)/c(0), where
+(cid:98) (cid:98) (cid:98)
+n−r
+1 (cid:88)
+c(r) = (X − X¯ )(X − X¯ ) (3.7)
+(cid:98) t t+r
+n
+t=1
+for r = 1, . . . , m (m is some value that R defines), you can change the maximum number of lags
+by using acf(data, lag = 30), say). Observe that even if X = µ (nonconstant mean), from the
+t t
+way c(r) (sum of (n − r) terms) is defined, ρ(r) will decay to zero as r → n.
+(cid:98) (cid:98)
+In Figure 3.3 we give the sample acf plots of the Southern Oscillation Index and the Sunspot
+data. We observe that are very different. The acf of the SOI decays rapidly, but there does appear
+to be some sort of ‘pattern’ in the correlations. On the other hand, there is more “persistence” in
+the acf of the Sunspot data. The correlations of the acf appear to decay but over a longer period of
+time and there is a clear periodicity.
+Exercise 3.2 State, with explanation, which of the following time series is second order stationary,
+which are strictly stationary and which are both.
+(i) {ε } are iid random variables with mean zero and variance one.
+t
+(ii) {ε } are iid random variables from a Cauchy distributon.
+t
+(iii) X = X + ε , where {ε } are iid random variables with mean zero and variance one.
+t+1 t t t
+(iv) X = Y where Y is a random variable with mean zero and variance one.
+t
+(iv) X = U +U +V , where {(U , V )} is a strictly stationary vector time series with E[U 2] < ∞
+t t t−1 t t t t
+and E[V 2] < ∞.
+t
+75
+
+--- physical page 77 ---
+0 50 100 150 200 250 300
+8.0
+4.0
+0.0
+Lag
+FCA
+Series soi
+0 10 20 30 40 50 60
+8.0
+4.0
+0.0
+4.0−
+Lag
+FCA
+Series sunspot
+Figure 3.3: Top: ACF of Southern Oscillation data. Bottom ACF plot of Sunspot data.
+Exercise 3.3 (i) Make an ACF plot of the monthly temperature data from 1996-2014.
+(ii) Make and ACF plot of the yearly temperature data from 1880-2013.
+(iii) Make and ACF plot of the residuals (after fitting a line through the data (using the command
+lsfit(..)$res)) of the yearly temperature data from 1880-2013.
+Briefly describe what you see.
+Exercise 3.4 (i) Suppose that {X } is a strictly stationary time series. Let
+t t
+1
+Y = .
+t 1 + X2
+t
+Show that {Y } is a second order stationary time series.
+t
+(ii) Obtain an approximate expression for the variance of the sample mean of {Y } in terms of its
+t
+long run variance (stating the sufficient assumptions for the long run variance to be finite).
+You do not need to give an analytic expression for the autocovariance, there is not enough
+information in the question to do this.
+(iii) Possibly challenging question. Suppose that
+Y = g(θ , t) + ε ,
+t 0 t
+76
+
+--- physical page 78 ---
+where {ε } are iid random variables and g(θ , t) is a deterministic mean and θ is an unknown
+t 0 0
+parameter. Let
+n
+(cid:88)
+θ(cid:98)n = arg min (Y
+t
+− g(θ, t))2.
+θ∈Θ
+t=1
+Explain why the quantity
+θ(cid:98)n − θ
+0
+can be expressed, approximately, as a sample mean. You can use approximations and heuris-
+tics here.
+Hint: Think derivatives and mean value theorems.
+Ergodicity (Advanced)
+We now motivate the concept of ergodicity. Conceptionally, this is more difficult to understand
+than the mean and variance. But it is a very helpful tool when analysing estimators. It allows one
+to simply replace the sample mean by its expectation without the need to evaluating a variance,
+which is extremely useful in some situations.
+It can be difficult to evaluate the mean and variance of an estimator. Therefore, we may want
+an alternative form of convergence (instead of the mean squared error). To see whether this is
+possible we recall that for iid random variables we have the very useful law of large numbers
+n
+1 (cid:88) a.s.
+X → µ
+t
+n
+t=1
+and in general 1 (cid:80)n g(X ) a → .s. E[g(X )] (if E[g(X )] < ∞). Does such a result exists in time
+n t=1 t 0 0
+series? It does, but we require the slightly stronger condition that a time series is ergodic (which
+is a slightly stronger condition than the strictly stationary).
+Definition 3.3.3 (Ergodicity: Formal definition) Let (Ω, F , P ) be a probability space. A trans-
+formation T : Ω → Ω is said to be measure preserving if for every set A ∈ F , P (T −1A) = P (A).
+Moreover, it is said to be an ergodic transformation if T −1A = A implies that P (A) = 0 or 1.
+It is not obvious what this has to do with stochastic processes, but we attempt to make a link. Let
+us suppose that X = {X } is a strictly stationary process defined on the probability space (Ω, F , P ).
+t
+77
+
+--- physical page 79 ---
+By strict stationarity the transformation (shifting a sequence by one)
+T (x , x , . . .) = (x , x , . . .),
+1 2 2 3
+is a measure preserving transformation. To understand ergodicity we define the set A, where
+A = {ω : (X (ω), X (ω), . . .) ∈ H}. = {ω : X (ω), . . . , X (ω), . . .) ∈ H}.
+1 0 −1 −2
+The stochastic process is said to be ergodic, if the only sets which satisfies the above are such that
+P (A) = 0 or 1. Roughly, this means there cannot be too many outcomes ω which generate sequences
+which ‘repeat’ itself (are periodic in some sense). An equivalent definition is given in (3.8). From
+this definition is can be seen why “repeats” are a bad idea. If a sequence repeats the time average
+is unlikey to converge to the mean.
+See Billingsley (1994), page 312-314, for examples and a better explanation.
+The definition of ergodicity, given above, is quite complex and is rarely used in time series analysis.
+However, one consequence of ergodicity is the ergodic theorem, which is extremely useful in time
+series. It states that if {X } is an ergodic stochastic process then
+t
+n
+1 (cid:88) a.s.
+g(X ) → E[g(X )]
+t 0
+n
+t=1
+for any function g(·). And in general for any shift τ , . . . , τ and function g : Rk+1 → R we have
+1 k
+n
+1 (cid:88) a.s.
+g(X , X , . . . , X ) → E[g(X , . . . , X )] (3.8)
+n
+t t+τ1 t+τ
+k
+0 t+τ
+k
+t=1
+(often (3.8) is used as the definition of ergodicity, as it is an iff with the ergodic definition). This
+result generalises the strong law of large numbers (which shows almost sure convergence for iid
+random variables) to dependent random variables. It is an extremely useful result, as it shows us
+that “mean-type” estimators consistently estimate their mean (without any real effort). The only
+drawback is that we do not know the speed of convergence.
+(3.8) gives us an idea of what constitutes an ergodic process. Suppose that {ε } is an ergodic
+t
+process (a classical example are iid random variables) then any reasonable (meaning measurable)
+78
+
+--- physical page 80 ---
+function of X is also ergodic. More precisely, if X is defined as
+t t
+X = h(. . . , ε , ε , . . .), (3.9)
+t t t−1
+where {ε } are iid random variables and h(·) is a measureable function, then {X } is an Ergodic
+t t
+process. For full details see Stout (1974), Theorem 3.4.5.
+Remark 3.3.2 As mentioned above all Ergodic processes are stationary, but a stationary process
+is not necessarily ergodic. Here is one simple example. Suppose that {ε } are iid random variables
+t
+and Z is a Bernoulli random variable with outcomes {1, 2} (where the chance of either outcome is
+half ). Suppose that Z stays the same for all t. Define
+
+ µ + ε Z = 1
+1 t
+X =
+t
+ µ + ε Z = 2.
+2 t
+It is clear that E(X |Z = i) = µ and E(X ) = 1 (µ + µ ). This sequence is stationary. However,
+t i t 2 1 2
+we observe that 1 (cid:80)T X will only converge to one of the means, hence we do not have almost
+T t=1 t
+sure convergence (or convergence in probability) to 1 (µ + µ ).
+2 1 2
+R code
+To make the above plots we use the commands
+par(mfrow=c(2,1))
+acf(soi,lag.max=300)
+acf(sunspot,lag.max=60)
+3.3.2 Towards statistical inference for time series
+Returning to the sample mean Example 3.3.1. Suppose we want to construct CIs or apply statistical
+tests on the mean. This requires us to estimate the long run variance (assuming stationarity)
+∞
+1 2 (cid:88)
+var(X¯ ) ≈ c(0) + c(r).
+n n
+r=1
+There are several ways this can be done, either by fitting a model to the data and from the model
+estimate the covariance or doing it nonparametrically. This example motivates the contents of the
+79
+
+--- physical page 81 ---
+course:
+(i) Modelling, finding suitable time series models to fit to the data.
+(ii) Forecasting, this is essentially predicting the future given current and past observations.
+(iii) Estimation of the parameters in the time series model.
+(iv) The spectral density function and frequency domain approaches, sometimes within the fre-
+quency domain time series methods become extremely elegant.
+(v) Analysis of nonstationary time series.
+(vi) Analysis of nonlinear time series.
+(vii) How to derive sampling properties.
+3.4 What makes a covariance a covariance?
+The covariance of a stationary process has several very interesting properties. The most important
+is that it is positive semi-definite, which we define below.
+Definition 3.4.1 (Positive semi-definite sequence) (i) A sequence {c(k); k ∈ Z} (Z is the
+set of all integers) is said to be positive semi-definite if for any n ∈ Z and sequence x =
+(x , . . . , x ) ∈ Rn the following is satisfied
+1 n
+n
+(cid:88)
+c(i − j)x x ≥ 0.
+i j
+i,j=1
+(ii) A function is said to be an even positive semi-definite sequence if (i) is satisfied and c(k) =
+c(−k) for all k ∈ Z.
+An extension of this notion is the positive semi-definite function.
+Definition 3.4.2 (Positive semi-definite function) (i) A function {c(u); u ∈ R} is said to
+be positive semi-definite if for any n ∈ Z and sequence x = (x , . . . , x ) ∈ Rn the following
+1 n
+is satisfied
+n
+(cid:88)
+c(u − u )x x ≥ 0.
+i j i j
+i,j=1
+80
+
+--- physical page 82 ---
+(ii) A function is said to be an even positive semi-definite function if (i) is satisfied and c(u) =
+c(−u) for all u ∈ R.
+Remark 3.4.1 You have probably encountered this positive definite notion before, when dealing
+with positive definite matrices. Recall the n × n matrix Σ is positive semi-definite if for all x ∈ Rn
+n
+x(cid:48)Σ x ≥ 0. To see how this is related to positive semi-definite matrices, suppose that the matrix Σ
+n n
+has a special form, that is the elements of Σ are (Σ ) = c(i−j). Then x(cid:48)Σ x = (cid:80)n c(i−j)x x .
+n n i,j n i,j i j
+We observe that in the case that {X } is a stationary process with covariance c(k), the variance
+t
+covariance matrix of X = (X , . . . , X ) is Σ , where (Σ ) = c(i − j).
+n 1 n n n i,j
+We now take the above remark further and show that the covariance of a stationary process is
+positive semi-definite.
+Theorem 3.4.1 Suppose that {X } is a discrete time/continuous stationary time series with co-
+t
+variance function {c(k)}, then {c(k)} is an even positive semi-definite sequence/function. Con-
+versely for any even positive semi-definite sequence/function there exists a stationary time series
+with this positive semi-definite sequence/function as its covariance function.
+PROOF. We prove the result in the case that {X } is a discrete time time series, ie. {X ; t ∈ Z}.
+t t
+We first show that {c(k)} is a positive semi-definite sequence. Consider any sequence x =
+(x , . . . , x ) ∈ Rn, and the double sum (cid:80)n x c(i − j)x . Define the random variable Y =
+1 n i,j i j
+(cid:80)n x X . It is straightforward to see that var(Y ) = x(cid:48)var(X )x = (cid:80)n c(i−j)x x where X =
+i=1 i i n i,j=1 i j n
+(X , . . . , X ). Since for any random variable Y , var(Y ) ≥ 0, this means that
+(cid:80)n
+x c(i−j)x ≥ 0,
+1 n i,j=1 i j
+hence {c(k)} is a positive definite sequence.
+To show the converse, that is for any positive semi-definite sequence {c(k)} we can find a
+corresponding stationary time series with the covariance {c(k)} is relatively straightfoward, but
+depends on defining the characteristic function of a process and using Komologorov’s extension
+theorem. We omit the details but refer an interested reader to Brockwell and Davis (1998), Section
+1.5. (cid:3)
+In time series analysis usually the data is analysed by fitting a model to the data. The model
+(so long as it is correctly specified, we will see what this means in later chapters) guarantees the
+covariance function corresponding to the model (again we cover this in later chapters) is positive
+definite. This means, in general we do not have to worry about positive definiteness of the covariance
+function, as it is implicitly implied.
+81
+
+--- physical page 83 ---
+On the other hand, in spatial statistics, often the object of interest is the covariance function
+and specific classes of covariance functions are fitted to the data. In which case it is necessary to
+ensure that the covariance function is semi-positive definite (noting that once a covariance function
+has been found by Theorem 3.4.1 there must exist a spatial process which has this covariance
+function). It is impossible to check for positive definiteness using Definitions 3.4.1 or 3.4.1. Instead
+an alternative but equivalent criterion is used. The general result, which does not impose any
+conditions on {c(k)} is stated in terms of positive measures (this result is often called Bochner’s
+theorem). Instead, we place some conditions on {c(k)}, and state a simpler version of the theorem.
+Theorem 3.4.2 Suppose the coefficients {c(k); k ∈ Z} are absolutely summable (that is (cid:80) |c(k)| <
+k
+∞). Then the sequence {c(k)} is positive semi-definite if an only if the function f (ω), where
+∞
+1 (cid:88)
+f (ω) = c(k) exp(ikω),
+2π
+k=−∞
+is nonnegative for all ω ∈ [0, 2π].
+We also state a variant of this result for positive semi-definite functions. Suppose the function
+{c(u); k ∈ R} is absolutely summable (that is (cid:82) |c(u)|du < ∞). Then the function {c(u)} is positive
+R
+semi-definite if and only if the function f (ω), where
+1 (cid:90) ∞
+f (ω) = c(u) exp(iuω)du ≥ 0
+2π
+−∞
+for all ω ∈ R.
+The generalisation of the above result to dimension d is that {c(u); u ∈ Rd} is a positive semi-
+definite sequence if and if
+(cid:90)
+1
+f (ω) = c(u) exp(iu(cid:48)ω)du ≥ 0
+(2π)d
+Rd
+for all ωd ∈ Rd.
+PROOF. See Section 10.4.1.
+Example 3.4.1 We will show that sequence c(0) = 1, c(1) = 0.5, c(−1) = 0.5 and c(k) = 0 for
+|k| > 1 a positive definite sequence.
+From the definition of spectral density given above we see that the ‘spectral density’ corresponding
+82
+
+--- physical page 84 ---
+to the above sequence is
+f (ω) = 1 + 2 × 0.5 × cos(ω).
+Since | cos(ω)| ≤ 1, f (ω) ≥ 0, thus the sequence is positive definite. An alternative method is to
+find a model which has this as the covariance structure. Let X = ε + ε , where ε are iid random
+t t t−1 t
+variables with E[ε ] = 0 and var(ε ) = 0.5. This model has this covariance structure.
+t t
+3.5 Spatial covariances (advanced)
+Theorem 3.4.2 is extremely useful in finding valid spatial covariances. We recall that c : Rd → R
+d
+is a positive semi-definite covariance (on the spatial plane Rd) if there exists a positive function f
+d
+where
+(cid:90)
+c (u) = f (ω) exp(−iu(cid:48)ω)dω (3.10)
+d d
+Rd
+for all u ∈ Rd (the inverse Fourier transform of what was written). This result allows one to find
+parametric covariance spatial processes.
+However, beyond dimension d = 1 (which can be considered a “time series”), there exists
+conditions stronger than spatial (second order) stationarity. Probably the the most popular is
+spatial isotropy, which is even stronger than stationarity. A covariance c is called spatially isotropic
+d
+if it is stationary and there exist a function c : R → R such that c (u) = c((cid:107)u(cid:107) ). It is clear that
+d 2
+in the case d = 1, a stationary covariance is isotropic since cov(X , X ) = c(1) = c(−1) ==
+t t+1
+cov(X , X ) = cov(X , X ). For d > 1, isotropy is a stronger condition than stationarity. The
+t t−1 t−1 t
+appeal of an isotropic covariance is that the actual directional difference between two observations
+does not impact the covariance, it is simply the Euclidean distance between the two locations (see
+picture on board). To show that the covariance c(·) is a valid isotropic covariance in dimension
+d (that is there exists a positive semi-definite function c : Rd → R such that c((cid:107)u(cid:107)) = c (u)),
+d d
+conditions analogous but not the same as (3.10) are required. We state them now.
+Theorem 3.5.1 If a covariance c (·) is isotropic, its corresponding spectral density function f is
+d d
+also isotropic. That is, there exists a positive function f : R → R+ such that f (ω) = f ((cid:107)ω(cid:107) ).
+d 2
+A covariance c(·) is a valid isotropic covariance in Rd iff there exists a positive function f (·; d)
+83
+
+--- physical page 85 ---
+defined in R+ such that
+(cid:90) ∞
+c(r) = (2π)d/2 ρd/2J (ρ)f (ρ; d)dρ (3.11)
+(d/2)−1
+0
+where J is the order n Bessel function of the first kind.
+n
+PROOF. To give us some idea of where this result came from, we assume the first statement is true
+and prove the second statement for the case the dimension d = 2.
+By the spectral representation theorem we know that if c(u , u ) is a valid covariance then there
+1 r
+exists a positive function f such that
+2
+(cid:90)
+c(u , u ) = f (ω , ω ) exp(iω u + iω u )dω dω .
+1 2 2 1 2 1 1 2 2 1 2
+R2
+Next we change variables moving from Euclidean coordinates to polar coordinates (see https://
+(cid:112)
+en.wikipedia.org/wiki/Polar_coordinate_system), where s = ω2 + ω2 and θ = tan−1ω /ω .
+1 2 1 2
+In this way the spectral density can be written in terms of f (ω , ω ) = f (r, θ) and we have
+2 1 2 P,2
+(cid:90) ∞ (cid:90) 2π
+c(u , u ) = rf (s, θ) exp(isu cos θ + isu sin θ)dsdθ.
+1 2 P,2 1 2
+0 0
+We convert the covariance in terms of polar coordinates c(u , u ) = c (r, Ω) (where u = r cos Ω
+1 2 P,2 1
+and u = r sin Ω) to give
+2
+(cid:90) ∞ (cid:90) 2π
+c (r, Ω) = sf (s, θ) exp [isr (cos Ω cos θ + sin Ω sin θ)] dsdθ
+P,2 P,2
+0 0
+(cid:90) ∞ (cid:90) 2π
+= sf (s, θ) exp [isr cos (Ω − θΩ)] dsdθ. (3.12)
+P,2
+0 0
+So far we have not used isotropy of the covariance, we have simply rewritten the spectral represen-
+tation in terms of polar coordinates.
+Now, we consider the special case that the covariance is isotropic, this means that there exists
+a function c such that c (r, Ω) = c(r) for all r and Ω. Furthermore, by the first statement of the
+P,2
+theorem, if the covariance is isotropic, then there exists a positive function f : R+ → R+ such that
+84
+
+--- physical page 86 ---
+f (s, θ) = f (s) for all s and θ. Using these two facts and substituting them into (3.12) gives
+P,2
+(cid:90) ∞ (cid:90) 2π
+c(r) = sf (s) exp [isr cos (Ω − θΩ)] dsdθ
+0 0
+(cid:90) ∞ (cid:90) 2π
+= sf (s) exp [isr cos (Ω − θΩ)] dθ ds.
+0 0
+(cid:124) (cid:123)(cid:122) (cid:125)
+=2πJ0(s)
+For the case, d = 2 we have obtained the desired result. Note that the Bessel function J (·) is
+0
+effectively playing the same role as the exponential function in the general spectral representation
+theorem. (cid:3)
+The above result is extremely useful. It allows one to construct a valid isotropic covariance
+function in dimension d with a positive function f . Furthermore, it shows that an isotropic covari-
+ance c(r) may be valid in dimension in d = 1, . . . , 3, but for d > 3 it may not be valid. That is
+for d > 3, there does not exist a positive function f (·; d) which satisfies (3.11). Schoenberg showed
+that an isotropic covariance c(r) was valid in all dimensions d iff there exists a representation
+(cid:90) ∞
+c(r) = exp(−r2t2)dF (t),
+0
+where F is a probability measure. In most situations the above can be written as
+(cid:90) ∞
+c(r) = exp(−r2t2)f (t)dt,
+0
+where f : R+ → R+. This representation turns out to be a very fruitful method for gener-
+ating parametric families of isotropic covariances which are valid on all dimensions d. These
+include the Matern class, Cauchy class, Powered exponential family. The feature in common
+to all these isotropic covariance functions is that all the covariances are strictly positive and
+strictly decreasing. In other words, the cost for an isotropic covariance to be valid in all di-
+mensions is that it can only model positive, monotonic correlations. The use of such covariances
+have become very popular in modelling Gaussian processes for problems in machine learning (see
+http://www.gaussianprocess.org/gpml/chapters/RW1.pdf).
+For an excellent review see ?, Section 2.5.
+85
+
+--- physical page 87 ---
+3.6 Exercises
+Exercise 3.5 Which of these sequences can used as the autocovariance function of a second order
+stationary time series?
+(i) c(−1) = 1/2, c(0) = 1, c(1) = 1/2 and for all |k| > 1, c(k) = 0.
+(ii) c(−1) = −1/2, c(0) = 1, c(1) = 1/2 and for all |k| > 1, c(k) = 0.
+(iii) c(−2) = −0.8, c(−1) = 0.5, c(0) = 1, c(1) = 0.5 and c(2) = −0.8 and for all |k| > 2,
+c(k) = 0.
+Exercise 3.6 (i) Show that the function c(u) = exp(−a|u|) where a > 0 is a positive semi-
+definite function.
+(ii) Show that the commonly used exponential spatial covariance defined on R2, c(u , u ) =
+1 2
+(cid:112)
+exp(−a u2 + u2), where a > 0, is a positive semi-definite function.
+1 2
+Hint: One method is to make a change of variables using Polar coordinates. You may also
+want to harness the power of Mathematica or other such tools.
+86

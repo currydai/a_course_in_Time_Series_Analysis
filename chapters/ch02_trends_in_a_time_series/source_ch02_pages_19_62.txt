@@ -1,0 +1,1831 @@
+--- physical page 19 ---
+Chapter 2
+Trends in a time series
+Objectives:
+• Parameter estimation in parametric trend.
+• The Discrete Fourier transform.
+• Period estimation.
+In time series, the main focus is on understanding and modelling the relationship between
+observations. A typical time series model looks like
+Y = µ + ε ,
+t t t
+where µ is the underlying mean and ε are the residuals (errors) which the mean cannot
+t t
+explain. Formally, we say E[Y ] = µ . We will show later in this section, that when data
+t t
+it can be difficult to disentangle to the two. However, a time series analysist usually has
+a few jobs to do when given such a data set. Either (a) estimate µ , we discuss various
+t
+methods below, this we call µ or (b) transform {Y } in such a way that µ “disappears”.
+(cid:98)t t t
+What method is used depends on what the aims are of the analysis. In many cases it is to
+estimate the mean µ . But the estimated residuals
+t
+ε = Y − µ
+(cid:98)t t (cid:98)t
+18
+
+--- physical page 20 ---
+also plays an important role. By modelling {ε } we can understand its dependence structure.
+t t
+This knowledge will allow us to construct reliable confidence intervals for the mean µ . Thus
+t
+the residuals {ε } play an important but peripheral role. However, for many data sets the
+t t
+residuals {ε } are important and it is the mean that is a nuisance parameters. In such
+t t
+situations we either find a transformation which removes the mean and focus our analysis
+on the residuals ε . The main focus of this class will be on understanding the structure of
+t
+the residuals {ε } . However, in this chapter we study ways in which to estimate the mean
+t t
+µ .
+t
+Shumway and Stoffer, Chapter 2, and Brockwell and Davis (2002), Chapter 1.
+2.1 Parametric trend
+In many situations, when we observe time series, regressors are also available. The regressors
+may be an exogenous variable but it could even be time (or functions of time), since for a
+time series the index t has a meaningful ordering and can be treated as a regressor. Often
+the data is assumed to be generated using a parametric model. By parametric model, we
+mean a model where all but a finite number of parameters is assumed known. Possibly, the
+simplest model is the linear model. In time series, a commonly used linear model is
+Y = β + β t + ε , (2.1)
+t 0 1 t
+or
+Y = β + β t + β t2 + ε , (2.2)
+t 0 1 2 t
+where β , β and β are unknown. These models are l inear because they are linear in the
+0 1 2
+regressors. An example of a popular nonlinear models is
+1
+Y = + ε . (2.3)
+t t
+1 + exp[β (t − β )]
+0 1
+where β and β are unknown. As the parameters in this model are inside a function, this
+0 1
+19
+
+--- physical page 21 ---
+Time
+1elpmaxe
+0 20 40 60 80 100
+5.1
+0.1
+5.0
+0.0
+5.0−
+Time
+2elpmaxe
+0 20 40 60 80 100
+5.1
+0.1
+5.0
+0.0
+5.0−
+Figure 2.1: The function Y in (2.3) with iid noise with σ = 0.3. Dashed is the truth. Left:
+t
+β = 0.2 and β = 60. Right: β = 5 and β = 60
+0 1 0 1
+is an example of a nonlinear model. The above nonlinear model (called a smooth transition
+model), is used to model transitions from one state to another (as it is monotonic, increasing
+or decreasing depending on the sign of β ). Another popular model for modelling ECG data
+0
+is the burst signal model (see Swagata Nandi et. al.)
+Y = A exp (β (1 − cos(β t))) · cos(θt) + ε (2.4)
+t 0 2 t
+Both these nonlinear parametric models motivate the general nonlinear model
+Y = g(x , θ) + ε , (2.5)
+t t t
+where g(x , θ) is the nonlinear trend, g is a known function but θ is unknown. Observe that
+t
+most models include an additive noise term {ε } to account for variation in Y that the trend
+t t t
+cannot explain.
+Real data example Monthly temperature data. This time series appears to include seasonal
+behaviour (for example the southern oscillation index). Seasonal behaviour is often modelled
+20
+
+--- physical page 22 ---
+Time
+1langis
+0 20 40 60 80 100
+04
+02
+0
+02−
+04−
+Time
+langisY
+0 20 40 60 80 100
+04
+02
+0
+02−
+04−
+06−
+Figure 2.2: The Burst signal (equation (2.4)) A = 1, β = 2, β = 1 and θ = π/2 with iid
+0 1
+noise with σ = 8. Dashed is the truth. Left: True Signal. Right: True Signal with noise
+with sines and cosines
+(cid:18) (cid:19) (cid:18) (cid:19)
+2πt 2πt
+Y = β + β sin + β cos + ε ,
+t 0 1 3 t
+P P
+where P denotes the length of the period. If P is known, for example there are 12 months
+in a year so setting P = 12 is sensible. Then we are modelling trends which repeat every 12
+months (for example monthly data) and
+(cid:18) (cid:19) (cid:18) (cid:19)
+2πt 2πt
+Y = β + β sin + β cos + ε . (2.6)
+t 0 1 3 t
+12 12
+is an example of a l inear model.
+On the other hand, if P is known and has to be estimated from the data too. Then this
+is an example of a nonlinear model. We consider more general periodic functions in Section
+2.5.
+2.1.1 Least squares estimation
+In this section we review simple estimation methods. In this section, we do not study the
+properties of these estimators. We touch on that in the next chapter.
+21
+
+--- physical page 23 ---
+A quick review of least squares Suppose that variable X are believed to influence the re-
+i
+sponse variable Y . So far the relationship is unknown, but we regress (project Y =
+i n
+(Y , . . . , Y )(cid:48)) onto X = (X , . . . , X ) using least squares. We know that this means finding
+1 n n 1 n
+the α which minimises the distance
+n
+(cid:88)
+(Y − αX )2.
+i i
+i=1
+The α, which minimises the above, for mathematical convenience we denote as
+n
+(cid:88)
+α = arg min (Y − αX )2
+(cid:98)n i i
+α
+i=1
+and it has an analytic solution
+(cid:104)Y , X (cid:105)
+(cid:80)n
+Y X
+α = n n = i=1 i i .
+(cid:98)n (cid:107)X (cid:107)2 (cid:80)n X2
+n 2 i=1 i
+A geometric interpretation is that the vector Y is projected onto X such that
+n n
+Y = α X + ε
+n (cid:98)n n n
+where ε is orthogonal to X in other words
+n n
+n
+(cid:88)
+(cid:104)X , ε (cid:105) = X ε = 0.
+n n i i,n
+i=1
+But so far no statistics. We can always project a vector on another vector. We have made
+no underlying assumption on what generates Y and how X really impacts X . Once we do
+i i i
+this we are in the realm of modelling. We do this now. Let us suppose the data generating
+process (often abbreviated to DGP) is
+Y = αX + ε ,
+i i i
+here we place the orthogonality assumption between X and ε by assuming that they are
+i i
+22
+
+--- physical page 24 ---
+uncorrelated i.e. cov[ε , X ]. This basically means ε contains no linear information about
+i i i
+X . Once a model has been established. We can make more informative statements about
+i
+α . In this case α is estimating α and α X is an estimator of the mean αX .
+(cid:98)n (cid:98)n (cid:98)n i i
+Multiple linear regression The above is regress Y onto just one regressor X . Now con-
+n n
+sider regressing Y onto several regressors (X , . . . , X ) where X(cid:48) = (X , . . . , X ).
+n 1,n p,n i,n i,1 i,n
+This means projecting Y onto several regressors (X , . . . , X ). The coefficients in this
+n 1,n p,n
+projection are α , where
+(cid:98)n
+n p
+(cid:88) (cid:88)
+α = arg min (Y − α X )2
+(cid:98)n i j i,j
+α
+i=1 j=1
+= (X(cid:48)X)−1X(cid:48)Y .
+n
+and X = (X , . . . , X ). If the vectors {X }p are orthogonal, then X(cid:48)X is diagonal
+1,n p,n j,n j=1
+matrix. Then the expression for α can be simplified
+(cid:98)n
+(cid:104)Y , X (cid:105)
+(cid:80)n
+Y X
+α = n j,n = i=1 i i,j .
+(cid:98)j,n (cid:107)X (cid:107)2 (cid:80)n X2
+j,n 2 i=1 i,j
+Orthogonality of regressors is very useful, it allows simple estimation of parameters and
+avoids issues such as collinearity between regressors.
+Of course we can regress Y onto anything. In order to make any statements at the
+n
+population level, we have to make an assumption about the true relationship between Y and
+i
+X(cid:48) = (X , . . . , X ). Let us suppose the data generating process is
+i,n i,1 i,p
+p
+(cid:88)
+Y = α X + ε .
+i j i,j i
+j=1
+Then α is an estimator of α. But how good an estimator it is depends on the properties
+(cid:98)n
+of {ε }n . Typically, we make the assumption that {ε }n are independent, identically
+i i=1 i i=1
+distributed random variables. But if Y is observed over time, then this assumption may well
+i
+be untrue (we come to this later and the impact it may have).
+If there is a choice of many different variables, the AIC (Akaike Information Criterion)
+is usually used to select the important variables in the model (see wiki).
+23
+
+--- physical page 25 ---
+Nonlinear least squares Least squares has a nice geometric interpretation in terms of pro-
+jections. But for models like (2.3) and (2.4) where the unknown parameters are not the
+coefficients of the regressors (Y = g(X , θ) + ε ), least squares can still be used to estimate θ
+i i i
+n
+(cid:88)
+θ(cid:98) = arg min (Y − g(X , θ))2.
+n i i
+θ∈Θ
+i=1
+Usually, for nonlinear linear least squares no analytic solution for θ(cid:98) exists and one has to
+n
+use a numerical routine to minimise the least squares criterion (such as optim in R). These
+methods can be highly sensitive to initial values (especially when there are many parameters
+in the system) and may only give the local minimum. However, in some situations one by
+“clever” manipulations one can find simple methods for minimising the above.
+Again if the true model is Y = g(X , θ) + ε , then θ(cid:98) is an estimator of θ.
+i i i n
+2.2 Differencing
+Let us return to the Nasdaq data (see Figure 1.3). We observe what appears to be an
+upward trend. First differencing often removes the trend in the model. For example if
+Y = β + β t + ε , then
+t 0 1 t
+Z = Y − Y = β + ε − ε .
+t t+1 t 1 t+1 t
+Another model where first difference is also extremely helpful are those which have a stochas-
+tic trend. A simple example is
+Y = Y + ε , (2.7)
+t t−1 t
+where {ε } are iid random variables. It is believed that the logorithm of the Nasdaq index
+t t
+data (see Figure 1.3 is an example of such a model). Again by taking first differences we
+have
+Z = Y − Y = ε .
+t t+1 t t+1
+24
+
+--- physical page 26 ---
+Higher order differences Taking higher order differences can remove higher order polynomials
+and stochastic trends. For example if Y = β + β t + β t2 + ε then
+t 0 1 2 t
+Z(1) = Y − Y = β + 2β t + ε − ε ,
+t t+1 t 1 2 t+1 t
+this still contains the trend. Taking second differences removes that
+Z(2) = Z(1) − Z(1) = 2β + ε − 2ε + ε .
+t t t−1 2 t+1 t t−1
+In general, the number of differences corresponds to the order of the polynomial. Similarly
+if a stochastic trend is of the form
+Y = 2Y − Y + ε ,
+t t−1 t−2 t
+where {ε } are iid. Then second differencing will return us to ε .
+t t t
+Warning Taking too many differences can induce “ugly” dependences in the data. This
+happens with the linear trend model Y = β +β t+ε when we difference {Y } is independent
+t 0 1 t t
+over time but Z = Y − Y = β + ε − ε is dependent over time since
+t t t−1 1 t+1 t
+Z = β + ε − ε and Z = β + ε − ε ,
+t 1 t+1 t t+1 1 t+2 t+1
+they both share a common ε which is highly undesirable (for future: Z has an MA(1)
+t+1 t
+representation and is non-invertible). Similarly for the stochastic trend Y = Y + ε ,
+t t−1 t
+taking second differences Z(2) = ε − ε . Thus we encounter the same problem. Dealing
+t t t−1
+with dependencies caused by over differencing induces negative persistence in a time series
+and it is a pain in the neck!
+R code. It is straightforward to simulate a difference process. You can also use the arima
+function in R. For example, arima.sim(list(order = c(0,1,0)), n = 200) will simulate
+(2.7) and arima.sim(list(order = c(0,2,0)), n = 200) will simulate a differencing of
+order two.
+25
+
+--- physical page 27 ---
+Exercise 2.1 (i) Import the yearly temperature data (file global mean temp.txt) into
+R and fit the linear model in (2.1) to the data (use the R command lm, FitTemp =
+lm(data), out = summary(FitTemp)) .
+(ii) Suppose the errors in (2.1) are correlated (linear dependence between the errors). If
+the errors are correlated, explain why the standard errors reported in the R output may
+not be reliable.
+Hint: The errors are usually calculated as
+(cid:32)
+n
+(cid:33)−1
+n
+(cid:88) 1 (cid:88)
+(1, t)(cid:48)(1, t) ε2.
+n − 2
+(cid:98)t
+t=1 t=1
+(iii) Make a plot of the residuals (over time) after fitting the linear model in (i).
+(iv) Make a plot of the first differences of the temperature data (against time). Compare
+the plot of the residuals with the plot of the first differences.
+2.3 Nonparametric methods (advanced)
+In Section 2.1 we assumed that the mean had a certain known parametric form. This may
+not always be the case. If we have no apriori knowledge of the features in the mean, we
+can estimate the mean using a nonparametric approach. Of course some assumptions on the
+mean are still required. And the most common is to assume that the mean µ is a sample
+t
+from a ‘smooth’ function. Mathematically we write that µ is sampled (at regular intervals)
+t
+from a smooth function (i.e. u2) with µ = µ( t ) where the function µ(·) is unknown. Under
+t n
+this assumption the following approaches are valid.
+2.3.1 Rolling windows
+Possibly one of the simplest methods is to use a ‘rolling window’. There are several windows
+that one can use. We describe, below, the exponential window, since it can be ‘evaluated’
+26
+
+--- physical page 28 ---
+in an online way. For t = 1 let µˆ = Y , then for t > 1 define
+1 1
+µ = (1 − λ)µ + λY ,
+(cid:98)t (cid:98)t−1 t
+where 0 < λ < 1. The choice of λ depends on how much weight one wants to give the
+present observation. The rolling window is related to the regular window often used in
+nonparametric regression. To see this, we note that it is straightforward to show that
+t−1 t
+(cid:88) (cid:88)
+µ = (1 − λ)t−jλY = [1 − exp(−γ)] exp [−γ(t − j)] Y
+(cid:98)t j j
+j=1 j=1
+where 1 − λ = exp(−γ). Set γ = (nb)−1 and K(u) = exp(−u)I(u ≥ 0). Note that we treat
+n as a “sample size” (it is of the same order as n and for convenience one can let n = t),
+whereas b is a bandwidth, the smaller b the larger the weight on the current observations.
+Then, µ can be written as
+(cid:98)t
+n (cid:18) (cid:19)
+(cid:88) t − j
+µ = (1 − e−1/(nb)) K Y ,
+(cid:98)t j
+nb
+(cid:124) (cid:123)(cid:122) (cid:125)
+j=1
+≈(nb)−1
+where the above approximation is due to a Taylor expansion of e−1/(nb). This we observe that
+the exponential rolling window estimator is very close to a nonparametric kernel smoothing,
+which typically takes the form
+n (cid:18) (cid:19)
+(cid:88) 1 t − j
+µ = K Y .
+(cid:101)t j
+nb nb
+j=1
+it is likely you came across such estimators in your nonparametric classes (a classical example
+is the local average where K(u) = 1 for u ∈ [−1/2, 1/2] but zero elsewhere). The main
+difference between the rolling window estimator and the nonparametric kernel estimator is
+that the kernel/window for the rolling window is not symmetric. This is because we are
+trying to estimate the mean at time t, given only the observations up to time t. Whereas
+for general nonparametric kernel estimators one can use observations on both sides of t.
+27
+
+--- physical page 29 ---
+2.3.2 Sieve estimators
+Suppose that {φ (·)} is an orthonormal basis of L [0, 1] (L [0, 1] = {f ; (cid:82) 1 f (x)2dx < ∞},
+k k 2 2 0
+so it includes all bounded and continuous functions)1. Then every function in L can be
+2
+represented as a linear sum of the basis. Suppose µ(·) ∈ L [0, 1] (for example the function
+2
+is simply bounded). Then
+∞
+(cid:88)
+µ(u) = a φ (u).
+k k
+k=1
+Examples of basis functions are the Fourier φ (u) = exp(iku), Haar/other wavelet functions
+k
+etc. We observe that the unknown coefficients a are a linear in the ‘regressors’ φ . Since
+k k
+(cid:80) |a |2 < ∞, a → 0. Therefore, for a sufficiently large M the finite truncation of the
+k k k
+above is such that
+M (cid:18) (cid:19)
+(cid:88) t
+Y ≈ a φ + ε .
+t k k t
+n
+k=1
+Based on the above we observe that we can use least squares to estimate the coefficients,
+{a }. To estimate these coefficients, we truncate the above expansion to order M , and use
+k
+least squares to estimate the coefficients
+(cid:34) (cid:35)2
+n M (cid:18) (cid:19)
+(cid:88) (cid:88) t
+Y − a φ . (2.8)
+t k k
+n
+t=1 k=1
+The orthogonality of the basis means that the corresponding design matrix (X(cid:48)X) is close
+to identity, since
+
+n−1(X(cid:48)X) = 1 (cid:88) φ (cid:18) t (cid:19) φ (cid:18) t (cid:19) ≈ (cid:90) φ (u)φ (u)du =  0 k 1 (cid:54)= k 2 .
+k1,k2
+n
+k1
+n
+k2
+n
+k1 k2
+ 1 k = k
+t 1 2
+1Orthonormal basis means that for all k (cid:82) 1 φ (u)2du = 1 and for any k (cid:54)= k we have (cid:82) 1 φ (u)φ (u)du =
+0 k 1 2 0 k1 k2
+0
+28
+
+--- physical page 30 ---
+This means that the least squares estimator of a is a where
+k (cid:98)k
+n (cid:18) (cid:19)
+1 (cid:88) t
+a ≈ Y φ .
+(cid:98)k t k
+n n
+t=1
+2.4 What is trend and what is noise?
+So far we have not discussed the nature of the noise ε . In classical statistics ε is usually
+t t
+assumed to be iid (independent, identically distributed). But if the data is observed over
+time, ε could be dependent; the previous observation influences the current observation.
+t
+However, once we relax the assumption of independence in the model problems arise. By
+allowing the “noise” ε to be dependent it becomes extremely difficult to discriminate between
+t
+mean trend and noise. In Figure 2.3 two plots are given. The top plot is a realisation from
+independent normal noise the bottom plot is a realisation from dependent noise (the AR(1)
+process X = 0.95X + ε ). Both realisations have zero mean (no trend), but the lower plot
+t t−1 t
+does give the appearance of an underlying mean trend.
+This effect because more problematic when analysing data where there is mean term
+plus dependent noise. The smoothness in the dependent noise may give the appearance of
+additional features mean function. This makes estimating the mean function more difficult,
+especially the choice of bandwidth b. To understand why, suppose the mean function is
+µ = µ( t ) (the sample size n = 200), where µ(u) = 5 × (2u − 2.5u2) + 20. We corrupt
+t 200
+this quadratic function with both iid and dependent noise (the dependent noise is the AR(2)
+process defined in equation (2.19)). The plots are given in Figure 2.4. We observe that the
+dependent noise looks ‘smooth’ (dependence can induce smoothness in a realisation). This
+means that in the case that the mean has been corrupted by dependent noise it difficult to
+see that the underlying trend is a simple quadratic function. In a very interesting paper Hart
+(1991), shows that cross-validation (which is the classical method for choosing the bandwidth
+parameter b) is terrible when the errors are correlated.
+Exercise 2.2 The purpose of this exercise is to understand how correlated errors in a non-
+parametric model influence local smoothing estimators. We will use a simple local average.
+Define the smooth signal f (u) = 5 ∗ (2u − 2.5u2) + 20 and suppose we observe Y =
+i
+29
+
+--- physical page 31 ---
+Time
+tnednepedni
+0 20 40 60 80 100
+2
+1
+0
+1−
+2−
+Time
+tnedneped
+0 20 40 60 80 100
+01
+5
+0
+Figure 2.3: Top: realisations from iid random noise. Bottom: Realisation from dependent
+noise
+f (i/200) + ε (n = 200). To simular f (u) with n = 200 define temp <- c(1:200)/200 and
+i
+quadratic <- 5*(2*temp - 2.5*(temp**2)) + 20.
+(i) Simulate from the above model using iid noise. You can use the code iid=rnom(200)
+and quadraticiid = (quadratic + iid).
+Our aim is to estimate f . To do this take a local average (the average can have different
+lengths m) (you can use mean(quadraticiid[c(k:(k+m-1))]) for k = 1, . . . , 200−m).
+Make of a plot the estimate.
+(ii) Simulate from the above model using correlated noise (we simulate from an AR(2)) ar2
+= 0.5*arima.sim(list(order=c(2,0,0), ar = c(1.5, -0.75)), n=200) and de-
+fine quadraticar2 = (quadratic +ar2).
+Again estimate f using local averages and make a plot.
+Compare the plots of the estimates based on the two models above.
+30
+
+--- physical page 32 ---
+0.0 0.2 0.4 0.6 0.8 1.0
+3
+2
+1
+0
+1−
+2−
+temp
+dii
+0.0 0.2 0.4 0.6 0.8 1.0
+3
+2
+1
+0
+1−
+2−
+3−
+temp
+2ra
+0.0 0.2 0.4 0.6 0.8 1.0
+42
+22
+02
+81
+61
+temp
+diicitardauq
+0.0 0.2 0.4 0.6 0.8 1.0
+42
+22
+02
+81
+61
+temp
+2racitardauq
+Figure 2.4: Top: realisations from iid random noise and dependent noise (left = iid and right
+= dependent). Bottom: Quadratic trend plus corresponding noise.
+2.5 Periodic functions
+Periodic mean functions arise in several applications, from ECG (which measure heart
+rhythms), econometric data, geostatistical data to astrostatistics. Often the aim is to esti-
+mate the period or of a periodic function. Let us return to the monthly rainfall example
+consider in Section 2.1, equation (2.6):
+(cid:18) (cid:19) (cid:18) (cid:19)
+2πt 2πt
+Y = β + β sin + β cos + ε .
+t 0 1 3 t
+12 12
+This model assumes the mean has a repetition every 12 month period. But, it assumes a
+very specific type of repetition over 12 months; one that is composed of one sine and one
+cosine. If one wanted to be more general and allow for any periodic sequence of period 12,
+the above should be replaced with
+Y = d (t) + ε ,
+t 12 t
+31
+
+--- physical page 33 ---
+where d = (d (1), d (2), . . . , d (12)) and d (t) = d (t + 12) for all t. This a general
+12 12 12 12 12 12
+sequence which loops every 12 time points.
+In the following few sections our aim is to show that all periodic functions can be written
+in terms of sine and cosines.
+2.5.1 The sine and cosine transform
+An alternative (but equivalent) representation of this periodic sequence is by using sines and
+cosines. This is very reasonable, since sines and cosines are also periodic. It can be shown
+that
+5 (cid:20) (cid:18) (cid:19) (cid:18) (cid:19)(cid:21)
+(cid:88) 2πtj 2πtj
+d (t) = a + a cos + b sin + a cos (πt) . (2.9)
+12 0 j j 6
+12 12
+j=1
+Where we observe that the number a and b s is 12, which is exactly the number of different
+j j
+elements in the sequence. Any periodic sequence of period 12 can be written in this way. Fur-
+ther equation (2.6) is the first two components in this representation. Thus the representation
+in (2.9) motivates why (2.6) is often used to model seasonality. You may wonder why use just
+the first two components in (2.9) in the seasonal, this is because typically the coefficients a
+1
+and b are far larger than {a , b }6 . This is only a rule of thumb: generate several periodic
+1 j j j=2
+(cid:2) (cid:0) (cid:1) (cid:0) (cid:1)(cid:3)
+sequences you see that in general this is true. Thus in general a cos 2πt + b sin 2πt
+1 12 1 12
+tends to capture the main periodic features in the sequence. Algebraic manipulation shows
+that
+12 (cid:18) (cid:19) 12 (cid:18) (cid:19)
+1 (cid:88) 2πtj 1 (cid:88) 2πtj
+a = d (t) cos and b = d (t) sin . (2.10)
+j 12 j 12
+12 12 12 12
+t=1 t=1
+These are often called the sin and cosine transforms.
+In general for sequences of period P , if P is even we can write
+P/2−1 (cid:20) (cid:18) (cid:19) (cid:18) (cid:19)(cid:21)
+(cid:88) 2πtj 2πtj
+d (t) = a + a cos + b sin + a cos (πt) (2.11)
+P 0 j j P/2
+P P
+j=1
+32
+
+--- physical page 34 ---
+and if P is odd
+(cid:98)P/2(cid:99)−1 (cid:20) (cid:18) (cid:19) (cid:18) (cid:19)(cid:21)
+(cid:88) 2πtj 2πtj
+d (t) = a + a cos + b sin (2.12)
+P 0 j j
+P P
+j=1
+where
+P (cid:18) (cid:19) P (cid:18) (cid:19)
+1 (cid:88) 2πtj 1 (cid:88) 2πtj
+a = d (t) cos and b = d (t) sin .
+j P j P
+P P P P
+t=1 t=1
+The above reconstructs the periodic sequence d (t) in terms of sines and cosines. What we
+P
+will learn later on is that all sequences can be built up with sines and cosines (it does not
+matter if they are periodic or not).
+2.5.2 The Fourier transform (the sine and cosine transform in
+disguise)
+We will now introduce a tool that often invokes panic in students. But it is very useful
+and is simply an alternative representation of the sine and cosine transform (which does
+not invoke panic). If you tried to prove (2.10) you would have probably used several cosine
+and sine identities. It is a very mess proof. A simpler method is to use an alternative
+representation which combines the sine and cosine transforms and imaginary numbers. We
+recall the identity
+eiω = cos(ω) + i sin(ω).
+√
+where i = −1. eiω contains the sin and cosine information in just one function. Thus
+cos(ω) = Re eiω = (eiω + e−iω)/2 and sin(ω) = Im eiω = −i(eiω − e−iω)/2.
+It has some very useful properties that just require basic knowledge of geometric series.
+We state these below. Define the ratio ω = 2πk/n (we exchange 12 for n), then
+k,n
+n−1 n−1 n−1
+(cid:88) (cid:88) (cid:88)
+exp(ijω ) = exp(ikω ) = [exp(iω )]k.
+k,n j,n j,n
+k=0 k=0 k=0
+33
+
+--- physical page 35 ---
+Keep in mind that jω = j2πk/n = kω . If j = 0, then
+(cid:80)n−1
+exp(ijω ) = n. On the
+k,n j,n k=0 n,n
+other hand, if 1 ≤ j, k ≤ (n − 1), then exp(ijω ) = cos(2jπk/n) + i sin(2jπk/n) (cid:54)= 1. And
+k,n
+we can use the geometric sum identity
+n−1 n−1
+(cid:88) (cid:88) 1 − exp(inω )
+exp(ijω ) = [exp(iω )]k = k,n .
+k,n j,n
+1 − exp(iω )
+k,n
+k=0 k=0
+But exp(inω ) = cos(n2πk/n) + i sin(n2πk/n) = 1. Thus for 1 ≤ k ≤ (n − 1) we have
+k,n
+n−1
+(cid:88) 1 − exp(inω )
+j,n
+exp(ijω ) = = 0.
+k,n
+1 − exp(iω )
+j,n
+k=0
+In summary,
+
+(cid:88) n−1  n j = n or 0
+exp(ijω ) = (2.13)
+k,n
+ 0 1 ≤ j ≤ (n − 1)
+k=0
+Now using the above results we now show we can rewrite d (t) in terms of exp(iω) (rather
+12
+than sines and cosines). And this representation is a lot easier to show; though you it is in
+terms of complex numbers. Set n = 12 and define the coefficient
+11
+1 (cid:88)
+A (j) = d (t) exp (itω ) .
+12 12 j,12
+12
+t=0
+A (j) is complex (it has real and imaginary parts), with a little thought you can see that
+12
+A (j) = A (12 − j). By using (2.13) it is easily shown (see below for proof) that
+12 12
+11
+(cid:88)
+d (τ ) = A (j) exp(−ijω ) (2.14)
+12 12 τ,12
+j=0
+This is just like the sine and cosine representation
+5 (cid:20) (cid:18) (cid:19) (cid:18) (cid:19)(cid:21)
+(cid:88) 2πtj 2πtj
+d (t) = a + a cos + b sin + a cos (πt) .
+12 0 j j 6
+12 12
+j=1
+but with exp(ijω ) replacing cos(jω ) and sin(jω ).
+t,12 t,12 t,12
+34
+
+--- physical page 36 ---
+Proof of equation (2.14) The proof of (2.14) is very simple and we now give it. Plugging in
+the equation for A (j) into (2.14) gives
+12
+11 11 11
+(cid:88) 1 (cid:88) (cid:88)
+d (τ ) = A (j) exp(−ijω ) = d (t) exp (itω ) exp(−ijω )
+12 12 τ,12 12 j,n τ,12
+12
+j=0 t=0 j=0
+11 11
+1 (cid:88) (cid:88)
+= d (t) exp (i(t − τ )ω )).
+12 j,12
+12
+t=0 j=0
+We know from (2.13) that
+(cid:80)11
+exp (i(t − τ )ω )) = 0 unless t = τ . If t = τ , then
+j=0 j,12
+(cid:80)11
+exp (i(t − τ )ω )) = 12. Thus
+j=0 j,12
+11 11 11
+1 (cid:88) (cid:88) 1 (cid:88)
+d (t) exp (i(t − τ )ω )) = d (t)I(t = τ ) × 12
+12 j,12 12
+12 12
+t=0 j=0 t=0
+= d (t),
+12
+this proves (2.14). (cid:3)
+Remember the above is just writing the sequence in terms of its sine and cosine transforms
+in fact it is simple to link the two sets of coefficients:
+1
+a = Re A (j) = [A (j) + A (12 − j)]
+j 12 12 12
+2
+−i
+b = Im A (j) = [A (j) − A (12 − j)] .
+j 12 12 12
+2
+We give an example of a periodic function and its Fourier coefficients (real and imaginary
+parts) in Figure 2.5. The peak at the zero frequency of the real part corresponds to the
+mean of the periodic signal (if the mean is zero, this will be zero).
+Example 2.5.1 In the case that d (t) is a pure sine or cosine function sin(2πt/P ) or
+P
+cos(2πt/P ), then A (j) will only be non-zero at j = 1 and j = P − 1.
+P
+This is straightfoward to see, but we formally prove it below. Suppose that d (t) =
+P
+35
+
+--- physical page 37 ---
+Time
+llicso
+0 20 40 60 80 100
+0.1
+8.0
+6.0
+4.0
+2.0
+0.0
+0 1 2 3 4 5 6
+6.0
+5.0
+4.0
+3.0
+2.0
+1.0
+0.0
+freq
+)OF(eR
+0 1 2 3 4 5 6
+3.0
+2.0
+1.0
+0.0
+1.0−
+2.0−
+3.0−
+freq
+)OF(mI
+Figure 2.5: Left: Periodic function d (s) = 1 for s = 1, 2, d (s) = 0 for s = 3, 4, 5 (period 5),
+5 5
+Right: The real and imaginary parts of its Fourier transform
+(cid:0) (cid:1)
+cos 2πs , then
+P
+
+1 P (cid:88) −1 cos (cid:18) 2πs (cid:19) exp (cid:18) i 2πsj (cid:19) = 1 P (cid:88) −1 (cid:0) ei2πs/P + e−i2πs/P (cid:1) ei 2πsj =  1/2 j = 1 or P − 1
+P
+P P P 2P
+ 0 otherwise
+s=0 s=0
+(cid:0) (cid:1)
+Suppose that d (t) = sin 2πs , then
+P P
+
+ i/2 j = 1
+
+1 P (cid:88) −1 sin (cid:18) 2πs (cid:19) exp (cid:18) i 2πsj (cid:19) = −i P (cid:88) −1 (cid:0) ei2πs/P − e−i2πs/P (cid:1) ei 2π P sj =   −i/2 j = P − 1
+P P P 2P
+
+s=0 s=0  
+ 0 otherwise
+2.5.3 The discrete Fourier transform
+The discussion above shows that any periodic sequence can be written as the sum of (modu-
+lated) sins and cosines up to that frequency. But the same is true for any sequence. Suppose
+{Y }n is a sequence of length n, then it can always be represented as the superposition of
+t t=1
+n sine and cosine functions. To make calculations easier we use exp(ijω ) instead of sines
+k,n
+and cosines:
+n−1
+(cid:88)
+Y = A (j) exp(−itω ), (2.15)
+t n j,n
+j=0
+36
+
+--- physical page 38 ---
+where the amplitude A (j) is
+n
+n
+1 (cid:88)
+A (j) = Y exp(iτ ω ).
+n τ j,n
+n
+τ=1
+Here Y is acting like d (t), it is also periodic if we over the boundary [1, . . . , n]. By using
+t P
+(2.15) as the definition of Y we can show that Y = Y .
+t t+n t
+Often the n is distributed evenly over the two sums and we represent Y as
+t
+n−1
+1 (cid:88)
+Y = √ J (ω ) exp(−itω ),
+t n k,n k,n
+n
+k=0
+where the amplitude of exp(−itω ) is
+k,n
+n
+1 (cid:88)
+J (ω ) = √ Y exp(iτ ω ).
+n k,n τ k,n
+n
+τ=1
+√
+This representation evenly distributes 1/ n amongst the two sums. J (ω ) is called the
+n k,n
+Discrete Fourier transform (DFT) of {Y }. It serves a few purposes:
+t
+• J (ω ) measures the contribution (amplitude) of exp(itω ) (or cos(tω ) and sin(tω ))
+n k,n k,n k,n k,n
+in {Y }.
+t
+• J (ω ) is a linear transformation of {Y }n .
+n k,n t t=1
+• You can view J (ω ) as a scalar product of {Y } with sines and cosines, or as projection
+n k,n t
+onto sines or cosines or measuring the resonance of {Y } at frequency ω . It has the
+t k,n
+benefit of being a microscope for detecting periods, as we will see in the next section.
+For general time series, the DFT, {J ( 2πk ); 1 ≤ k ≤ n} is simply a decomposition of
+n n
+the time series {X ; t = 1, . . . , n} into sins and cosines of different frequencies. The mag-
+t
+nitude of J (ω ) informs on how much of the functions sin(tω) and cos(tω ) are in the
+n k k
+{X ; t = 1, . . . , n}. Below we define the periodogram. The periodogram effectively removes
+t
+the complex part in J (ω ) and only measures the absolute magnitude.
+n k
+37
+
+--- physical page 39 ---
+Definition 2.5.1 (The periodogram) J (ω) is complex random variables. Often the ab-
+n
+solute square of J (ω) is analyzed, this is called the periodogram
+n
+1 (cid:12) (cid:12)(cid:88) n (cid:12) (cid:12) 2 1 (cid:12) (cid:12)(cid:88) n (cid:12) (cid:12) 2
+I (ω) = |J (ω)|2 = (cid:12) X cos(tω)(cid:12) + (cid:12) X sin(tω)(cid:12) .
+n n n (cid:12) t (cid:12) n (cid:12) t (cid:12)
+(cid:12) (cid:12) (cid:12) (cid:12)
+t=1 t=1
+I (ω) combines the information in the real and imaginary parts of J (ω) and has the advan-
+n n
+tage that it is real.
+I (ω) is symmetric about π. It is also periodic every [0, 2π], thus I (ω + 2π) = I (ω).
+n n n
+Put together only needs to consider I (ω) in the range [0, π] to extract all the information
+n
+from I (ω).
+n
+2.5.4 The discrete Fourier transform and periodic signals
+In this section we consider signals with periodic trend:
+Y = d (t) + ε t = 1, . . . , n
+t P t
+P −1
+= (cid:88) A (j)e−i 2πjt + ε
+P P t
+j=0
+where for all t, d (t) = d (t + P ) (assume {ε } are iid). Our aim in this section is estimate
+P P t
+(at least visually) the period. We use the DFT of the time series to gain some standing of
+d (t). We show below that the linear transformation J (ω ) is more informative about d
+P n k,n P
+that {Y }.
+t
+We recall that the discrete Fourier transform of {Y } is
+t
+n n
+1 (cid:88) (cid:88)
+J (ω ) = √ Y [cos(tω ) − i sin(tω )] = Y exp(−itω )
+n k,n t k.n k t k,n
+n
+t=1 t=1
+where {ω = 2πk }. We show below that when the periodicity in the cosine and sin function
+k n
+matches the periodicity of the mean function J (ω) will be large and at other frequencies it
+n
+38
+
+--- physical page 40 ---
+will be small. Thus
+ √
+ nA (r) + √ 1 (cid:80)n ε e−itω k,n k = n r, r = 0, . . . , P − 1.
+J (ω ) = p n t=1 t P (2.16)
+n k,n
+ √ 1 (cid:80)n ε e−itω k,n k (cid:54)= n Z
+n t=1 t P
+Assuming that (cid:80)n ε e−itω k,n is low lying noise (we discuss this in detail later), what
+t=1 t
+we should see are P large spikes, each corresponding to A (r). Though the above is simply
+P
+an algebraic calculation. The reason for the term n in (2.16) (recall n is the sample size) is
+because there are n/P repetitions of the period.
+Example We consider a simple example where d (s) = (1.125, −0.375, −0.375, −0.375) (pe-
+4
+riod = 4, total length 100, number of repetitions 25). We add noise to it (iid normal with
+σ = 0.4). A plot of one realisation is given in Figure 2.7. In Figure 2.8 we superimpose the
+observed signal with with two different sine functions. Observe that when the sine function
+matches the frequencies (sin(25u), red plot) their scalar product will be large. But when the
+sin frequency does not match the periodic frequency the scalar product will be close to zero.
+In
+0 20 40 60 80 100
+0.1
+5.0
+0.0
+t
+Mllicso
+0.0 0.5 1.0 1.5 2.0 2.5 3.0
+41
+21
+01
+8
+6
+4
+2
+0
+Periodogram
+freq
+SF
+Figure 2.6: Left: Periodic function d (s) = (1.125, −0.375, −0.375, −0.375) (period 4)
+4
+In Figure 2.9 we plot the signal together with is periodgram. Observe that the plot
+matches equation (2.16). At the frequency of the period the signal amplitude is very large.
+39
+
+--- physical page 41 ---
+0 20 40 60 80 100
+5.1
+0.1
+5.0
+0.0
+5.0−
+0.1−
+t
+llicso
+Figure 2.7: Periodic function d (s) = (1.125, −0.375, −0.375, −0.375) (period 4) and signal
+4
+with noise (blue line).
+0 20 40 60 80 100
+5.1
+0.1
+5.0
+0.0
+5.0−
+0.1−
+t
+llicso
+0 20 40 60 80 100
+5.1
+0.1
+5.0
+0.0
+5.0−
+0.1−
+t
+llicso
+Figure 2.8: Left: Signal superimposed with sin(u). Right: Signal superimposed with
+sin(25u).
+Proof of equation (2.16) To see why, we rewrite J (ω ) (we assume n is a multiple of P ) as
+n k
+n n
+1 (cid:88) 1 (cid:88)
+J (ω ) = √ d (t) exp(itω ) + √ ε eitω k
+n k P k t
+n n
+t=0 t=1
+n/P −1 P n
+1 (cid:88) (cid:88) 1 (cid:88)
+= √ d (P t + s) exp(iP tω + isω ) + √ ε eitω k
+P k k t
+n n
+t=0 s=1 t=1
+n/P −1 P n
+1 (cid:88) (cid:88) 1 (cid:88)
+= √ exp(iP tω ) d (s) exp(isω ) + √ ε eitω k
+k P k t
+n n
+t=0 s=1 t=1
+P n/P −1 n
+1 (cid:88) (cid:88) 1 (cid:88)
+= √ d (s) exp(isω ) exp(iP tω ) + √ ε eitω k .
+P k k t
+n n
+s=1 t=0 t=1
+40
+
+--- physical page 42 ---
+0 20 40 60 80 100
+5.1
+0.1
+5.0
+0.0
+5.0−
+0.1−
+t
+llicso
+0.0 0.5 1.0 1.5 2.0 2.5 3.0
+51
+01
+5
+0
+Periodogram
+freq
+OF
+Figure 2.9: Left: Signal, Right: periodogram of signal (peridogram of periodic function in
+red)
+We now use a result analogous to (2.13)
+
+n (cid:88) /P −1  exp(i2πk) = 0 k (cid:54)= n Z
+exp(iP tω ) = 1−exp(iP tω k ) P
+k
+ n/P k ∈ n Z
+t=0 P
+Thus
+ √
+ nA (r) + (cid:80)n ε eitω k k = n r, r = 0, . . . , P − 1.
+J (ω ) = p t=1 t P
+n k
+ (cid:80)n ε eitω k k (cid:54)= n Z
+t=1 t P
+where A (r) = P −1 (cid:80)P d (s) exp(2πisr/P ). This proves (2.16) (cid:3)
+P s=1 P
+Exercise 2.3 Generate your own periodic sequence of length P (you select P ). Call this
+sequence {d (t)} and generate a sequence {x } with several replications of {d (t)} and cal-
+P t P
+culate the periodogram of the periodic signal.
+Add iid noise to the signal and again evaluate the periodogram (do the same for noise
+with different standard deviations).
+(i) Make plots of the true signal and the corrupted signal.
+(i) Compare the periodogram of the true signal with the periodogram of the corrupted signal.
+41
+
+--- physical page 43 ---
+2.5.5 Smooth trends and its corresponding DFT
+So far we have used the DFT to search for periodocities. But the DFT/periodogram of a
+smooth signal also leaves an interesting signature. Consider the quadratic signal
+(cid:34) (cid:35)
+t
+(cid:18)
+t
+(cid:19)2
+g(t) = 6 − − 0.7 t = 1, . . . , 100.
+100 100
+To g(t) we add iid noise Y = g(t)+ε where var[ε ] = 0.52. A realisation and its corresponding
+t t t
+periodogram is given in Figure 2.10. We observe that the quadratic signal is composed of
+low frequencies (sines and cosines with very large periods). In general, any signal which
+is “smooth” can be decomposed of sines and cosines in the very low frequencies. Thus a
+periodogram with a large peak around the low frequencies, suggests that the underlying
+signal contains a smooth signal (either deterministically or stochastically).
+0 20 40 60 80 100
+2
+1
+0
+1−
+Signal plus noise
+time
+y
+0.0 0.2 0.4 0.6 0.8 1.0 1.2
+01
+8
+6
+4
+2
+0
+Periodogram
+freq
+1F
+Figure 2.10: Left: Signal and noise (blue). The signal is in red. Right: Periodogram of
+signal plus noise (up to frequency π/5). Periodogram of signal is in red.
+2.5.6 Period detection
+In this section we formalize what we have seen and derived for the periodic sequences given
+above. Our aim is to estimate the period P . But to simplify the approach, we focus on the
+case that d (t) is a pure sine or cosine function (no mix of sines and cosines).
+P
+We will show that the visual Fourier transform method described above is equivalent
+to period estimation using least squares. Suppose that the observations {Y ; t = 1, . . . , n}
+t
+42
+
+--- physical page 44 ---
+satisfy the following regression model
+(cid:18) (cid:19) (cid:18) (cid:19)
+2πt 2πt
+Y = A cos(Ωt) + B sin(Ωt) + ε = A cos + B sin + ε
+t t t
+P P
+where {ε } are iid standard normal random variables and 0 < Ω < π (using the periodic
+t
+notation we set Ω = 2π ).
+P
+The parameters A, B, and Ω are real and unknown. Unlike the regression models given
+in (2.1) the model here is nonlinear, since the unknown parameter, Ω, is inside a trignomet-
+ric function. Standard least squares methods cannot be used to estimate the parameters.
+Assuming Gaussianity of {ε } (though this assumption is not necessary), the maximum
+t
+likelihood corresponding to the model is
+n
+1 (cid:88)
+L (A, B, Ω) = − (Y − A cos(Ωt) − B sin(Ωt))2
+n t
+2
+t=1
+(alternatively one can think of it in terms use least squares which is negative of the above).
+The above criterion is a negative nonlinear least squares criterion in A, B and Ω. It does not
+yield an analytic solution and would require the use of a numerical maximisation scheme.
+However, using some algebraic manipulations, explicit expressions for the estimators can be
+obtained (see Walker (1971) and Exercise 2.5). The result of these manipulations give the
+frequency estimator
+Ω(cid:98) = arg max I (ω)
+n n
+ω
+where
+1 (cid:12) (cid:12)(cid:88) n (cid:12) (cid:12) 2 1 (cid:32) (cid:88) n (cid:33)2 1 (cid:32) (cid:88) n (cid:33)2
+I (ω) = (cid:12) Y exp(itω)(cid:12) = Y cos(tΩ) + Y sin(tω) . (2.17)
+n n (cid:12) t (cid:12) n t n t
+(cid:12) (cid:12)
+t=1 t=1 t=1
+Using Ω(cid:98) we estimate A and B with
+n
+n n
+2 (cid:88) 2 (cid:88)
+A(cid:98) = Y cos(Ω(cid:98) t) and B(cid:98) = Y sin(Ω(cid:98) t).
+n t n n t n
+n n
+t=1 t=1
+43
+
+--- physical page 45 ---
+The rather remarkable aspect of this result is that the rate of convergence of
+|Ω(cid:98) − Ω| = O (n−3/2),
+n p
+which is faster than the standard O(n−1/2) that we usually encounter (we will see this in
+Example 2.5.2). This means that for even moderate sample sizes if P = 2π is not too large,
+Ω
+then Ω(cid:98) will be “close” to Ω. 2. The reason we get this remarkable result was alluded to
+n
+previously. We reiterate it again
+1 (cid:12) (cid:12)(cid:88) n (cid:12) (cid:12) 1 (cid:12) (cid:12)(cid:88) n (cid:12) (cid:12) 2
+I (ω) ≈ (cid:12) [A cos (tΩ) + B sin (tΩ)] eitω(cid:12) + (cid:12) ε eitω(cid:12) .
+n n (cid:12) (cid:12) n (cid:12) t (cid:12)
+(cid:12) (cid:12) (cid:12) (cid:12)
+t=1 t=1
+(cid:124) (cid:123)(cid:122) (cid:125) (cid:124) (cid:123)(cid:122) (cid:125)
+signal noise
+The “signal” in I (ω ) is the periodogram corresponding to the cos and/or sine function.
+n k
+For example setting Ω = 2π/P , A = 1 and B = 0. The signal is
+
+1 (cid:12) (cid:12)(cid:88) n (cid:18) 2πt (cid:19) (cid:12) (cid:12) 2  n k = n or k = n−P
+(cid:12) cos eitω k (cid:12) = 4 P P .
+n (cid:12) P (cid:12)
+(cid:12) (cid:12)  0 other wise
+t=1
+Observe there is a peak at 2πP and 2π(n−P ) , which is of size n, elsewhere it is zero. On the
+n n
+other hand the noise is
+(cid:12) (cid:12)2
+(cid:12) (cid:12)
+1 (cid:12) (cid:12)(cid:88) n (cid:12) (cid:12) 2 (cid:12) (cid:12) 1 (cid:88) n (cid:12) (cid:12)
+(cid:12) ε eitω k (cid:12) = (cid:12) √ ε eitω k (cid:12) = O (1),
+n (cid:12) t (cid:12) (cid:12) n t (cid:12) p
+(cid:12) (cid:12) (cid:12) (cid:12)
+t=1 (cid:12) t=1 (cid:12)
+(cid:12) (cid:124) (cid:123)(cid:122) (cid:125) (cid:12)
+treat as a rescaled mean
+where O (1) means that it is bounded in probability (it does not grow as n → ∞). Putting
+p
+these two facts together, we observe that the contribution of the signal dominates the peri-
+odogram I (ω). A simulation to illustrate this effect is given in Figure ??
+n
+Remark 2.5.1 In practice, usually we evaluate J (ω) and I (ω) at the so called fundamental
+n n
+2In contrast consider the iid random variables {X }n , where E[X ] = µ and var(X ) = σ2. The variance
+t t=1 t t
+of the sample mean X¯ = n−1 (cid:80)n is var[X¯ ] = σ2/n (where var(X ) = σ2). This means |X¯ −µ| = O (n−1/2).
+t=1 t p
+This means there exists a random variable U such that |X¯ − µ| ≤ n−1/2U . Roughly, this means as n → ∞
+the distance between X¯ and µ declines at the rate n−1/2.
+44
+
+--- physical page 46 ---
+frequencies ω = 2πk and we do this with the fft function in R:
+k n
+(cid:40)
+n (cid:18) (cid:19) n (cid:18) (cid:19)
+(cid:41)n
+2πk 1 (cid:88) 2πk 1 (cid:88) 2πk
+{Y }n → J ( ) = √ Y cos t + i √ Y sin t .
+t t=1 n n n t n n t n
+t=1 t=1 k=1
+J (ω ) is simply a linear one to one transformation of the data (nothing is lost in this
+n k
+transformation). Statistical analysis can be applied on any transformation of the data (for
+example Wavelet transforms). It so happens that for stationary time series this so called
+Fourier transform has some advantages.
+For period detection and amplitude estimation one can often obtain a better estimator of
+P (or Ω) if a finer frequency resolution were used. This is done by padding the signal with
+zeros and evaluating the periodogram on 2πk where d >> n. The estimate of the period is
+d
+then evaluated by using
+d
+P(cid:98) =
+K(cid:98) − 1
+where K(cid:98) is the entry in the vector corresponding to the maximum of the periodogram.
+We consider an example below.
+Example 2.5.2 Consider the following model
+(cid:18) (cid:19)
+2πt
+Y = 2 sin + ε t = 1, . . . , n. (2.18)
+t t
+8
+where ε are iid standard normal random variables (and for simplicity we assume n is a
+t
+multiple of 8). Note by using Remark 2.5.1 and equation (2.16) we have
+
+1 (cid:12) (cid:12) (cid:88) n (cid:18) 2πt (cid:19) (cid:12) (cid:12) 2  n k = n or n − n
+(cid:12)2 sin exp(itω )(cid:12) = 8 8
+n (cid:12) 8 k,n (cid:12)
+(cid:12) (cid:12)  0 otherwise
+t=1
+It is clear that {Y } is made up of a periodic signal with period eight. We make a plot of
+t
+one realisation (using sample size n = 128) together with the periodogram I(ω) (defined
+in (2.17)). In Figure 2.11 we give a plot of one realisation together with a plot of the
+45
+
+--- physical page 47 ---
+periodogram. From the realisation, it is not clear what the period is (the noise has made
+it difficult to see the period). On the other hand, the periodogram clearly shows a peak
+at frequenct 2π/8 ≈ 0.78 (where we recall that 8 is the period) and 2π − 2π/8 (since the
+periodogram is symmetric about π).
+Time
+langis
+0 20 40 60 80 100 120
+3
+2
+1
+1−
+3−
+l l
+llllllllllllllllllllllllllllllllllllllllllllll l lllllllllllllllllllllllllllllllll l lllllllllllllllllllllllllllllllllllllllllllll
+0 1 2 3 4 5 6
+4.0
+2.0
+0.0
+frequency
+P
+Figure 2.11: Left: Realisation of (2.18) plus iid noise, Right: Periodogram of signal plus iid
+noise.
+Searching for peaks in the periodogram is a long established method for detecting pe-
+riodicities. The method outlined above can easily be generalized to the case that there
+are multiple periods. However, distinguishing between two periods which are very close in
+frequency (such data arises in astronomy) is a difficult problem and requires more subtle
+methods (see Quinn and Hannan (2001)).
+The Fisher’s g-statistic (advanced) The discussion above motivates Fisher’s test for hidden
+period, where the objective is to detect a period in the signal. The null hypothesis is H :
+0
+The signal is just white noise with no periodicities the alternative is H : The signal contains
+1
+a periodicity. The original test statistic was constructed under the assumption that the noise
+was iid Gaussian. As we have discussed above, if a period exists, I (ω ) will contain a few
+n k
+“large” values, which correspond to the periodicities. The majority of I (ω ) will be “small”.
+n k
+46
+
+--- physical page 48 ---
+Based on this notion, the Fisher’s g-statistic is defined as
+max I (ω )
+1≤k≤(n−1)/2 n k
+η = ,
+n 2 (cid:80)(n−1)/2 I (ω )
+n−1 k=1 n k
+where we note that the denominator can be treated as the average noise. Under the null
+(and iid normality of the noise), this ratio is pivotal (it does not depend on any unknown
+nuisance parameters).
+2.5.7 Period detection and correlated noise
+The methods described in the previous section are extremely effective if the error process
+{ε } is uncorrelated. However, problems arise when the errors are correlated. To illustrate
+t
+this issue, consider again model (2.18)
+(cid:18) (cid:19)
+2πt
+Y = 2 sin + ε t = 1, . . . , n.
+t t
+8
+but this time the errors are correlated. More precisely, they are generated by the AR(2)
+model,
+ε = 1.5ε − 0.75ε + (cid:15) , (2.19)
+t t−1 t−2 t
+where {(cid:15) } are iid random variables (do not worry if this does not make sense to you we define
+t
+this class of models precisely in Chapter 4). As in the iid case we use a sample size n = 128. In
+Figure 2.12 we give a plot of one realisation and the corresponding periodogram. We observe
+that the peak at 2π/8 is not the highest. The correlated errors (often called coloured noise)
+is masking the peak by introducing new peaks. To see what happens for larger sample sizes,
+we consider exactly the same model (2.18) with the noise generated as in (2.19). But this
+time we use n = 1024 (8 time the previous sample size). A plot of one realisation, together
+with the periodogram is given in Figure 2.13. In contrast to the smaller sample size, a large
+peak is visible at 2π/8. These examples illustrates two important points:
+(i) When the noise is correlated and the sample size is relatively small it is difficult to
+47
+
+--- physical page 49 ---
+Time
+2langis
+0 20 40 60 80 100 120
+5
+0
+5−
+l l
+l l
+l l l l
+l l
+l l l l l l
+l l lllll lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll lllll l
+0 1 2 3 4 5 6
+8.0
+4.0
+0.0
+frequency
+2P
+Figure 2.12: Top: Realisation of (2.18) plus correlated noise and n = 128, Bottom: Peri-
+odogram of signal plus correlated noise.
+Time
+2langis
+0 200 400 600 800 1000
+5
+0
+5−
+l l
+ll l l ll
+ll llllllllllllllllllllllllllllllllllllllllll lll ll llllllllllllllll l lllll llllllll lll llll ll l l llll llll l lll l lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll l lll l llll llll l l ll llll lll llllllll lllll l llllllllllllllll ll lll llllllllllllllllllllllllllllllllllllllllll l
+0 1 2 3 4 5 6
+6.0
+4.0
+2.0
+0.0
+frequency
+2P
+Figure 2.13: Top: Realisation of (2.18) plus correlated noise and n = 1024, Bottom: Peri-
+odogram of signal plus correlated noise.
+disentangle the deterministic period from the noise. Indeed we will show in Chapters 4
+and 6 that linear time series (such as the AR(2) model described in (2.19)) can exhibit
+similar types of behaviour to a periodic deterministic signal. This is a subject of on
+going research that dates back at least 60 years (see Quinn and Hannan (2001) and
+48
+
+--- physical page 50 ---
+the P -statistic proposed by Priestley).
+However, the similarity is only to a point. Given a large enough sample size (which
+may in practice not be realistic), the deterministic frequency dominates again (as we
+have seen when we increase n to 1024).
+(ii) The periodogram holds important information about oscillations in the both the signal
+and also the noise {ε }. If the noise is iid then the corresponding periodogram tends
+t
+to be flatish (see Figure 2.11). This informs us that no frequency dominates others.
+And is the reason that iid time series (or more precisely uncorrelated time series) is
+called “white noise”.
+Comparing Figure 2.11 with 2.12 and 2.13) we observe that the periodogram does not
+appear completely flat. Some frequencies tend to be far larger than others. This is
+because when data is dependent, certain patterns are seen, which are registered by the
+periodogram (see Section 4.3.6).
+Understanding the DFT and the periodogram is called spectral analysis and is explored
+in Chapters 10 and 11.
+2.5.8 History of the periodogram
+The use of the periodogram, I (ω) to detect for periodocities in the data dates back to
+n
+Schuster in the 1890’s. One of Schuster’s interest was sunspot data. He analyzed the
+number of sunspot through the lense of the periodogram. A plot of the monthly time series
+and corresponding periodogram is given in Figure 2.14. Let {Y } denote the number of
+t
+sunspots at month t. Schuster fitted a model of the type the period trend plus noise model
+Y = A cos(Ωt) + B sin(Ωt) + ε ,
+t t
+Ω = 2π/P . The periodogram below shows a peak at frequency = 0.047 Ω = 2π/(11 × 12)
+(132 months), which corresponds to a period of P = 11 years. This suggests that the number
+of sunspots follow a periodic cycle with a peak every P = 11 years. The general view until
+49
+
+--- physical page 51 ---
+Figure 2.14: Sunspot data from Jan, 1749 to Dec, 2014. There is a peak at about 30 along
+the line which corresponds to 2π/P = 0.047 and P ≈ 132 months (11 years).
+the 1920s was that most time series were a mix of periodic function with additive noise
+P
+(cid:88)
+Y = [A cos(tΩ ) + B sin(tΩ )] + ε .
+t j j j j t
+j=1
+However, in the 1920’s, Udny Yule, a statistician, and Gilbert Walker, a Meterologist (work-
+ing in Pune, India) believed an alternative model could be used to explain the features seen
+in the periodogram. We consider their proposed approach in Section 4.3.5.
+50
+
+--- physical page 52 ---
+2.6 Data Analysis: EEG data
+2.6.1 Connecting Hertz and Frequencies
+Engineers and neuroscientists often “think” in terms of oscillations or cycles per second.
+Instead of the sample size they will say the sampling frequency per second (number of
+observations per second), which is measured in Herz (Hz) and the number of seconds the
+time series is observed. Thus the periodogram is plotted against cycles per second rather
+than on the [0, 2π] scale. In the following example we connect the two.
+Example Suppose that a time series is sampled at 36Hz (36 observations per second) and
+the signal is g(u) = sin(2π × 4u) (u ∈ R). The observed time series in one second is
+{sin(2π × 4 × t )}36 . An illustration is given below.
+36 t=1
+We observe from the plot above that period of repetition is P = 9 time points (over 36
+time points the signal repeats it self every 9 points). Thus in terms of the periodogram this
+corresponds to a spike at frequency ω = 2π/9. But to an engineer this means 4 repetitions
+a second and a spike at 4Hz. It is the same plot, just the x-axis is different. The two plots
+are given below.
+51
+
+--- physical page 53 ---
+Analysis from the perspective of time series Typically, in time series, the sampling frequency
+is kept the same. Just the same number of second that the time series is observed grows.
+This allows us obtain a finer frequency grid on [0, 2π] and obtain a better resolution in terms
+of peaks in frequencies. However, it does not allow is to identify frequencies that are sampled
+at a higher frequency than the sampling rate.
+Returning to the example above. Suppose we observe another signal h(u) = sin(2π ×
+(4 + 36)u). If the sampling frequency is 36Hz and u = 1/36, 2/36, . . . , 36/36, then
+(cid:18) (cid:19) (cid:18) (cid:19)
+t t
+sin 2π × 4 × = sin 2π × (4 + 36) × for all t ∈ Z
+36 36
+Thus we cannot tell the differences between these two signals when we sample at 36Hz, even
+if the observed time series is very long. This is called aliasing.
+Analysis from the perspective of an engineer An engineer may be able to improve the hard-
+ware and sample the time series at a higher temporal resolution, say, 72Hz. At this higher
+temporal resolution, the two functions g(u) = sin(2π × 4 × u) and h(u) = sin(2π(4 + 36)u)
+are different.
+52
+
+--- physical page 54 ---
+In the plot above the red line is g(u) = sin(2π4u) and the yellow line is g(u) = sin(2π(4 +
+36)u). The periodogram for both signals g(u) = sin(2π × 4 × u) and h(u) = sin(2π(4 + 36)u)
+is given below.
+In Hz, we extend the x-axis to include more cycles. The same thing is done for the frequency
+[0, 2π] we extend the frequency range to include higher frequencies. Thus when we observe
+on a finer temporal grid, we are able to identify higher frequencies. Extending this idea, if
+we observe time on R, then we can identify all frequencies on R not just on [0, 2π].
+53
+
+--- physical page 55 ---
+2.6.2 Data Analysis
+In this section we conduct a preliminary analysis of an EEG data set. A plot of one EEG of
+one participant at one channel (probe on skull) over 2 seconds (about 512 observations, 256
+Hz) is given in Figure 2.15. The neuroscientists who analysis such data use the periodogram
+to associate the EEG to different types of brain activity. A plot of the periodogam is
+given Figure 2.16. The periodogram is given in both [0, π] and Hz (cycles per second).
+Observe that the EEG contains a large amount of low frequency information, this is probably
+due to the slowly changing trend in the original EEG. The neurologists have banded the
+cycles into bands and associated to each band different types of brain activity (see https:
+//en.wikipedia.org/wiki/Alpha_wave#Brain_waves). Very low frequency waves, such
+as delta, theta and to some extent alpha waves are often associated with low level brain
+activity (such as breathing). Higher frequencies (alpha and gamma waves) in the EEG are
+often associated with conscious thought (though none of this is completely understood and
+there are many debates on this). Studying the periodogram of the EEG in Figures 2.15
+and 2.16, we observe that the low frequency information dominates the signal. Therefore,
+the neuroscientists prefer to decompose the signal into different frequency bands to isolate
+different parts of the signal. This is usually done by means of a band filter.
+As mentioned above, higher frequencies in the EEG are believed to be associated with
+conscious thought. However, the lower frequencies dominate the EEG. Therefore to put a
+“microscope” on the higher frequencies in the EEG we isolate them by removing the lower
+delta and theta band information. This allows us to examine the higher frequencies without
+being “drowned out” by the more prominent lower frequencies (which have a much larger
+amplitude). In this data example, we use a Butterworth filter which removes most of the
+low frequency and very high information (by convolving the original signal with a filter,
+see Remark 2.6.1). A plot of the periodogam of the orignal EEG together with the EEG
+after processing with a filter is given in Figure 2.17. Except for a few artifacts (since the
+Butterworth filter is a finite impulse response filter, and thus only has a finite number of
+non-zero coefficients), the filter has completely removed the very low frequency information,
+from 0 − 0.2 and for the higher frequencies beyond 0.75; we see from the lower plot in Figure
+54
+
+--- physical page 56 ---
+2.17 this means the focus is on 8-32Hz (Hz = number of cycles per second). We observe
+that most of the frequencies in the interval [0.2, 0.75] have been captured with only a slight
+amount of distortion. The processed EEG after passing it through the filter is given in
+Figure 2.18, this data set corresponds to the red periodogram plot seen in Figure 2.17. The
+corresponding processed EEG clearly shows the evidence of pseudo frequencies described in
+the section above, and often the aim is to model this processed EEG.
+The plot of the original, filtered and the differences in the EEG is given in Figure 2.19.
+We see the difference (bottom plot) contains the trend in the original EEG and also the small
+very high frequency fluctuations (probably corresponding to the small spike in the original
+periodogram in the higher frequencies).
+Time
+]1
+,[lanigirotx
+0 100 200 300 400 500
+02
+01
+0
+01−
+02−
+03−
+Figure 2.15: Original EEG..
+Remark 2.6.1 (How filtering works) A linear filter is essentially a linear combination
+of the time series with some weights. The weights are moved along the time series. For
+example, if {h } is the filter. Then the filtered time series {X } is the convolution
+k t
+∞
+(cid:88)
+Y = h X ,
+t s t−s
+s=0
+55
+
+--- physical page 57 ---
+0.0 0.5 1.0 1.5 2.0 2.5 3.0
+0000051
+0000001
+000005
+0
+frequency
+])052:1(c[lanigirotff
+0 20 40 60 80 100 120
+0000051
+0000001
+000005
+0
+cycles
+])052:1(c[lanigirotff
+Figure 2.16: Left: Periodogram of original EEG on [0, 2π]. Right: Periodogram in terms of
+cycles per second.
+0.0 0.5 1.0 1.5 2.0 2.5 3.0
+0000051
+0000001
+000005
+0
+frequency
+])052:1(c[lanigirotff
+0 20 40 60 80 100 120
+0000051
+0000001
+000005
+0
+cycles
+margodireP
+Figure 2.17: The periodogram of original EEG overlayed with processed EEG (in red). The
+same plot is given below, but the x-axis corresponds to cycles per second (measured in Hz)
+note that h can be viewed as a moving window. However, the moving window (filter) con-
+s
+sidered in Section ?? “smooth” and is used to isolate low frequency trend (mean) behaviour.
+Whereas the general filtering scheme described above can isolate any type of frequency be-
+haviour. To isolate high frequencies the weights {h } should not be smooth (should not
+s
+change slowly over k). To understand the impact {h } has on {X } we evaluate the Fourier
+s t
+transform of {Y }.
+t
+56
+
+--- physical page 58 ---
+Time
+]1
+,[dessecorptx
+0 100 200 300 400 500
+01
+5
+0
+5−
+01−
+51−
+Figure 2.18: Time series after processing with a Buttersworth filter.
+Time
+]1 ,[lanigirotx
+0 100 200 300 400 500
+01
+01−
+03−
+Time
+]1
+,[dessecorptx
+0 100 200 300 400 500
+5
+5−
+51−
+Time
+]1
+,[dessecorptx
+− ]1
+,[lanigirotx
+0 100 200 300 400 500
+03
+01
+01−
+03−
+Figure 2.19: Top: Original EEG. Middle: Filtered EEG and Bottom: Difference between
+Original and Filtered EEG
+The periodogram of {Y } is
+t
+(cid:12) (cid:12) 1 (cid:88) n (cid:12) (cid:12) (cid:12) (cid:12)(cid:88) n (cid:12) (cid:12) 2 (cid:12) (cid:12) 1 (cid:88) n (cid:12) (cid:12) 2
+|J (ω)|2 = (cid:12) √ Y eitω(cid:12) = (cid:12) h eisω(cid:12) (cid:12) √ X eitω(cid:12)
+Y (cid:12) n t (cid:12) (cid:12) s (cid:12) (cid:12) n t (cid:12)
+(cid:12) (cid:12) (cid:12) (cid:12) (cid:12) (cid:12)
+t=1 s=1 t=1
+=57|H(ω)|2 |J (ω)|2 .
+X
+
+--- physical page 59 ---
+If H(ω) is close to zero at certain frequencies it is removing those frequencies in {Y }. Hence
+t
+using the correct choice of h we can isolate certain frequency bands.
+s
+Note, if a filter is finite (only a finite number of coefficients), then it is impossible to
+make the function drop from zero to one. But one can approximately the step by a smooth
+function (see https: // en. wikipedia. org/ wiki/ Butterworth_ filter ).
+2.7 Exercises
+Exercise 2.4 (Understanding Fourier transforms) (i) Let Y = 1. Plot the Peri-
+t
+odogram of {Y ; t = 1, . . . , 128}.
+t
+(ii) Let Y = 1 + ε , where {ε } are iid standard normal random variables. Plot the Peri-
+t t t
+odogram of {Y ; t = 1, . . . , 128}.
+t
+(iii) Let Y = µ( t ) where µ(u) = 5 × (2u − 2.5u2) + 20. Plot the Periodogram of {Y ; t =
+t 128 t
+1, . . . , 128}.
+(iv) Let Y = 2 × sin( 2πt ). Plot the Periodogram of {Y ; t = 1, . . . , 128}.
+t 8 t
+(v) Let Y = 2 × sin( 2πt ) + 4 × cos( 2πt ). Plot the Periodogram of {Y ; t = 1, . . . , 128}.
+t 8 12 t
+You can locate the maximum by using the function which.max
+Exercise 2.5 This exercise is designed only for statistics graduate students.
+(i) Let
+(cid:18) n n (cid:19)
+(cid:88) (cid:88) (cid:0) (cid:1) 1
+S (A, B, Ω) = Y 2 − 2 Y A cos(Ωt) + B sin(Ωt) + n(A2 + B2) .
+n t t 2
+t=1 t=1
+Show that
+(A2 − B2) (cid:88) n (cid:88) n
+2L (A, B, Ω) + S (A, B, Ω) = − cos(2tΩ) − AB sin(2tΩ).
+n n
+2
+t=1 t=1
+and thus |L (A, B, Ω) + 1 S (A, B, Ω)| = O(1) (ie. the difference does not grow with
+n 2 n
+n).
+58
+
+--- physical page 60 ---
+Since L (A, B, Ω) and − 1 S (A, B, Ω) are asymptotically equivalent (i) shows that we
+n 2 n
+can maximise −1 S (A, B, Ω) instead of the likelihood L (A, B, Ω).
+2 n n
+(ii) By profiling out the parameters A and B, use the the profile likelihood to show that
+Ω(cid:98) = arg max | (cid:80)n Y exp(itω)|2.
+n ω t=1 t
+(iii) By using the identity (which is the one-sided Dirichlet kernel)
+
+(cid:88) n exp(iΩt) =  exp( 2 1 i(n s + in 1 ( ) 2 1 Ω Ω ) ) sin( 1 2 nΩ) 0 < Ω < 2π (2.20)
+ n Ω = 0 or 2π.
+t=1
+we can show that for 0 < Ω < 2π we have
+n n
+(cid:88) (cid:88)
+t cos(Ωt) = O(n) t sin(Ωt) = O(n)
+t=1 t=1
+n n
+(cid:88) (cid:88)
+t2 cos(Ωt) = O(n2) t2 sin(Ωt) = O(n2).
+t=1 t=1
+Using the above identities, show that the Fisher Information of L (A, B, ω) (denoted
+n
+as I(A, B, ω)) is asymptotically equivalent to
+ 
+n 0 n2 B + O(n)
+2
+∂2S  
+2I(A, B, Ω) = E (cid:0) n (cid:1) =  0 n − n2 A + O(n)  .
+∂ω2  2 
+ 
+n2 B + O(n) − n2 A + O(n) n3 (A2 + B2) + O(n2)
+2 2 3
+(iv) Use the Fisher information to show that |Ω(cid:98) − Ω| = O(n−3/2).
+n
+Exercise 2.6 (i) Simulate one hundred times from model (2.18) using sample size n = 60.
+For each sample, estimate ω, A and B for each simulation and obtain the empirical
+mean squared error 1 (cid:80)100 (θ ˆ − θ)2 (where θ denotes the parameter and θ ˆ the esti-
+100 i=1 i i
+mate).
+Note that the more times you simulate the more accurate the empirical standard error
+will be. The empirical standard error also has an error associated with it, that will be
+√
+of order O(1/ number of simulations).
+59
+
+--- physical page 61 ---
+(ii) Repeat the above experiment but this time using the sample size n = 300. Compare the
+quality of the estimators of A, B and Ω with those in part (i).
+(iii) Do the same as above (using sample size n = 60 and 300) but now use coloured noise
+given in (2.19) as the errors. How do your estimates compare with (i) and (ii)?
+Hint: A method for simulating dependent data is to use the arima.sim command ar2 =
+arima.sim(list(order=c(2,0,0), ar = c(1.5, -0.75)), n=60). This command
+simulates an AR(2) time series model X = 1.5X − 0.75X + ε (where ε are iid
+t t−1 t−2 t t
+normal noise).
+R Code
+Simulation and periodogram for model (2.18) with iid errors:
+temp <- rnorm(128)
+signal <- 2*sin(2*pi*c(1:128)/8) + temp # this simulates the series
+# Use the command fft to make the periodogram
+P <- abs(fft(signal)/128)**2
+frequency <- 2*pi*c(0:127)/128
+# To plot the series and periodogram
+par(mfrow=c(2,1))
+plot.ts(signal)
+plot(frequency, P,type="o")
+# The estimate of the period is
+K1 = which.max(P)
+# Phat is the period estimate
+Phat = 128/(K1-1)
+# To obtain a finer resolution. Pad temp with zeros.
+signal2 = c(signal,c(128*9))
+frequency2 <- 2*pi*c(0:((128*10)-1))/1280
+P2 <- abs(fft(signal2))**2
+plot(frequency2, P2 ,type="o")
+# To estimate the period we use
+60
+
+--- physical page 62 ---
+K2 = which.max(P)
+# Phat2 is the period estimate
+Phat2 = 1280/(K2-1)
+Simulation and periodogram for model (2.18) with correlated errors:
+set.seed(10)
+ar2 <- arima.sim(list(order=c(2,0,0), ar = c(1.5, -0.75)), n=128)
+signal2 <- 1.5*sin(2*pi*c(1:128)/8) + ar2
+P2 <- abs(fft(signal2)/128)**2
+frequency <- 2*pi*c(0:127)/128
+par(mfrow=c(2,1))
+plot.ts(signal2)
+plot(frequency, P2,type="o")
+61

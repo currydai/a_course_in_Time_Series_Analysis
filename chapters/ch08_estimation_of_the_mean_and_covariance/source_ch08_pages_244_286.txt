@@ -1,0 +1,2379 @@
+--- physical page 244 ---
+Chapter 8
+Estimation of the mean and
+covariance
+Objectives
+• To derive the sample autocovariance of a time series, and show that this is a positive definite
+sequence.
+• To show that the variance of the sample covariance involves fourth order cumulants, which
+can be unwielding to estimate in practice. But under linearity the expression for the variance
+greatly simplifies.
+• To show that under linearity the correlation does not involve the fourth order cumulant. This
+is the Bartlett formula.
+• To use the above results to construct a test for uncorrelatedness of a time series (the Port-
+manteau test). And understand how this test may be useful for testing for independence in
+various different setting. Also understand situations where the test may fail.
+Here we summarize the Central limit theorems we will use in this chapter. The simplest is the
+case of iid random variables. The first is the classical central limit theorem. Suppose that {X } are
+i
+iid random variables with mean µ and variance σ2 < ∞. Then
+n
+√ 1 (cid:88) (X − µ) → D N (0, σ2).
+i
+n
+i=1
+243
+
+--- physical page 245 ---
+A small variant on the classical CLT is the case that {X } are independent random variables (but
+i
+not identically distributed). Suppose E[X ] = µ , var[X ] = σ2 < ∞ and for every ε > 0
+i i i i
+n
+1 (cid:88) E (cid:0) (X − µ )2I(s−1|X − µ | > ε) (cid:1) → 0
+s2 i i n i i
+n i=1
+where s2 = (cid:80)n σ2, which is the variance of (cid:80)n X (the above condition is called the Lindeberg
+n i=1 i i=1 i
+condition). Then
+n
+1 (cid:88) D
+(X − µ ) → N (0, 1).
+(cid:113) i i
+(cid:80)n σ2
+i=1 i i=1
+The Lindeberg condition looks unwieldy, however by using Chebyshev’s and H¨older inequality it
+can be reduced to simple bounds on the moments.
+Remark 8.0.1 (The aims of the Lindeberg condition) The Lindeberg condition essential re-
+quires a uniform bound in the tails for all the random variables {X } in the sum. For example,
+i
+suppose X are t-distributed random variables where X is distributed with a t-distribution with
+i i
+(2 + i−1) degrees of freedom. We know that the number of df (which can be non-integer-valued) gets
+thicker the lower the df. Furthermore, E[X2] < ∞ only if X has a df greater than 2. Therefore,
+i i
+the second moments of X exists. But as i gets larger, X has thicker tails. Making it impossible (I
+i i
+believe) to find a uniform bound such that Lindeberg’s condition is satisified.
+Note that the Lindeberg condition generalizes to the conditional Lindeberg condition when
+dealing with martingale differences.
+We now state a generalisation of this central limit to triangular arrays. Suppose that {X }
+t,n
+are independent random variables with mean zero. Let S =
+(cid:80)n
+X we assume that var[S ] =
+n t=1 t,n n
+(cid:80)n
+var[X ] = 1. For example, in the case that {X } are iid random variables and S =
+t=1 t,n t n
+√1
+n
+(cid:80)n
+t=1
+[X
+t
+− µ] = (cid:80)n
+t=1
+X
+t,n
+, where X
+t,n
+= σ−1n−1/2(X
+t
+− µ). If for all ε > 0
+n
+(cid:88) E (cid:0) X2 I(|X | > ε) (cid:1) → 0,
+t,n t,n
+t=1
+D
+then S → N (0, 1).
+n
+244
+
+--- physical page 246 ---
+8.1 An estimator of the mean
+Suppose we observe {Y }n , where
+t t=1
+Y = µ + X ,
+t t
+where µ is the finite mean, {X } is a zero mean stationary time series with absolutely summable
+t
+(cid:80)
+covariances ( |cov(X , X )| < ∞). Our aim is to estimate the mean µ. The most obvious
+k 0 k
+estimator is the sample mean, that is Y¯ = n−1 (cid:80)n Y as an estimator of µ.
+n t=1 t
+8.1.1 The sampling properties of the sample mean
+We recall from Example 3.3.1 that we obtained an expression for the sample mean. We showed
+that
+n
+var(Y¯ ) = 1 c(0) + 2 (cid:88) (cid:0) n − k (cid:1) c(k).
+n
+n n n
+k=1
+(cid:80)
+Furthermore, if |c(k)| < ∞, then in Example 3.3.1 we showed that
+k
+∞
+1 2 (cid:88)
+var(Y¯ ) ≈ c(0) + c(k).
+n
+n n
+k=1
+Thus if the time series has sufficient decay in its correlation structure a mean squared consistent
+estimator of the sample mean can be achieved. However, one drawback is that the dependency
+means that one observation will influence the next, and if the influence is positive (seen by a positive
+covariance), the resulting estimator may have a (much) larger variance than the iid case.
+The above result does not require any more conditions on the process, besides second order
+stationarity and summability of its covariance. However, to obtain confidence intervals we require
+a stronger result, namely a central limit theorem for the sample mean. The above conditions are
+not enough to give a central limit theorem. To obtain a CLT for sums of the form
+(cid:80)n
+X we
+t=1 t
+need the following main ingredients:
+(i) The variance needs to be finite.
+(ii) The dependence between X decreases the further apart in time the observations. However,
+t
+this is more than just the correlation, it really means the dependence.
+245
+
+--- physical page 247 ---
+The above conditions are satisfied by linear time series, if the cofficients φ decay sufficient fast.
+j
+However, these conditions can also be verified for nonlinear time series (for example the (G)ARCH
+and Bilinear model described in Chapter 13).
+We now state the asymptotic normality result for linear models.
+Theorem 8.1.1 Suppose that X is a linear time series, of the form X =
+(cid:80)∞
+ψ ε , where ε
+t t j=−∞ j t−j t
+are iid random variables with mean zero and variance one,
+(cid:80)∞
+|ψ | < ∞ and
+(cid:80)∞
+ψ (cid:54)= 0.
+j=−∞ j j=−∞ j
+Let Y = µ + X , then we have
+t t
+√
+n (cid:0) Y¯ − µ (cid:1) = N (0, V )
+n
+where V = c(0) + 2
+(cid:80)∞
+c(k).
+k=1
+PROOF. Later in this course we will give precise details on how to prove asymptotic normality of
+several different type of estimators in time series. However, we give a small flavour here by showing
+asymptotic normality of Y¯ in the special case that {X }n satisfy an MA(q) model, then explain
+n t t=1
+how it can be extended to MA(∞) processes.
+The main idea of the proof is to transform/approximate the average into a quantity that we
+know is asymptotic normal. We know if {(cid:15) }n are iid random variables with mean µ and variance
+t t=1
+one then
+√
+D
+n((cid:15)¯ − µ) → N (0, 1). (8.1)
+n
+We aim to use this result to prove the theorem. Returning to Y¯ by a change of variables (s = t − j)
+n
+we can show that
+n n n q
+1 (cid:88) 1 (cid:88) 1 (cid:88) (cid:88)
+Y = µ + X = µ + ψ ε
+t t j t−j
+n n n
+t=1 t=1 t=1 j=0
+     
+n−q q 0 q n n−s
+1 (cid:88) (cid:88) (cid:88) (cid:88) (cid:88) (cid:88)
+= µ + ε s  ψ j + ε s  ψ j + ε s  ψ j
+n
+s=1 j=0 s=−q+1 j=q−s s=n−q+1 j=0
+     
+q n−q 0 q n n−s
+n − q (cid:88) 1 (cid:88) 1 (cid:88) (cid:88) 1 (cid:88) (cid:88)
+= µ +  ψ j ε s + ε s  ψ j + ε s  ψ j
+n n − q n n
+j=0 s=1 s=−q+1 j=q+s s=n−q+1 j=0
+(n − q)Ψ
+:= µ + ε¯ + E + E , (8.2)
+n−q 1 2
+n
+246
+
+--- physical page 248 ---
+where Ψ = (cid:80)q ψ . It is straightforward to show that E|E | ≤ Cn−1 and E|E | ≤ Cn−1.
+j=0 j 1 2
+Finally we examine
+(n−q)Ψ
+ε¯ . We note that if the assumptions are not satisfied and
+(cid:80)q
+ψ =
+n n−q j=0 j
+0 (for example the process X = ε − ε ), then
+t t t−1
+   
+n 0 q n n−s
+1 (cid:88) 1 (cid:88) (cid:88) 1 (cid:88) (cid:88)
+Y t = µ + ε s  ψ j + ε s  ψ j .
+n n n
+t=1 s=−q+1 j=q−s s=n−q+1 j=0
+This is a degenerate case, since E and E only consist of a finite number of terms and thus if ε are
+1 2 t
+non-Gaussian these terms will never be asymptotically normal. Therefore, in this case we simply
+have that 1 (cid:80)n Y = µ + O( 1 ) (this is why in the assumptions it was stated that Ψ (cid:54)= 0).
+n t=1 t n
+On the other hand, if Ψ (cid:54)= 0, then the dominating term in Y¯ is ε¯ . From (8.1) it is
+n n−q
+√ P (cid:112) P
+clear that n − qε¯ → N (0, 1) as n → ∞. However, for finite q, (n − q)/n → 1, therefore
+n−q
+√
+nε¯ → P N (0, 1). Altogether, substituting E|E | ≤ Cn−1 and E|E | ≤ Cn−1into (8.2) gives
+n−q 1 2
+√ n (cid:0) Y¯ − µ (cid:1) = Ψ √ nε¯ + O ( 1 ) → P N (cid:0) 0, Ψ2(cid:1) .
+n n−q p
+n
+With a little work, it can be shown that Ψ2 = V .
+Observe that the proof simply approximated the sum by a sum of iid random variables. In the
+case that the process is a MA(∞) or linear time series, a similar method is used. More precisely,
+we have
+√ n (cid:0) Y¯ − µ (cid:1) = √ 1 (cid:88) n (cid:88) ∞ ψ ε = √ 1 (cid:88) ∞ ψ (cid:88) n−j ε
+n j t−j j s
+n n
+t=1 j=0 j=0 s=1−j
+∞ n
+1 (cid:88) (cid:88)
+= √ ψ ε + R
+j t n
+n
+j=0 t=1
+where
+ 
+∞ n−j n
+1 (cid:88) (cid:88) (cid:88)
+R n = √ ψ j  ε s − ε s
+n
+j=0 s=1−j s=1
+   
+n 0 n ∞ n−j n
+1 (cid:88) (cid:88) (cid:88) 1 (cid:88) (cid:88) (cid:88)
+= √ ψ j  ε s − ε s + √ ψ j  ε s − ε s
+n n
+j=0 s=1−j s=n−j j=n+1 s=1−j s=1
+:= R + R + R + R .
+n1 n2 n3 n4
+247
+
+--- physical page 249 ---
+We will show that E[R2 ] = o(1) for 1 ≤ j ≤ 4. We start with R
+n,j n,1
+ 
+n 0 0
+1 (cid:88) (cid:88) (cid:88)
+E[R n 2 ,1 ] = n ψ j1 ψ j2 cov  ε s1 , ε s2 
+j1,j2=0 s1=1−j1 s2=1−j2
+n
+1 (cid:88)
+= ψ ψ min[j − 1, j − 1]
+n
+j1 j2 1 2
+j1,j2=0
+1 (cid:88)
+n
+2 (cid:88)
+n j
+(cid:88)
+1−1
+= ψ2(j − 1) + ψ , ψ min[j − 1]
+n j n j1 j2 2
+j=0 j1=0 j2=0
+n n
+1 (cid:88) 2Ψ (cid:88)
+≤ ψ2(j − 1) + |j ψ |.
+n j n 1 j1
+j=0 j1=0
+Since (cid:80)∞ |ψ | < ∞ and, thus, (cid:80)∞ |ψ |2 < ∞, then by dominated convegence (cid:80)n [1−j/n]ψ →
+j=0 j j=0 j j=0 j
+(cid:80)∞ ψ and (cid:80)n [1 − j/n]ψ2 → (cid:80)∞ ψ2 as n → ∞. This implies that (cid:80)n (j/n)ψ → 0 and
+j=0 j j=0 j j=0 j j=0 j
+(cid:80)n (j/n)ψ2 → 0. Substituting this into the above bounds for E[R2 ] we immediately obtain
+j=0 j n,1
+E[R2 ] = o(1). Using the same argument we obtain the same bound for R , R and R . Thus
+n,1 n,2 n,3 n,4
+√ n (cid:0) Y¯ − µ (cid:1) = Ψ √ 1 (cid:88) n ε + o (1)
+n t p
+n
+j=1
+and the result then immediately follows. (cid:3)
+Estimation of the so called long run variance (given in Theorem 8.1.1) can be difficult. There
+are various methods that can be used, such as estimating the spectral density function (which we
+define in Chapter 10) at zero. Another approach proposed in Lobato (2001) and Shao (2010) is to
+use the method of so called self-normalization which circumvents the need to estimate the long run
+mean, by privotalising the statistic.
+8.2 An estimator of the covariance
+Suppose we observe {Y }n , to estimate the covariance we can estimate the covariance c(k) =
+t t=1
+cov(Y , Y ) from the the observations. A plausible estimator is
+0 k
+n−|k|
+1 (cid:88)
+cˆ (k) = (Y − Y¯ )(Y − Y¯ ), (8.3)
+n n t n t+|k| n
+t=1
+248
+
+--- physical page 250 ---
+since E[(Y − Y¯ )(Y − Y¯ )] ≈ c(k). Of course if the mean of Y is known to be zero (Y = X ),
+t n t+|k| n t t t
+then the covariance estimator is
+n−|k|
+1 (cid:88)
+c (k) = X X . (8.4)
+(cid:98)n n t t+|k|
+t=1
+The eagle-eyed amongst you may wonder why we don’t use 1 (cid:80)n−|k| X X , when cˆ (k) is a
+n−|k| t=1 t t+|k| n
+biased estimator, whereas 1 (cid:80)n−|k| X X is not. However cˆ (k) has some very nice properties
+n−|k| t=1 t t+|k| n
+which we discuss in the lemma below. The sample autocorrelation is the ratio
+c (r)
+ρ (r) =
+(cid:98)n
+.
+(cid:98)n
+c (0)
+(cid:98)n
+Most statistical software will have functions that evaluate the sample autocorrelation.
+Lemma 8.2.1 Suppose we define the empirical covariances
+
+ 1 (cid:80)n−|k| X X |k| ≤ n − 1
+c (k) = n t=1 t t+|k|
+(cid:98)n
+ 0 otherwise
+then {c (k)} is a positive definite sequence. Therefore, using Lemma 3.4.1 there exists a stationary
+(cid:98)n
+time series {Z } which has the covariance cˆ (k).
+t n
+PROOF. There are various ways to show that {cˆ (k)} is a positive definite sequence. One method
+n
+uses that the spectral density corresponding to this sequence is non-negative, we give this proof in
+Section 10.4.1.
+Here we give an alternative proof. We recall a sequence is semi-positive definite if for any vector
+a = (a , . . . , a )(cid:48) we have
+1 r
+r n
+(cid:88) (cid:88)
+a
+k1
+a
+k2
+cˆ
+n
+(k
+1
+− k
+2
+) = a
+k1
+a
+k2
+cˆ
+n
+(k
+1
+− k
+2
+) = a(cid:48)Σ(cid:98)n a ≥ 0
+k1,k2=1 k1,k2=1
+where
+ 
+cˆ (0) cˆ (1) cˆ (2) . . . cˆ (n − 1)
+n n n n
+ 
+ cˆ (1) cˆ (0) cˆ (1) . . . cˆ (n − 2) 
+ n n n n 
+Σ(cid:98)n =   . . . . . . . . . . . . . . .   ,
+ 
+ . . 
+. .
+cˆ (n − 1) cˆ (n − 2) . . cˆ (0)
+n n n
+249
+
+--- physical page 251 ---
+noting that cˆ (k) = 1 (cid:80)n−|k| X X . However, cˆ (k) = 1 (cid:80)n−|k| X X has a very interesting
+n n t=1 t t+|k| n n t=1 t t+|k|
+construction, it can be shown that the above convariance matrix is Σ(cid:98)n = X
+n
+X(cid:48)
+n
+, where X
+n
+is a
+n × 2n matrix with
+ 
+0 0 . . . 0 X X . . . X X
+1 2 n−1 n
+ 
+ 0 0 . . . X X . . . X X 0 
+ 1 2 n−1 n 
+X n =  . . . . . . . . . 
+ . . . . . . . . . 
+ . . . . . . . . . 
+ 
+X X . . . X X 0 . . . . . . 0
+1 2 n−1 n
+Using the above we have
+a(cid:48)Σ(cid:98)n a = a(cid:48)X
+n
+X(cid:48)
+n
+a = (cid:107)X(cid:48)a(cid:107)2
+2
+≥ 0.
+This this proves that {cˆ (k)} is a positive definite sequence.
+n
+Finally, by using Theorem 3.4.1, there exists a stochastic process with {cˆ (k)} as its autoco-
+n
+variance function. (cid:3)
+8.2.1 Asymptotic properties of the covariance estimator
+The main reason we construct an estimator is either for testing or constructing a confidence interval
+for the parameter of interest. To do this we need the variance and distribution of the estimator. It
+is impossible to derive the finite sample distribution, thus we look at their asymptotic distribution.
+Besides showing asymptotic normality, it is important to derive an expression for the variance.
+In an ideal world the variance will be simple and will not involve unknown parameters. Usually
+in time series this will not be the case, and the variance will involve several (often an infinite)
+number of parameters which are not straightforward to estimate. Later in this section we show
+that the variance of the sample covariance can be extremely complicated. However, a substantial
+simplification can arise if we consider only the sample correlation (not variance) and assume linearity
+of the time series. This result is known as Bartlett’s formula (you may have come across Maurice
+Bartlett before, besides his fundamental contributions in time series he is well known for proposing
+the famous Bartlett correction). This example demonstrates, how the assumption of linearity can
+really simplify problems in time series analysis and also how we can circumvent certain problems
+in which arise by making slight modifications of the estimator (such as going from covariance to
+correlation).
+250
+
+--- physical page 252 ---
+The following theorem gives the asymptotic sampling properties of the covariance estimator
+(8.3). One proof of the result can be found in Brockwell and Davis (1998), Chapter 8, Fuller
+(1995), but it goes back to Bartlett (indeed its called Bartlett’s formula). We prove the result in
+Section ??.
+Theorem 8.2.1 Suppose {X } is a mean zero linear stationary time series where
+t
+∞
+(cid:88)
+X = µ + ψ ε ,
+t j t−j
+j=−∞
+where (cid:80) |ψ | < ∞, {ε } are iid random variables with E(ε ) = 0 and E(ε4) < ∞. Suppose we
+j j t t t
+observe {X : t = 1, . . . , n} and use (8.3) as an estimator of the covariance c(k) = cov(X , X ).
+t 0 k
+Define ρˆ (r) = cˆ (r)/cˆ (0) as the sample correlation. Then for each h ∈ {1, . . . , n}
+n n n
+√
+D
+n(ρˆ (h) − ρ(h)) → N (0, W ) (8.5)
+n h
+where ρˆ (h) = (ρˆ (1), . . . , ρˆ (h)), ρ(h) = (ρ(1), . . . , ρ(h)) and
+n n n
+∞ (cid:26)
+(cid:88)
+(W ) = ρ(k + i)ρ(k + j) + ρ(k − i)ρ(k + j) + 2ρ(i)ρ(j)ρ2(k)
+h ij
+k=−∞
+(cid:27)
+−2ρ(i)ρ(k)ρ(k + j) − 2ρ(j)ρ(k)ρ(k + i) . (8.6)
+Equation (8.6) is known as Bartlett’s formula.
+In Section 8.3 we apply the method for checking for correlation in a time series. We first show
+how the expression for the asymptotic variance is obtained.
+8.2.2 The asymptotic properties of the sample autocovariance and
+autocorrelation
+In order to show asymptotic normality of the autocovariance and autocorrelation we require the
+following result. For any coefficients {α }d ∈ Rd+1 (such that σ2 , defined below, is non-zero) we
+rj j=0 α
+have
+ 
+√ n  (cid:88) d α rj n 1 n (cid:88) −|rj| X t X t+rj − (cid:88) d α rj c(r j ) → D N (cid:0) 0, σ α 2 (cid:1) , (8.7)
+j=0 t=1 j=0
+251
+
+--- physical page 253 ---
+for some σ2 < ∞. This result can be proved under a whole host of conditions including
+α
+• The time series is linear, X = (cid:80) ψ ε , where {ε } are iid, (cid:80) |ψ | < ∞ and E[ε4] < ∞.
+t j j t−j t j j t
+• α and β-mixing with sufficient mixing rates and moment conditions (which are linked to the
+mixing rates).
+• Physical dependence
+• Other dependence measures.
+All these criterions essentially show that the time series {X } becomes “increasingly independent”
+t
+the further apart the observations are in time. How this dependence is measured depends on the
+criterion, but it is essential for proving the CLT. We do not prove the above. Our focus in this
+section will be on the variance of the estimator.
+(cid:80)
+Theorem 8.2.2 Suppose that condition (8.7) is satisfied (and |c(h)| < ∞ and
+h∈Z
+(cid:80)
+|κ (h , h , h )| < ∞; this is a cumulant, which we define in the section below), then
+h1,h2,h3 4 1 2 3
+ 
+c (0) − c(0)
+(cid:98)n
+ 
+√  c (r ) − c(r ) 
+ (cid:98)n 1 1  P
+n  .  → N (0, V d+1 )
+ . 
+ . 
+ 
+c (r ) − c(r )
+(cid:98)n d d
+where
+∞ ∞
+(cid:88) (cid:88)
+(V ) = c(k)c(k + r − r ) + c(k + r − 1)c(k − r − 1) +
+d+1 i,j i−1 j−1 i−1 j−1
+k=−∞ k=−∞
+∞
+(cid:88)
+κ (r − 1, k, k + r − 1) (8.8)
+4 i−1 j−1
+k=−∞
+where we set r = 0.
+0
+PROOF. The first part of the proof simply follows from (8.7). The derivation for V is given in
+d+1
+Section 8.2.3, below. (cid:3)
+In order to prove the results below, we partition V into a term which contains the covariances
+d+1
+and the term which contains the fourth order cumulants (which we have yet to define). Let V =
+d+1
+252
+
+--- physical page 254 ---
+C + K , where
+d+1 d+1
+∞ ∞
+(cid:88) (cid:88)
+(C ) = c(k)c(k + r − r ) + c(k + r )c(k − r )
+d+1 i,j i−1 j−1 i−1 j−1
+k=−∞ k=−∞
+∞
+(cid:88)
+(K ) = κ (r , k, k + r ). (8.9)
+d+1 i,j 4 i−1 j−1
+k=−∞
+and set r = 0. So far we have not defined κ . However, it is worth bearing in mind that if the
+0 4
+time series {X } is Gaussian, then this term is zero i.e. K = 0. Thus estimation of the variance
+t d+1
+of the sample covariance for Gaussian time series is relatively straightforward as it only depends
+on the covariance.
+We now derive the sampling properties of the sample autocorrelation.
+Lemma 8.2.2 Suppose that conditions in Theorem 8.2.2 hold. Then
+ 
+ρ (r ) − ρ(r )
+(cid:98)n 1 1
+√ n    . . .    → P N (cid:0) 0, G(C d+1 + K d+1 )G(cid:48)(cid:1)
+ 
+ρ (r ) − ρ(r )
+(cid:98)n d d
+where r (cid:54)= 0, C and K are defined as in equation (8.9) and G is a d × (d + 1) dimensional
+j d+1 d+1
+matrix where
+ 
+−ρ(r ) 1 0 . . . 0
+1
+ 
+1   −ρ(r 2 ) 0 1 . . . 0  
+G = c(0)    . . . . . . . . . . . . 0   
+ 
+−ρ(r ) 0 . . . . . . 1
+d
+PROOF. We define the g : Rd+1 → Rd vector function
+(cid:18) (cid:19)
+x x
+1 d
+g(x , x , . . . , x ) = , . . . , .
+0 1 d
+x x
+0 0
+253
+
+--- physical page 255 ---
+We observe that (ρ(r ), . . . , ρ(r )) = g(c (0), c (r ), . . . , c (r )). Thus
+(cid:98) 1 (cid:98) d (cid:98)n (cid:98)n 1 (cid:98)n d
+ 
+− c(r1) 1 0 . . . 0
+c(0)2 c(0)
+ 
+ − c(r2) 0 1 . . . 0 
+∇g(c(0), . . . , c(r d )) =     c . . . (0)2 . . . c . ( . 0 . ) . . . 0     = G.
+ 
+− c(r d ) 0 . . . . . . 1
+c(0)2 c(0)
+Therefore, by using Theorem 8.2.2 together with the continuous mapping theorem we obtain the
+result. (cid:3)
+√
+D
+Comparing Theorem 8.2.2 to the asymptotically pivotal result nρ → N (0, I ) in (??) it is clear
+h
+h,n
+that additional assumptions are required for the result to be pivotal. Therefore, in the following
+theorem we consider the case that {X } is a linear time series, which includes the special case that
+t
+{X } are iid random variables. First, we make some observations about G and GC G(cid:48). Note
+t d+1
+that the assumption of linearity of a time series can be checked (see, for example, Subba Rao and
+Gabr (1980)).
+Remark 8.2.1 (i) Basic algebra gives
+∞ (cid:26)
+(cid:88)
+(GC G(cid:48)) = ρ(k + r )ρ(k + r ) + ρ(k − r )ρ(k + r ) + 2ρ(r )ρ(r )ρ2(k)
+d+1 r1,r2 1 2 1 2 1 2
+k=−∞
+(cid:27)
+−2ρ(r )ρ(k)ρ(k + r ) − 2ρ(r )ρ(k)ρ(k + r ) . (8.10)
+1 2 2 1
+(ii) Though it may not seem directly relevant. It is easily seen that the null space of the matrix
+G is
+N (G) =
+(cid:8)
+αc ; α ∈
+R(cid:9)
+d+1
+where c(cid:48) = (c(0), c(r ), . . . , c(r )). This property will be useful in proving Bartlett’s formula
+d+1 1 d
+(below).
+Theorem 8.2.3 Suppose {X } is a mean zero linear stationary time series where
+t
+∞
+(cid:88)
+X = ψ ε ,
+t j t−j
+j=−∞
+254
+
+--- physical page 256 ---
+with (cid:80) |ψ | < ∞, {ε } are iid random variables with E(ε ) = 0 and E(ε4) < ∞. Suppose we
+j j t t t
+observe {X : t = 1, . . . , n} and use (8.3) as an estimator of the covariance c(k) = cov(X , X ).
+t 0 k
+Then we have
+ 
+ρ (r ) − ρ(r )
+(cid:98)n 1 1
+√ n    . . .    → P N (cid:0) 0, GC d+1 G(cid:48)(cid:1) ,
+ 
+ρ (r ) − ρ(r )
+(cid:98)n d d
+where an explicit expression for GC G(cid:48) is given in (8.10) (this is called Bartlett’s formula).
+d+1
+PROOF. To prove the result we use Lemma 8.2.2. However, we observe that the term GK G(cid:48)
+d+1
+has disappeared. In Section 8.2.3 we show that for (univariate) linear processes GK G(cid:48) = 0. (cid:3)
+d+1
+Remark 8.2.2 • Under linearity of the time series, Brockwell and Davis (2002), Theorem
+7.2.2 show that the above theorem also holds for linear time series whose fourth moment does
+not exist. This result requires slightly stronger assumptions on the coefficients {ψ }.
+j
+• This allusive fourth cumulant term does not disappear for vector linear processes.
+Using Theorem 8.2.3, we can prove (??) for iid time series. Since iid random variables are a
+special case of a linear time series (φ = 0 for all j (cid:54)= 0) with c(r) = 0 for all r (cid:54)= 0. Substituting
+j
+this into Theorem 8.2.3 gives
+ 
+ρ (1)
+(cid:98)n
+√ n    . . .    → D N (0, I h ).
+ 
+ρ (h)
+(cid:98)n
+Using this result we obtain the critical values in the ACF plots and the Box-Pierce test. How-
+ever, from Lemma 8.2.2 we observe that the results can be misleading for time series which are
+uncorrelated but not necessarily iid. Before discussing this, we first prove the above results. These
+calculations are a little tedious, but they are useful in understanding how to deal with many different
+types of statistics of a time series (not just the sample autocovariances).
+8.2.3 The covariance of the sample autocovariance
+Our aim in this section is to derive an expression for cov (c (r ), c (r )). To simply notation we
+(cid:98)n 1 (cid:98)n 2
+focus on the variance (r = r ), noting that the same calculations carry over to the covariance.
+1 2
+255
+
+--- physical page 257 ---
+Approach 1 Use the moment expansion of a covariance
+n−|r|
+1 (cid:88)
+var[c (r)] = cov(X X , X X )
+(cid:98)n n2 t t+r τ τ+r
+t,τ=1
+n−|r|
+1 (cid:88)
+= (E(X X , X X ) − E(X X )E(X X ))
+n2 t t+r τ τ+r t t+r τ τ+r
+t,τ=1
+n−|r|
+=
+1 (cid:88) (cid:0)
+E(X X , X X ) −
+c(r)2(cid:1)
+.
+n2 t t+r τ τ+r
+t,τ=1
+Studying the above and comparing it to the expansion of var(X¯ ) when the {X } are iid, we would
+t
+expect that var[c (r)] = O(n−1). But it is difficult to see what is happening with this expansion.
+(cid:98)n
+Though it is possible to use this method. We use an alternative expansion in terms of cumulants.
+Approach 2 Use an expansion of the covariance of products in terms of products of cumulants.
+Suppose A, B, C and D are zero mean (real) random variables. Then
+cov (AB, CD) = cov (A, C) cov (B, D) + cov (A, D) cov (B, C) + cum(A, B, C, D). (8.11)
+(cid:124)(cid:123)(cid:122)(cid:125) (cid:124)(cid:123)(cid:122)(cid:125) (cid:124)(cid:123)(cid:122)(cid:125) (cid:124)(cid:123)(cid:122)(cid:125) (cid:124)(cid:123)(cid:122)(cid:125)
+=cum =cum =cum =cum =cum
+This result can be generalized to higher order cumulants, see Brillinger (2001).
+Below, we formally define a cumulant and explain why it is a useful tool in time series.
+Background: What are cumulants?
+To understand what they are and why they are used, we focus the following discussion for fourth
+order cumulants.
+The joint cumulant of X , X , X , X (denoted as cum(X , X , X , X )) is the
+t t+k1 t+k2 t+k3 t t+k1 t+k2 t+k3
+coefficient of the term s s s s in the power series expansion of
+1 2 3 4
+K(s
+1
+, s
+2
+, s
+3
+, s
+4
+) = log E[eis1Xt+is2X t+k1 +is3X t+k2 +is4X t+k4 ].
+Thus
+∂4K(s , s , s , s )
+1 2 3 4
+cum(X , X , X , X ) = (cid:99)
+t t+k1 t+k2 t+k3
+∂s ∂s ∂s ∂s
+s1,s2,s3,s4=0
+1 1 3 4
+It looks very similar to the definition of moments and there is a one to one correpondence between
+256
+
+--- physical page 258 ---
+the moments and the cumulants. It can be shown that the cumulant corresponding to coefficient
+of s s is cum(X , X ) (the covariance is often called the second order cumulant).
+i j t+ki t+kj
+Properties
+• If X is independent of X , X , X then
+t t+k1 t+k2 t+k3
+cum (X , X , X , X ) = 0.
+t t+k1 t+k2 t+k3
+This is because the log of the corresponding characteristic function is
+log E[eis1Xt+is2X t+k1 +is3X t+k2 +is4X t+k4 ] = log E[eis1Xt] + log[E[eis2X t+k1 +is3X t+k2 +is4X t+k4 ].
+Differentiating the above with respect to s s s s gives zero.
+1 2 3 4
+• If X , X , X , X is multivariate Gaussian, then all cumulants higher than order 2
+t t+k1 t+k2 t+k3
+are zero. This is easily seen, by recalling that the characteristic function of a multivariate
+normal distribution is
+1
+C(s , s , s , s ) = exp(iµ(cid:48)s − s(cid:48)Σs)
+1 2 3 4
+2
+where µ and Σ are the mean and variance of X , X , X , X respectively. Based on
+t t+k1 t+k2 t+k3
+the above, we observe that log C(s , s , s , s ) is an order two multivariate polynomial.
+1 2 3 4
+Note that this property can be used to prove CLTs.
+• Cumulants satisfy the follow multilinear property
+cum (aX + bY + c, X , X , X )
+1 1 2 3 4
+= acum (X , X , X , X ) + bcum (Y , X , X , X )
+1 2 3 4 1 2 3 4
+where a, b and c are scalars.
+• The influence of stationarity:
+From the definition of the characteristic function, if the time series {X } is strictly stationary.
+t
+Then
+log E[eis1Xt+is2X t+k1 +is3X t+k2 +is4X t+k4 ] = log E[eis1X0+is2X k1 +is3X k2 +is4X k4 ].
+257
+
+--- physical page 259 ---
+Thus, analogous to covariances, cumulants are invariant to shift
+cum(X , X , X , X ) = cum(X , X , X , X ) = κ (k , k , k ).
+t t+k1 t+k2 t+k3 0 k1 k2 k3 4 1 2 3
+Comparisons between the covariance and higher order cumulants
+(a) The covariance is invariant to ordering cov[X , X ] = cov[X , X ].
+t t+k t+k t
+Like the covariance, the joint cumulant cum[X , X , X , X ] is also invariant to order.
+t t+k1 t+k2 t+k3
+(b) The covariance cov[X , X ] is a measure of linear dependence between X and X .
+t t+k t t+k
+The cumulant is measuring the dependence between cum[X , X , X , X ] in “three
+t t+k1 t+k2 t+k3
+directions” (though as far as I am aware, unlike the covariance it has no clear geometric
+interpretation). For example, if {X } is a zero mean time series then
+t
+cum[X , X , X , X ]
+t t+k1 t+k2 t+k3
+= E[X X X X ] − E[X X ]E[X X ]
+t t+k1 t+k2 t+k3 t t+k1 t+k2 t+k3
+−E[X X ]E[X X ] − E[X X ]E[X X ]. (8.12)
+t t+k2 t+k1 t+k3 t t+k3 t+k1 t+k2
+Unlike the covariance, the cumulants do not seem to satisfy any non-negative definite condi-
+tions.
+(c) In time series we usually assume that the covariance decays over time i.e. if k > 0
+|cov[X , X ]| ≤ α(k)
+t t+k
+(cid:80)
+where α(k) is a positive sequence such that α(k) < ∞. This can easily be proved for
+k
+linear time series with (cid:80) |ψ | < ∞1.
+j j
+For a large class of time series, the analogous result is true for cumulants. I.e. if k ≤ k ≤ k
+1 2 3
+1This is easily shown by noting that if X = (cid:80) ψ ε then cov(X , X ) = σ2 (cid:80) ψ ψ . Thus
+t j j t−j t t+h j j j+h
+(cid:12) (cid:12)  2
+∞ ∞ (cid:12) (cid:12) ∞
+(cid:88) |c(h)| = σ2 (cid:88) (cid:12) (cid:12) (cid:88) ψ j ψ j+h (cid:12) (cid:12) ≤ σ2  (cid:88) |ψ j | < ∞.
+(cid:12) (cid:12)
+h=−∞ h=−∞ (cid:12) j (cid:12) j=−∞
+258
+
+--- physical page 260 ---
+then
+|cum[X , X , X , X ]| ≤ α(k )α(k − k )α(k − k ) (8.13)
+t t+k1 t+k2 t+k3 1 2 1 3 2
+where
+(cid:80)∞
+α(k) < ∞.
+k=−∞
+(cid:80)
+(d) Often in proofs we use the assumption |c(r)| < ∞. An analogous assumption for fourth
+r
+(cid:80)
+order cumulants is |κ (k , k , k )| < ∞. Based on the inequality (8.13), this assump-
+k1,k2,k3 4 1 2 3
+tion is often reasonable (such assumptions are often called Brillinger-type mixing conditions).
+Point (c) and (d) are very important in the derivation of sampling properties of an estimator.
+Example 8.2.1 • We illustrate (d) for the causal AR(1) model X = φX + ε (where {ε }
+t t−1 t t
+are iid random variables with finite fourth order cumulant κ = cum(ε , ε , ε , ε )). By using
+4 t t t t
+the MA(∞) representation (cid:80)∞ φjε (assuming 0 ≤ k ≤ k ≤ k ) we have
+j=0 t−j 1 2 3
+∞
+(cid:88)
+cum[X , X , X , X ] = φj0+j1+j2+j3cum [ε , ε , ε , ε ]
+t t+k1 t+k2 t+k3 t−j0 t+k1−j1 t+k2−j2 t+k3−j3
+j0,j1,j2,j3=0
+(cid:88)
+∞ φk1+k2+k3
+= κ φjφj+k1φj+k2φj+k3 = κ .
+4 4 1 − φ4
+j=0
+The fourth order dependence decays as the lag increases. And this rate of decay is faster than
+the general bound |cum[X , X , X , X ]| ≤ α(k )α(k − k )α(k − k ).
+t t+k1 t+k2 t+k3 1 2 1 3 2
+• If {X } are martingale differences and t are all different, then using (8.12) (the expansion
+t t j
+of the fourth order cumulant in terms of moments) we have
+cum[X , X , X , X ] = 0.
+t1 t2 t3 t4
+Remark 8.2.3 (Cumulants and dependence measures) The summability of cumulants can
+be shown under various mixing and dependent type conditions. We mention a few below.
+• Conditions for summability of cumulants for mixing processes are given in Statulevicius and
+Jakimavicius (1988) and Lahiri (2003).
+• Conditions for summability of cumulants for physical dependence processes are given in Shao
+and Wu (2007), Theorem 4.1.
+259
+
+--- physical page 261 ---
+Proof of equation (8.8) in Theorem 8.2.2
+Our aim is to show
+  
+c (0)
+(cid:98)n
+  
+√  c (r ) 
+  (cid:98)n 1 
+var  n  .  → V d+1
+  . 
+  . 
+  
+c (r )
+(cid:98)n d
+where
+∞ ∞
+(cid:88) (cid:88)
+(V ) = c(k)c(k + r − r ) + c(k + r − 1)c(k − r − 1) +
+d+1 i,j i−1 j−1 i−1 j−1
+k=−∞ k=−∞
+∞
+(cid:88)
+κ (r − 1, k, k + r − 1). (8.14)
+4 i−1 j−1
+k=−∞
+To simplify notation we start by considering the variance
+n−|r|
+√ 1 (cid:88)
+var[ nc (r)] = cov(X X , X X ).
+(cid:98)n t t+r τ τ+r
+n
+t,τ=1
+To prove the result, we use the identity (8.11); if A, B, C and D are mean zero random variables,
+then cov[AB, CD] = cov[A, C]cov[B, D]+cov[A, D]cov[B, C]+cum[A, B, C, D]. Using this identity
+we have
+var[c (r)]
+(cid:98)n
+n−|r|
+1 (cid:88) (cid:0) (cid:1)
+= cov(X , X ) cov(X , X ) + cov(X , X )cov(X , X ) + cum(X , X , X , X )
+n2 t τ t+r τ+r t τ+r t+r τ t t+r τ τ+r
+(cid:124) (cid:123)(cid:122) (cid:125) (cid:124) (cid:123)(cid:122) (cid:125)
+t,τ=1
+=c(t−τ) κ4(r,τ−t,t+r−τ)
+n−|r| n−|r| n−|r|
+1 (cid:88) 1 (cid:88) 1 (cid:88)
+= c(t − τ )2 + c(t − τ − r)c(t + r − τ ) + k (r, τ − t, τ + r − t)
+4
+n n n
+t,τ=1 t,τ=1 t,τ=1
+:= I + II + III ,
+n n n
+where the above is due to strict stationarity of the time series. The benefit of using a cumulant
+expansion rather than a moment expansion is now apparent. Since cumulants act like a covariances,
+they do decay as the time gaps grow. This allows us to analysis each term I , II and III
+n n n
+individually. This simplifies the analysis.
+260
+
+--- physical page 262 ---
+We first consider I . Either (i) by changing variables and letting k = t − τ and thus changing
+n
+the limits of the summand in an appropriate way or (ii) observing that (cid:80)n−|r| c(t − τ )2 is the sum
+t,τ=1
+of the elements in the Toeplitz matrix
+ 
+c(0)2 c(1)2 . . . c(n − 1)2
+ 
+ c(−1)2 c(0)2 . . . c(n − 2)2 
+ 
+   . . . . . . . . . . . .    ,
+ 
+c((n − 1))2 c((n − 2))2 . . . c(0)2
+(noting that c(−k) = c(k)) the sum I can be written as
+n−|r| (n−1) n−|k| n−1 (cid:18) (cid:19)
+1 (cid:88) 1 (cid:88) (cid:88) (cid:88) n − |k|
+I = c(t − τ )2 = c(k)2 1 = c(k)2.
+n
+n n n
+t,τ=1 k=−(n−1) t=1 k=−(n−1)
+To obtain the limit of the above we use dominated convergence. Precisely, since for all k, (1 −
+|k|/n)c(k)2 → c(k)2 and | (cid:80)n−|r| (1 − |k|/n)c(k)2| ≤ (cid:80) c(k)2 < ∞, by dominated conver-
+k=−(n−|r|) k∈Z
+gence I = (cid:80)n−1 (1 − |k|/n)c(k)2 → (cid:80)∞ c(k)2. Using a similar argument we can show
+n k=−(n−1) k=−∞
+that
+∞
+(cid:88)
+lim II = c(k + r)c(k − r).
+n
+n→∞
+k=−∞
+To derive the limit of III , we change variables k = τ − t to give
+n
+n−|r| (cid:18) (cid:19)
+(cid:88) n − |r| − |k|
+III = k (r, k, k + r).
+n 4
+n
+k=−(n−|r|)
+Again we use dominated convergence. Precisely, for all k, (1 − |k|/n)k (r, k, k + r) → k (r, k, k + r)
+4 4
+(cid:80)n−|r| (cid:80)
+and | (1 − |k|/n)k (r, k, k + r)| ≤ |k (r, k, k + r)| < ∞ (by assumption). Thus by
+k=−(n−|r|) 4 k∈Z 4
+dominated convergence we have III =
+(cid:80)n
+(1 − |k|/n)k (r, k, k + r) →
+(cid:80)∞
+k (r, k, k +
+n k=−(n−|r|) 4 k=−∞ 4
+r). Altogether the limits of I , II and III give
+n n n
+√ (cid:88) ∞ (cid:88) ∞ (cid:88) ∞
+lim var[ nc (r)] = c(k)2 + c(k + r)c(k − r) + κ (r, k, k + r).
+(cid:98)n 4
+n→∞
+k=−∞ k=−∞ k=−∞
+261
+
+--- physical page 263 ---
+Using similar set of arguments we obtain
+√ √
+lim cov[ nc (r ), nc (r )]
+(cid:98)n 1 (cid:98)n 2
+n→∞
+∞ ∞ ∞
+(cid:88) (cid:88) (cid:88)
+→ c(k)c(k + r − r ) + c(k − r )c(k + r ) + κ (r , k, k + r ).
+1 2 1 2 4 1 2
+k=−∞ k=−∞ k=−∞
+This result gives the required variance matrix V in Theorem 8.2.2.
+d+1
+Below, we show that under linearity the fourth order cumulant term has a simpler form. We
+will show
+ 
+ρ (r ) − ρ(r )
+(cid:98)n 1 1
+√ n    . . .    → P N (cid:0) 0, GC d+1 G(cid:48)(cid:1) .
+ 
+ρ (r ) − ρ(r )
+(cid:98)n d d
+We have already shown that in the general case the limit distribution of the sample correlations is
+G(C + K )G(cid:48). Thus our objective here is to show that for linear time series the fourth order
+d+1 d+1
+cumulant term is GK G(cid:48) = 0.
+d+1
+Proof of Theorem 8.2.3 and the case of the vanishing fourth order cumulant
+So far we have not used the structure of the time series to derive an expression for the variance of
+the sample covariance. However, to prove GK G(cid:48) = 0 we require an explicit expression for K .
+d+1 d+1
+The following result only holds for linear, univariate time series. We recall that
+∞
+(cid:88)
+(K ) = κ (r , k, k + r ).
+d+1 i,j 4 i−1 j−1
+k=−∞
+By definition κ (r , k, k + r ) = cum(X , X , X , X ). Further, we consider the specific
+4 i−1 j−1 0 ri−1 k k+rj−1
+case that X is a linear time series, where
+t
+∞
+(cid:88)
+X = ψ ε
+t j t−j
+j=−∞
+262
+
+--- physical page 264 ---
+(cid:80) |ψ | < ∞, {ε } are iid, E(ε ) = 0, var(ε ) = σ2 and κ = cum (ε ). To find an expression for
+j j t t t 4 4 t
+(K ) , consider the general sum
+d+1 i,j
+∞
+(cid:88)
+cum(X , X , X , X )
+0 r1 k k+r2
+k=−∞
+ 
+∞ ∞ ∞ ∞ ∞
+(cid:88) (cid:88) (cid:88) (cid:88) (cid:88)
+= cum  ψ j1 ε −j1 , ψ j2 ε r1−j2 , ψ j3 ε k−j3 , ψ j4 ε k+r2−j1 
+k=−∞ j1=−∞ j2=−∞ j3=−∞ j4=−∞
+∞
+(cid:88) (cid:88)
+= ψ ψ ψ ψ cum (ε , ε , ε , ε ) .
+j1 j2 j3 j4 −j1 r1−j2 k−j3 k+r2−j1
+k=−∞ j1,...,j4=−∞
+We recall from Section 8.2.3, if one of the variables above is independent of the other, then
+cum (ε , ε , ε , ε ) = 0. This reduces the number of summands from five to two
+−j1 r1−j2 k−j3 k+r2−j1
+∞ ∞ ∞
+(cid:88) (cid:88) (cid:88)
+cum(X , X , X , X ) = κ ψ ψ ψ ψ .
+0 r1 k k+r2 4 j j−r1 j−k j−r2−k
+k=−∞ k=−∞ j=−∞
+Changing variables j = j and j = j − k we have
+1 2
+∞ ∞ ∞
+(cid:88) (cid:0) (cid:88) (cid:1)(cid:0) (cid:88) (cid:1) c(r 1 ) c(r 2 ) κ 4
+cum(X , X , X , X ) = κ ψ ψ ψ ψ = κ = c(r )c(r ),
+0 r1 k k+r2 4 j j−r1 j2 j2−r2 4 σ2 σ2 σ4 1 2
+k=−∞ j1=−∞ j2=−∞
+recalling that cov(X , X ) = σ2 (cid:80)∞ ψ ψ . Thus for linear time series
+t t+r j=−∞ j j+r
+∞
+(cid:88) κ 4
+(K ) = κ (r , k, k + r ) = c(r )c(j )
+d+1 i,j 4 i−1 j−1 σ2 i−1 i−1
+k=−∞
+and the matrix K is
+d+1
+κ
+K = 4 c c(cid:48)
+d+1 σ4 d+1 d+1
+where c(cid:48) = (c(0), c(r ), . . . , c(r )). Substituting this representation of K into GK G(cid:48) gives
+d+1 1 d d+1 d+1
+κ
+GK G(cid:48) = 4 Gc c(cid:48) G(cid:48).
+d+1 σ4 d+1 d+1
+We recall from Remark 8.2.1 that G is a d × (d + 1) dimension matrix with null space c . This
+d+1
+immediately gives Gc = 0 and the result.
+d+1
+263
+
+--- physical page 265 ---
+Exercise 8.1 Under the assumption that {X } are iid random variables show that cˆ (1) is asymp-
+t n
+totically normal.
+Hint: Let m = n/(B + 1) and partition the sum
+(cid:80)n−1
+X X as follows
+k=1 t t+1
+n−1 B 2B+1
+(cid:88) (cid:88) (cid:88)
+X X = X X + X X + X X + X X +
+t t+1 t t+1 B+1 B+2 t t+1 2B+2 2B+3
+t=1 t=1 t=B+2
+3B+2 4B+3
+(cid:88) (cid:88)
+X X + X X + X X + . . .
+t t+1 3B+3 3B+4 t t+1
+t=2B+3 t=3B+4
+m−1 m−1
+(cid:88) (cid:88)
+= U + X X
+m,j (j+1)(B+1) (j+1)(B+1)+1
+j=0 j=0
+(cid:80)j(B+1)+B
+where U = X X . Show that the second term in the above summand is asymp-
+m,j t=j(B+1)+1 t t+1
+totically negligible and show that the classical CLT for triangular arrays can be applied to the first
+term.
+Exercise 8.2 Under the assumption that {X } is a MA(1) process, show that c (1) is asymptoti-
+t (cid:98)n
+cally normal.
+Exercise 8.3 The block bootstrap scheme is a commonly used method for estimating the finite
+sample distribution of a statistic (which includes its variance). The aim in this exercise is to see
+how well the bootstrap variance approximates the finite sample variance of a statistic.
+(i) In R write a function to calculate the autocovariance c (1) = 1 (cid:80)n−1 X X .
+(cid:98)n n t=1 t t+1
+Remember the function is defined as cov1 = function(x){...}
+(ii) Load the library boot library("boot") into R. We will use the block bootstrap, which parti-
+tions the data into blocks of lengths l and then samples from the blocks n/l times to construct
+a new bootstrap time series of length n. For each bootstrap time series the covariance is
+evaluated and this is done R times. The variance is calculated based on these R bootstrap
+estimates.
+You will need to use the function tsboot(tseries,statistic,R=100,l=20,sim="fixed").
+tseries refers to the original data, statistic to the function you wrote in part (i) (which should
+only be a function of the data), R=is the number of bootstrap replications and l is the length
+of the block.
+264
+
+--- physical page 266 ---
+Note that tsboot(tseries,statistic,R=100,l=20,sim="fixed")$t will be vector of length
+R = 100 which will contain the bootstrap statistics, you can calculate the variance of this
+vector.
+(iii) Simulate the AR(2) time series arima.sim(list(order = c(2, 0, 0), ar = c(1.5, −0.75)), n =
+128) 500 times. For each realisation calculate the sample autocovariance at lag one and also
+the bootstrap variance.
+(iv) Calculate the mean of the bootstrap variances and also the mean squared error (compared
+with the empirical variance), how does the bootstrap perform?
+(iv) Play around with the bootstrap block length l. Observe how the block length can influence the
+result.
+Remark 8.2.4 The above would appear to be a nice trick, but there are two major factors that
+lead to the cancellation of the fourth order cumulant term
+• Linearity of the time series
+• Ratio between cˆ (r) and cˆ (0).
+n n
+Indeed this is not a chance result, in fact there is a logical reason why this result is true (and is
+true for many statistics, which have a similar form - commonly called ratio statistics). It is easiest
+explained in the Fourier domain. If the estimator can be written as
+1
+(cid:80)n
+φ(ω )I (ω )
+k=1 k n k ,
+n 1 (cid:80)n I (ω )
+n k=1 n k
+where I (ω) is the periodogram, and {X } is a linear time series, then we will show later that the
+n t
+asymptotic distribution of the above has a variance which is only in terms of the covariances not
+higher order cumulants. We prove this result in Section 11.5.
+8.3 Checking for correlation in a time series
+Bartlett’s formula if commonly used to check by ‘eye; whether a time series is uncorrelated (there
+are more sensitive tests, but this one is often used to construct CI in for the sample autocovariances
+in several statistical packages). This is an important problem, for many reasons:
+265
+
+--- physical page 267 ---
+• Given a data set, we need to check whether there is dependence, if there is we need to analyse
+it in a different way.
+• Suppose we fit a linear regression to time series data. We may to check whether the residuals
+are actually uncorrelated, else the standard errors based on the assumption of uncorrelated-
+ness would be unreliable.
+• We need to check whether a time series model is the appropriate model. To do this we fit
+the model and estimate the residuals. If the residuals appear to be uncorrelated it would
+seem likely that the model is correct. If they are correlated, then the model is inappropriate.
+For example, we may fit an AR(1) to the data, estimate the residuals ε , if there is still
+t
+correlation in the residuals, then the AR(1) was not the correct model, since X − φˆX is
+t t−1
+still correlated (which it would not be, if it were the correct model).
+We now apply Theorem 8.2.3 to the case that the time series are iid random variables. Suppose {X }
+t
+are iid random variables, then it is clear that it is trivial example of a (not necessarily Gaussian)
+linear process. We use (8.3) as an estimator of the autocovariances.
+To derive the asymptotic variance of {cˆ (r)}, we recall that if {X } are iid then ρ(k) = 0 for
+n t
+k (cid:54)= 0. Then by using Bartlett’s formula we have
+
+ 1 i = j
+(W ) =
+h ij
+ 0 i (cid:54)= j
+√
+D
+In other words, nρˆ → N (0, I ). Hence the sample autocovariances at different lags are asymp-
+n h
+totically uncorrelated and have variance one. This allows us to easily construct error bars for the
+sample autocovariances under the assumption of independence. If the vast majority of the sample
+autocovariance lie inside the error bars there is not enough evidence to suggest that the data is
+a realisation of a iid random variables (often called a white noise process). An example of the
+empirical ACF and error bars is given in Figure 8.1. We see that the empirical autocorrelations of
+the realisation from iid random variables all lie within the error bars. In contrast in Figure 8.2
+we give a plot of the sample ACF of an AR(2). We observe that a large number of the sample
+autocorrelations lie outside the error bars.
+Of course, simply checking by eye means that we risk misconstruing a sample coefficient that
+lies outside the error bars as meaning that the time series is correlated, whereas this could simply
+266
+
+--- physical page 268 ---
+0 5 10 15 20
+0.1
+8.0
+6.0
+4.0
+2.0
+0.0
+Lag
+FCA
+Series iid
+Figure 8.1: The sample ACF of an iid sample with error bars (sample size n = 200).
+0 5 10 15 20
+8.0
+4.0
+0.0
+4.0−
+Lag
+FCA
+Series ar2
+5 10 15 20
+8.0
+4.0
+0.0
+4.0−
+lag
+fca
+Figure 8.2: Top: The sample ACF of the AR(2) process X = 1.5X + 0.75X + ε with
+t t−1 t−2 t
+error bars n = 200. Bottom: The true ACF.
+267
+
+--- physical page 269 ---
+be a false positive (due to multiple testing). To counter this problem, we construct a test statistic
+for testing uncorrelatedness. We test the hypothesis H : c(r) = 0 for all r against H : at least
+0 A
+one c(r) (cid:54)= 0.
+A popular method for measuring correlation is to use the squares of the sample correlations
+h
+(cid:88)
+S = n |ρ (r)|2. (8.15)
+h (cid:98)n
+r=1
+√
+Since under the null n(ρˆ (h) − ρ(h)) → D N (0, I), under the null S asymptotically will have a χ2-
+n h
+distribution with h degrees of freedom, under the alternative it will be a non-central (generalised)
+chi-squared. The non-centrality is what makes us reject the null if the alternative of correlatedness
+is true. This is known as the Box-Pierce (or Portmanteau) test. The Ljung-Box test is a variant
+on the Box-Pierce test and is defined as
+(cid:88) h |ρˆ n (r)|2
+S = n(n + 2) . (8.16)
+h
+n − r
+r=1
+Again under the null of no correlation, asymptotically, S → D χ2 . Generally, the Ljung-Box test is
+h h
+suppose to give more reliable results than the Box-Pierce test.
+Of course, one needs to select h. In general, we do not have to use large h since most correlations
+will arise when the lag is small, However the choice of h will have an influence on power. If h is too
+large the test will loose power (since the mean of the chi-squared grows as h → ∞), on the other
+hand choosing h too small may mean that certain correlations at higher lags are missed. How to
+selection h is discussed in several papers, see for example Escanciano and Lobato (2009).
+Remark 8.3.1 (Do’s and Don’t of the Box-Jenkins or Ljung-Box test) There is tempta-
+tion to estimate the residuals from a model and test for correlation in the estimated residuals.
+• Example 1 Y =
+(cid:80)p
+α x + ε . Suppose we want to know if the errors {ε } are correlated.
+t j=1 j j,t t t t
+We test H : errors are uncorrelated vs H : errors are correlated.
+0 A
+Suppose H is true. {ε } are unobserved, but they can be estimated from the data. Then on
+0 t
+the estimated residuals {ε } we can test for correlation. We estimate the correlation based
+(cid:98)t t
+268
+
+--- physical page 270 ---
+on the estimated residuals ρ(r) = c (r)/c (0), where
+(cid:101) (cid:101)n (cid:101)n
+n−|r|
+1 (cid:88)
+c (r) = ε ε .
+(cid:101)n (cid:98)t(cid:98)t+r
+n
+t=1
+√
+It can be shown that nρ (r) ∼ N (0, 1) and the Box-Jenkins or Ljung-Box test can be used.
+(cid:101)n
+I.e. S ∼ χ2 even when using the estimated residuals.
+h h
+• Example 2 This example is a word of warning. Suppose Y = φY + ε . We want to test
+t t−1 t
+H :errors are uncorrelated vs H : errors are uncorrelated.
+0 A
+Suppose H is true. {ε } are unobserved, but they can be estimated from the data. We
+0 t
+estimate the correlation based on the estimated residuals (ε
+(cid:98)t
+= Y
+t
+−φ(cid:98)Y
+t−1
+), ρ
+(cid:101)
+(r) =
+(cid:101)
+c
+n
+(r)/
+(cid:101)
+c
+n
+(0),
+where
+n−|r|
+1 (cid:88)
+c (r) = ε ε .
+(cid:101)n (cid:98)t(cid:98)t+r
+n
+t=1
+√
+ρ (r) is estimating zero but nρ (r) is not a standard normal. Thus S does not follow a
+(cid:101)n (cid:101)n h
+standard chi-square distribution. This means the estimated residuals cannot be used to check
+for uncorrelatedness.
+To understand the difference between the two examples see Section 8.6.
+8.3.1 Relaxing the assumptions: The robust Portmanteau test
+(advanced)
+One disadvantage of the Box-Pierce/Portmanteau test described above is that it requires under the
+null that the time series is independent not just uncorrelated. Even though the test statistic can
+only test for correlatedness and not dependence. As an illustration of this, in Figure ?? we give the
+QQplot of the S (using an ARCH process as the time series) against a chi-square distribution. We
+2
+recall that despite the null being true, the test statistic deviates considerably from a chi-square. For
+this time series, we would have too many false positive despite the time series being uncorrelated.
+Thus the Box-Pierce test only gives reliable results for linear time series.
+269
+
+--- physical page 271 ---
+In general, under the null of no correlation we have
+
+(cid:80)
+√ √  κ (r , k, k + r ) r (cid:54)= r
+(cid:0) (cid:1) k 4 1 2 1 2
+cov nc (r ), nc (r ) =
+(cid:98)n 1 (cid:98)n 2
+ c(0)2 + (cid:80) κ (r, k, k + r) r = r = (r)
+k 4 1 2
+Thus despite c (r) being asymptotically normal we have
+(cid:98)n
+√ n (cid:98) c n (r) → D N (cid:0) 0, 1 + GK G(cid:48)(cid:1) ,
+2
+c(0)
+where the cumulant term GK G tends to be positive. This results in the Box-Pierce test underes-
+2
+timating the variance, and the true quantiles of S (see Figure ??) being larger than the chi square
+2
+quantiles.
+However, there is an important subset of uncorrelated time series, which are dependent, where
+a slight modification of the Box-Pierce test does give reliable results. This subset includes the
+aforementioned ARCH process and is a very useful test in financial applications. As mentioned in
+(??) ARCH and GARCH processes are uncorrelated time series which are martingale differences.
+We now describe the robust Portmanteau test, which is popular in econometrics as it is allows for
+uncorrelated time series which are martingale differences and an additional joint moment condition
+which we specify below (so long as it is stationary and its fourth moment exists).
+We recall that {X } is a martingale difference if
+t t
+E(X |X , X , X , . . .) = 0.
+t t−1 t−2 t−3
+Martingale differences include independent random variables as a special case. Clearly, from this
+definition {X } is uncorrelated since for r > 0 and by using the definition of a martingale difference
+t
+we have
+cov(X , X ) = E(X X ) − E(X )E(X )
+t t+r t t+r t t+r
+= E(X E(X |X )) − E(E(X |X ))E(E(X |X )) = 0.
+t t+r t t t−1 t+r t+r−1
+Thus a martingale difference sequence is an uncorrelated sequence. However, martingale differences
+have more structure than uncorrelated random variables, thus allow more flexibility. For a test to
+be simple we would like that the sample covariance between different lags is asymptotically zero.
+270
+
+--- physical page 272 ---
+This can be achieved for martinagle differences plus an important additional condition:
+E[X2X X ] = 0 t > s (cid:54)= s . (8.17)
+t s1 s2 1 2
+To understand why, consider the sample covariance
+(cid:0) √ √ (cid:1) 1 (cid:88)
+cov nc (r ), nc (r ) = cov (X X , X X )
+(cid:98)n 1 (cid:98)n 2
+n
+t1 t1+r1 t2 t2+r2
+t1,t2
+Under the null, the above is
+(cid:0) √ √ (cid:1) 1 (cid:88)
+cov nc (r ), nc (r ) = E (X X X X ) .
+(cid:98)n 1 (cid:98)n 2
+n
+t1 t1+r1 t2 t2+r2
+t1,t2
+We show that under the null hypothesis, many of the above terms are zero (when r (cid:54)= r ), however
+1 2
+there are some exceptions, which require the additional moment condition.
+For example, if t (cid:54)= t and suppose for simplicity t + r > t , t , t + r . Then
+1 2 2 2 2 1 1 1
+E(X X X X ) = E (X X X E(X |X , X , X )) = 0 (8.18)
+t1 t1+r1 t2 t2+r2 t1 t1+r2 t2 t2+r2 t1 t1+r2 t2
+and if r (cid:54)= r (assume r > r ) by the same argument
+1 2 2 1
+ 
+E(X X X X ) = E X2X E(X | X2, X ) = 0.
+t t+r1 t t+r2  t t+r1 t+r2 t t+r1 
+(cid:124) (cid:123)(cid:122) (cid:125)
+⊂σ(Xt+r2−1,Xt+r2−2,...)
+However, in the case that t + r = t + r (r (cid:54)= r ≥ 0, since r (cid:54)= r , then this implies t (cid:54)= t )
+1 1 2 2 1 2 1 2 1 2
+we have
+E(X2 X X ) (cid:54)= 0,
+t1+r1 t1 t2
+even when X are martingale arguments. Consequently, we do not have that cov(X X , X X ) =
+t t1 t1+r1 t2 t2+r2
+0. However, by including the additional moment condition that E[X2X X ] = 0 for t > s , (cid:54)= s ,
+t s1 s2 1 2
+then we have cov(X X , X X ) = 0 for all t and t when r (cid:54)= r .
+t1 t1+r1 t2 t2+r2 1 2 1 2
+The above results can be used to show that the variance of c (r) (under the assumption that
+(cid:98)n
+271
+
+--- physical page 273 ---
+the time series martingale differences and E[X2X X ] = 0 for t > s , s ) has a very simple form
+t s1 s2 1 2
+(cid:0) √ (cid:1) 1 (cid:88) n
+var nc (r) = cov (X X , X X )
+(cid:98)n
+n
+t1 t1+r t2 t2+r
+t1,t2=1
+n n
+= 1 (cid:88) E (X X X X ) = 1 (cid:88) E (cid:0) X2X2 (cid:1) = E(X2X2)
+n t1 t1+r t2 t2+r n t t+r 0 r
+(cid:124) (cid:123)(cid:122) (cid:125)
+t1,t2=1 t=1
+by stationarity
+and if r (cid:54)= r then cov(c (r ), c (r )) = 0. Let σ2 = E (cid:0) X2X2(cid:1) . Then we have that under the null
+1 2 (cid:98)n 1 (cid:98)n 2 r 0 r
+hypothesis (and suitable conditions to ensure normality) that
+ 
+c (1)/σ
+(cid:98)n 1
+ 
+√  c (2)/σ 
+ (cid:98)n 2  D
+n  .  → N (0, I h ) .
+ . 
+ . 
+ 
+c (h)/σ
+(cid:98)n h
+It is straightforward to estimate the σ2 with
+r
+n
+1 (cid:88)
+σ2 = X2X2 .
+(cid:98)r n t t+r
+t=1
+Thus a similar squared distance as the Box-Pierce test is used to define the Robust Portmanteau
+test, which is defined as
+R = n (cid:88) h | (cid:98) c n (r)|2 .
+h σ2
+r=1
+(cid:98)r
+D
+Under the null hypothesis (assuming stationarity and martingale differences) asymptotically R →
+h
+χ2 (for h kept fixed).
+h
+Remark 8.3.2 (ARCH and the Robust Portmanteau test) If I remember correctly the rea-
+son the above condition holds for ARCH models is (we assume wlog s > s )
+2 1
+E[X2X X ] = E[η2]E[σ2σ σ η η ]
+t s1 s2 t t s1 s1 s2 s1
+= E[η2]E[η η E[σ2σ σ |F ]]
+t s2 s1 t s2 s1 s1−1
+= E[η ]E[η ]E[σ2σ σ |F ]] = 0,
+s1 s2 t s2 s1 s1−1
+272
+
+--- physical page 274 ---
+l
+l
+l l
+ll
+l
+l
+l l
+lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll
+0 2 4 6 8 10
+03
+02
+01
+0
+qm
+]m−[1hcrag
+l
+l
+l l
+ll
+l
+l
+llllllllllllllllll
+llllllllll
+lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll
+0 2 4 6 8 10
+8
+6
+4
+2
+0
+qm
+]m−[1Mhcrag
+Figure 8.3: Using ARCH(1) time series over 200 replications Left: S against the quantiles
+2
+of a chi-square distribution with 2df for an ARCH process. Right: R against the quantiles
+2
+of a chi-square distribution with 2df for an ARCH process.
+To see how this test performs, in the right hand plot in Figure 8.3 we give the quantile quantile
+plot of R against the chi-squared distribution. We observe that it lies pretty much on the x = y
+h
+line. Moreover, the test results at the 5% level are given in Table 8.1. We observe that it is close
+to the stated 5% level and performs far better than the classical Box-Pierce test.
+ARCH Box-Pierce 26%
+ARCH Robust Portmanteau 4.5%
+Table 8.1: Proportion of rejections under the null hypothesis. Test done at the 5% level over
+200 replications.
+The robust Portmanteau test is a useful generalisation of the Box-Pierce test, however it still
+requires that the time series under the null satisfies the martingale difference property and the
+moment condition. These conditions cannot be verified. Consider for example the uncorrelated
+time series
+∞
+(cid:88) φ
+X = φjε − ε
+t+1 t−j 1 − φ2 t+1
+j=0
+where {ε } are uncorrelated random variables from the ARCH process ε = Z σ and σ2 = a +
+t t t t t 0
+a ε2 . Despite ε being martingale differences, X are not martingale differences. Thus the robust
+1 t−1 t t
+Portmanteau test will not necessarily give satisfactory results for this uncorrelated time series.
+273
+
+--- physical page 275 ---
+Methods have been developed for these general time series methods, including:
+• The robust test for white noise proposed in Dalla et al. (2019).
+• Bootstrap methods. These include the block bootstrap (Ku¨nsch (1989), Liu and Singh (1992)
+and Lahiri (2003)), the stationary bootstrap (Politis and Romano (1994)), the sieve bootstrap
+(Kreiss (1992) and Kreiss et al. (2011)) and the spectral bootstrap (Hurvich and Zeger (1987),
+Franke and H¨ardle (1992), Dahlhaus and Janas (1996) and Dette and Paparoditis (2009)).
+Please keep in mind that this is an incomplete list.
+• Estimating the variance of the sample covariance using spectral methods or long-run variance
+methods (together with fixed-b asymptotics have been used to obtain a more reliable finite
+sample estimator of the distribution).
+Finally a few remarks about ACF plots in general
+• It is clear that the theoretical autocorrelation function of an MA(q) process is such that
+ρ(r) = 0 if |r| > q. Thus from the theoretical ACF we can determine the order of the
+process. By a similar argument the variance matrix of an MA(q) will be bandlimited, where
+the band is of order q.
+However, we cannot determine the order of an moving average process from the empirical
+ACF plot. The critical values seen in the plot only correspond to the case the process is iid,
+they cannot be used as a guide for determining order.
+• Often a model is fitted to a time series and the residuals are evaluated. To see if the model was
+appropriate, and ACF plot of empirical correlations corresponding to the estimated residuals.
+Even if the true residuals are iid, the variance of the empirical residuals correlations will not
+be (??). Li (1992) shows that the variance depends on the sampling properties of the model
+estimator.
+• Misspecification, when the time series contains a time-dependent trend.
+8.4 Checking for partial correlation
+We recall that the partial correlation of a stationary time series at lag t is given by the last coefficient
+of the best linear predictor of X
+m+1
+given {X
+j
+}m
+j=1
+i.e. φ
+m
+where X(cid:98)m+1|m = (cid:80)m
+j=1
+φ
+j
+X
+m+1−j
+. Thus
+274
+
+--- physical page 276 ---
+φ can be estimated using the Yule-Walker estimator or least squares (more of this later) and the
+m
+sampling properties of the estimator are determined by the sampling properties of the estimator of
+an AR(m) process. We state these now. We assume {X } is a AR(p) time series of the form
+t
+p
+(cid:88)
+X = φ X + ε
+t j t−j t
+j=1
+where {ε } are iid random variables with mean zero and variance σ2. Suppose an AR(m) model is
+t
+fitted to the data using the Yule-Walker estimator, we denote this estimator as φ(cid:98) = Σ(cid:98) −1r . Let
+m m m
+φ(cid:98)m = (φ(cid:98)m1 , . . . , φ(cid:98)mm ), the estimator of the partial correlation at lag m is φ(cid:98)mm . Assume m ≥ p.
+Then by using Theorem 9.2.1 (see also Theorem 8.1.2, Brockwell and Davis (1998)) we have
+√ (cid:16) (cid:17)
+n φ(cid:98) − φ → P N (0, σ2Σ−1).
+m m m
+where φ are the true parameters. If m > p, then φ = (φ , . . . , φ , 0, . . . , 0) and the last coefficient
+m m 1 p
+has the marginal distribution
+√
+nφ(cid:98)mm → P N (0, σ2Σmm).
+Since m > p, we can obtain a closed for expression for Σmm. By using Remark 6.3.1 we have
+Σmm = σ−2, thus
+√
+P
+nφ(cid:98)mm → N (0, 1).
+Therefore, for lags m > p the partial correlations will be asymptotically pivotal. The errors bars in
+the partial correlations are [−1.96n−1/2, 1.96n−1/2] and these can be used as a guide in determining
+the order of the autoregressive process (note there will be dependence between the partial correlation
+at different lags).
+This is quite a surprising result and very different to the behaviour of the sample autocorrelation
+function of an MA(p) process.
+Exercise 8.4
+(a) Simulate a mean zero invertible MA(1) process (use Gaussian errors). Use a reasonable sample
+size (say n = 200). Evaluate the sample correlation at lag 2, r(cid:100)ho
+n
+(2). Note the sample correlation
+275
+
+--- physical page 277 ---
+at lag two is estimating 0. Do this 500 times.
+√
+• Calculate of proportion of sample covariances |ρ (2)| > 1.96/ n
+(cid:98)n
+√
+• Make a QQplot of ρ (2)/ n against a standard normal distribution. What do you observe?
+(cid:98)n
+(b) Simulate a causal, stationary AR(1) process (use Gaussian errors). Use a reasonable sample
+size (say n = 200). Evaluate the sample partial correlation at lag 2, φ(cid:98)n (2). Note the sample partial
+correlation at lag two is estimating 0. Do this 500 times.
+√
+• Calculate of proportion of sample partial correlations |φ(cid:98)n (2)| > 1.96/ n
+√
+• Make a QQplot of φ(cid:98)n (2)/ n against a standard normal distribution. What do you observe?
+8.5 The Newey-West (HAC) estimator
+In this section we focus on the estimation of the variance of
+n
+1 (cid:88)
+θ(cid:98)n = u
+t
+ε
+t
+,
+n
+t=1
+where {u
+t
+}
+t
+are deterministic regressors and {ε
+t
+} is a time series. Quantities of the form θ(cid:98)n arise in
+several applications. One important application is in linear regression, which we summarize below.
+In Section 3.2.1 we showed that the least squares estimator of the cofficients in
+p
+(cid:88)
+Y = β + β u + ε = β(cid:48)u + ε ,
+t 0 j t,j t t t
+j=1
+is
+n n
+(cid:88) (cid:88)
+βˆ = arg min L (β) = ( u u(cid:48) )−1 Y u .
+n n t t t t
+t=1 t=1
+The variance of βˆ is derived using
+n
+n n
+(cid:104) (cid:105)(cid:48) (cid:88) (cid:88)
+βˆ − β u u(cid:48) = u(cid:48) ε
+n t t t t
+t=1 t=1
+(cid:32) n (cid:33)−1 n (cid:32) n (cid:33)−1 n
+(cid:104) (cid:105) (cid:88) (cid:88) 1 (cid:88) 1 (cid:88)
+⇒ βˆ − β = u u(cid:48) u ε = u u(cid:48) u ε .
+n t t t t n t t n t t
+t=1 t=1 t=1 t=1
+276
+
+--- physical page 278 ---
+Using this expression we have
+(cid:32) n (cid:33)−1 (cid:32) n (cid:33) (cid:32) n (cid:33)−1
+(cid:104) (cid:105) 1 (cid:88) 1 (cid:88) 1 (cid:88)
+var βˆ = u u(cid:48) var u ε u u(cid:48) .
+n n t t n t t n t t
+t=1 t=1 t=1
+Hence the variance of βˆ is based on var (cid:0) 1 (cid:80)n u ε (cid:1) which is
+n n t=1 t t
+(cid:32) n (cid:33) n
+1 (cid:88) 1 (cid:88)
+var u ε = cov[ε , ε ]u u(cid:48)
+n t t n2 t τ t τ
+t=1 t,τ=1
+n n n
+1 (cid:88) 1 (cid:88) (cid:88)
+= var[ε ]u u(cid:48) + cov[ε , ε ]u u(cid:48)
+n2 t t t n2 t τ t τ
+t=1 t=1 τ(cid:54)=t
+n n
+1 (cid:88) (cid:88)
+= cov[ε , ε ]u u(cid:48) .
+n2 t τ t τ
+t=1 τ=1
+In the case of stationarity of {ε } , the above reduces
+t t
+(cid:32) n (cid:33) n n
+1 (cid:88) 1 (cid:88) (cid:88)
+nvar u ε = c(t − τ )u u(cid:48) , (8.19)
+n t t n t τ
+t=1 t=1 τ=1
+where c(t − τ ) = cov[ε , ε ].
+t τ
+We start by motivating the estimator of (8.20), we start with the special case that u = 1 for
+t
+all t. In this case (8.20) reduces to
+(cid:32) n (cid:33) n n
+1 (cid:88) 1 (cid:88) (cid:88)
+nvar u ε = c(t − τ ). (8.20)
+t t
+n n
+t=1 t=1 τ=1
+Since E[ε ε ] = c(t − τ ), as an estimator of the above we can potentially replace c(t − τ ) with ε ε
+t τ t τ
+to give the estimator
+n n n
+1 (cid:88) (cid:88) (cid:88)
+σ2 = ε ε = c ,
+(cid:98)n,n
+n
+t τ (cid:98)r
+t=1 τ=1 r=−n
+(cid:124) (cid:123)(cid:122) (cid:125)
+due to a change of variables
+where c = n−1 (cid:80)n−|r| ε ε . We recall that in Section 8.2.1 we studied the sampling properties of
+(cid:98)r t=1 t t+r
+c and showed that var[c ] = O(1/n). As 1 (cid:80)n c consists of the sum of all n sample covariances,
+(cid:98)r (cid:98)r n r=−n (cid:98)r
+this would suggest var[α ] = O( (cid:80)n n−1) = O(1). Thus α is an inconsistent estimator of the
+(cid:98)n r=1 (cid:98)n
+variance. Calculations show that this is indeed the case. We discuss a very similar issue in Section
+277
+
+--- physical page 279 ---
+11.3 when estimating the spectral density function.
+However, σ2 suggests an alternative approach to estimation. As the autocovariance decays
+(cid:98)n,n
+as the lag r grows, it is not necessary to estimate all the covariance and instead to truncate the
+number of covariances to be estimated i.e. use
+m n m
+(cid:88) 1 (cid:88) (cid:88)
+σ2 = λ (r)c = λ (t − τ )ε ε , (8.21)
+(cid:98)m,n m (cid:98)r
+n
+m t τ
+r=−m t=1 τ=1
+where λ (r) is a a so called lagged window which is zero for |r| > m. It can be shown that this
+m
+truncation technique induces a bias in the estimation scheme (i.e. E[σ2 ] (cid:54)= nvar (cid:0) 1 (cid:80)n ε (cid:1) ) but
+(cid:98)m,n n t=1 t
+the variance converges to zero (E[σ2 ] = O(m/n)). By balancing the bias and variance we can
+(cid:98)m,n
+mind suitable choice of m such that σ2 is a consistent estimator of σ2.
+(cid:98)m,n
+The estimator σ2 can be generalized to include the case u (cid:54)= 1 and nonstationary errors {ε }.
+(cid:98)m,n t t
+We recall that
+(cid:32) n (cid:33) n n
+1 (cid:88) 1 (cid:88) (cid:88)
+nvar u ε = cov[ε , ε ]u u(cid:48) . (8.22)
+n t t n t τ t τ
+t=1 t=1 τ=1
+We assume that |cov[ε , ε ]| ≤ |t−τ |−κ (where κ > 1). Since ε ε can be treated as a “preestimator”
+t τ t τ
+(an initial estimator) of cov[ε , ε ] we replace cov[ε , ε ] in (8.22) with ε ε and weight it with λ (·)
+t τ t τ t τ m
+to yield the Newey-West/HAC estimator
+n n
+1 (cid:88) (cid:88)
+σ2 = λ (t − τ )ε ε u u(cid:48) . (8.23)
+(cid:98)m,n n m,n t τ t τ
+t=1 τ=1
+Choices of weight functions are discussed in Section 11.3.1. The estimator (8.23) is closely related
+to spectral density estimation at frequency zero. The sampling properties of σ2 are similar to
+(cid:98)m,n
+those of spectral density estimation and can be found in (11.3.1). Further details can be found in
+Andrews (1990).
+8.6 Checking for Goodness of fit (advanced)
+To check for adequency of a model, after fitting a model to the data the sample correlation of the
+estimated residuals is evaluated. If there appears to be no correlation in the estimated residuals
+(so the residuals are near uncorrelated) then the model is determined to adequately fit the data.
+278
+
+--- physical page 280 ---
+Consider the general model
+X = g(Y , θ) + ε
+t t t
+where {ε } are iid random variables and ε is independent of Y , Y , . . .. Note Y can be a vector,
+t t t t−1 t
+such as Y = (X , X , . . . , X ) and examples of models which satisfy the above include the
+t−1 t−1 t−2 t−p
+AR(p) process. We will assume that {X , Y } is a stationary ergodic process. Further to simplify
+t t
+the discussion we will assume that θ is univariate, it is straightforward to generalize the discussion
+below to the multivariate case.
+Let θ(cid:98) denote the least squares estimator of θ i.e.
+n
+(cid:88)
+θ(cid:98) = arg min (X
+t
+− g(Y
+t
+, θ))2 . (8.24)
+t=1
+Using the “usual” Taylor expansion methods (and assuming all the usual conditions are satisfied,
+such as |θ(cid:98) − θ| = O
+p
+(n−1/2) etc) then it can be shown that
+√ n (cid:16) θ(cid:98) − θ (cid:17) = I−1 √ 1 (cid:88) n ε
+t
+∂g(Y t , θ) + o
+p
+(1) where I = E (cid:18) ∂g(Y t , θ) (cid:19)2 .
+n ∂θ ∂θ
+t=1
+√ (cid:16) (cid:17)
+{ε
+t
+∂g(
+∂
+Y
+θ
+t,θ)
+} are martingale differences, which is why n θ(cid:98) − θ is asymptotically normal, but more
+of this in the next chapter. Let L (θ) denote the least squares criterion. Note that the above is
+n
+true because
+n
+∂L n (θ) (cid:88) ∂g(Y t , θ)
+= −2 [X − g(Y , θ)]
+t t
+∂θ ∂θ
+t=1
+and
+∂2L n (θ) (cid:88) n ∂2g(Y t , θ) (cid:88) n (cid:18) ∂g(Y t , θ) (cid:19)2
+= −2 [X − g(Y , θ)] + 2 ,
+∂θ2 t t ∂θ2 ∂θ
+t=1 t=1
+thus at the true parameter, θ,
+1 ∂2L (θ)
+n P
+→ 2I.
+n ∂θ2
+279
+
+--- physical page 281 ---
+Based on (8.24) we estimate the residuals using
+ε
+(cid:98)t
+= X
+t
+− g(Y
+t
+, θ(cid:98))
+and the sample correlation with ρ(r) = c(r)/c(0) where
+(cid:98) (cid:98) (cid:98)
+n−|r|
+1 (cid:88) (cid:88)
+c(r) = ε ε .
+(cid:98) (cid:98)t(cid:98)t+r
+n
+t=1 t
+Often it is (wrongly) assumed that one can simply apply the results in Section 8.3 when checking
+for adequacy of the model. That is make an ACF plot of ρ(r) and use [−n−1/2, n1/2] as the error
+(cid:98)
+bars. However, since the parameters have been estimated the size of the error bars will change. In
+particular, under the null that the model is correct we will show that
+ 
+√  σ2 
+nρ(r) = N 0, 1 − J I−1J 
+(cid:98)  (cid:124)(cid:123)(cid:122)(cid:125) c(0) r r 
+ 
+iid part (cid:124) (cid:123)(cid:122) (cid:125)
+due to parameter estimation
+(cid:16) (cid:17)2
+where c(0) = var[X ], σ2 = var(ε ) and J = E[ ∂g(Yt+r,θ) ε ] and I = E ∂g(Yt,θ) (see, for example,
+t t r ∂θ t ∂θ
+Li (1992)). Thus the error bars under the null are
+(cid:20) (cid:18) 1 (cid:20) σ2 (cid:21)(cid:19)(cid:21)
+± √ 1 − J I−1J .
+n c(0) r r
+Estimation of the parameters means the inclusion of the term σ2 J I−1J . If the lag r is not too
+c(0) r r
+√
+small then J will be close to zero and the [±1/ n] approximation is fine, but for small r, J I−1J
+r r r
+can be large and positive, thus the error bars, ±n−1/2, are too wide. Thus one needs to be a little
+cautious when interpreting the ±n−1/2 error bars. Note if there is no dependence between ε and
+t
+Y then using the usual error bars is fine.
+t+r
+Remark 8.6.1 The fact that the error bars get narrower after fitting a model to the data seems
+a little strange. However, it is far from unusual. One explanation is that the variance of the
+estimated residuals tend to be less than the true residuals (since the estimated residuals contain
+less information about the process than the true residuals). The most simplest example are iid
+observations {X }n with mean µ and variance σ2. The variance of the “estimated residual”
+i i=1
+X − X¯ is (n − 1)σ2/n.
+i
+280
+
+--- physical page 282 ---
+We now derive the above result (using lots of Taylor expansions). By making a Taylor expansion
+similar to (??) we have
+√ √ [cˆ (r) − c(r)] √ c(r)
+n [ρ (r) − ρ(r)] n n − n [cˆ (0) − c(0)] + O (n−1/2).
+(cid:98)n c(0) n c(0)2 p
+However, under the “null” that the correct model was fitted to the data we have c(r) = 0 for |r| > 0,
+this gives
+√ √ c (r)
+nρ (r) = n
+(cid:98)n
++ o (1),
+(cid:98)n p
+c(0)
+thus the sampling properties of ρ (r) are determined by c (r), and we focus on this term. It is
+(cid:98)n (cid:98)n
+easy to see that
+√ 1 n (cid:88) −r (cid:16) (cid:17) (cid:16) (cid:17)
+n
+(cid:98)
+c
+n
+(r) = √ ε
+t
++ g(θ, Y
+t
+) − g(θ(cid:98), Y
+t
+) ε
+t+r
++ g(θ, Y
+t+r
+) − g(θ(cid:98), Y
+t+r
+) .
+n
+t=1
+Heuristically, by expanding the above, we can see that
+√ 1 n (cid:88) −r 1 (cid:88) n (cid:16) (cid:17) 1 (cid:88) n (cid:16) (cid:17)
+n
+(cid:98)
+c
+n
+(r) ≈ √ ε
+t
+ε
+t+r
++ √ ε
+t+r
+g(θ, Y
+t
+) − g(θ(cid:98), Y
+t
+) + √ ε
+t
+g(θ, Y
+t+r
+) − g(θ(cid:98), Y
+t+r
+) ,
+n n n
+t=1 t=1 t=1
+then by making a Taylor expansion of g(θ(cid:98), ·) about g(θ, ·) (to take (θ(cid:98) − θ) out of the sum)
+√ 1 n (cid:88) −r (θ(cid:98) − θ) (cid:34) (cid:88) n ∂g(θ, Y t ) ∂g(θ, Y t+r ) (cid:35)
+nc (r) ≈ √ ε ε + √ ε + ε + o (1)
+(cid:98)n t t+r t+r t p
+n n ∂θ ∂θ
+t=1 t=1
+1 n (cid:88) −r √ 1 (cid:34) (cid:88) n ∂g(θ, Y t ) ∂g(θ, Y t+r ) (cid:35)
+= √ ε
+t
+ε
+t+r
++ n(θ(cid:98) − θ) ε
+t+r
++ ε
+t
++ o
+p
+(1).
+n n ∂θ ∂θ
+t=1 t=1
+We make this argument precise below. Making a Taylor expansion we have
+√ 1 n (cid:88) −r (cid:32) ∂g(θ, Y t ) (θ(cid:98) − θ)2 ∂2g(θ¯ t , Y t ) (cid:33)
+n
+(cid:98)
+c
+n
+(r) = √
+n
+ε
+t
+− (θ(cid:98) − θ)
+∂θ
++
+2 ∂θ2
+×
+t=1
+(cid:32) (cid:33)
+∂g(θ, Y
+t+r
+) (θ(cid:98) − θ)2 ∂2g(θ¯
+t+r
+, Y
+t+r
+)
+ε
+t+r
+− (θ(cid:98) − θ)
+∂θ
++
+2 ∂θ2
+= √ n
+(cid:101)
+c
+n
+(r) − √ n(θ(cid:98) − θ) 1 n (cid:88) −r (cid:18) ε
+t
+∂g(θ, Y t+r ) + ε
+t+r
+∂g(θ, Y t ) (cid:19) + O
+p
+(n−1/2)(8.25)
+n ∂θ ∂θ
+t=1
+281
+
+--- physical page 283 ---
+where θ
+t
+lies between θ(cid:98) and θ and
+n−r
+1 (cid:88)
+c (r) = ε ε .
+(cid:101)n t t+r
+n
+t=1
+We recall that by using ergodicity we have
+n−r (cid:18) (cid:19) (cid:18) (cid:19)
+1 (cid:88) ∂g(θ, Y t+r ) ∂g(θ, Y t ) a.s. ∂g(θ, Y t+r )
+ε + ε → E ε = J ,
+t t+r t r
+n ∂θ ∂θ ∂θ
+t=1
+where we use that ε and
+∂g(θ,Yt)
+are independent. Subsituting this into (8.25) gives
+t+r ∂θ
+√ √ √
+n
+(cid:98)
+c
+n
+(r) = n
+(cid:101)
+c
+n
+(r) − n(θ(cid:98) − θ)J
+r
++ o
+p
+(1)
+= √ nc (r) − I−1J √ 1 n (cid:88) −r ∂g(Y t , θ) ε +o (1).
+(cid:101)n r t p
+n ∂θ
+t=1
+(cid:124) (cid:123)(cid:122) (cid:125)
+√
+=− n ∂Ln(θ)
+2 ∂θ
+√
+Asymptotic normality of nc (r) can be shown by showing asymptotic normality of the bivariate
+(cid:98)n
+√
+vector n(c (r),
+∂Ln(θ)
+). Therefore all that remains is to obtain the asymptotic variance of the
+(cid:101)n ∂θ
+above (which will give the desired result);
+√
+(cid:20)√
+n ∂L (θ)
+(cid:21)
+var nc (r) + I−1J n
+(cid:101)n r
+2 ∂θ
+√ √
+var (cid:0) √ nc (r) (cid:1) +2I−1J cov (cid:18)√ nc (r), n ∂L n (θ) (cid:19) + I−2J 2var (cid:18) n ∂L n (θ) (cid:19) (8.26)
+(cid:101)n r (cid:101)n 2 ∂θ r 2 ∂θ
+(cid:124) (cid:123)(cid:122) (cid:125)
+=1
+We evaluate the two covariance above;
+√
+cov
+(cid:18)√
+nc (r), −
+n ∂L n (θ)
+(cid:19)
+=
+1
+n
+(cid:88)
+−r (cid:20)
+cov
+(cid:26)
+ε ε , ε
+∂g(Y t2 , θ)
+(cid:27)(cid:21)
+(cid:101)n
+2 ∂θ n
+t1 t1+r t2
+∂θ
+t1,t2=1
+n−r (cid:20) (cid:26) (cid:27) (cid:26) (cid:27)
+=
+1 (cid:88)
+cov {ε , ε } cov ε ,
+∂g(Y t2 , θ)
++ cov {ε , ε } cov ε ,
+∂g(Y t2 , θ)
+n
+t1 t2 t1+r
+∂θ
+t1+r t2 t1
+∂θ
+t1,t2=1
+(cid:26) (cid:27) (cid:21) (cid:20) (cid:21)
+∂g(Y , θ) ∂g(Y , θ)
++cum ε , ε , ε , t2 = σ2E ε t+r = σ2J .
+t1 t1+r t2
+∂θ
+t
+∂θ
+r
+Similarly we have
+√
+var
+(cid:18)
+n ∂L n (θ)
+(cid:19)
+= 1 (cid:88)
+n
+cov
+(cid:18)
+ε ∂g(Y t1 , θ) , ε ∂g(Y t2 , θ)
+(cid:19)
+= σ2E
+(cid:18)
+∂g(Y t1 , θ)
+(cid:19)2
+= σ2I.
+2 ∂θ n
+t1
+∂θ
+t2
+∂θ ∂θ
+t1,t2=1
+282
+
+--- physical page 284 ---
+√
+Substituting the above into (8.26) gives the asymptotic variance of nc(r) to be
+(cid:98)
+1 − σ2J I−1J .
+r r
+Thus we obtain the required result
+√ (cid:18) σ2 (cid:19)
+nρ(r) = N 0, 1 − J I−1J .
+(cid:98) r r
+c(0)
+8.7 Long range dependence (long memory) versus changes
+in the mean
+A process is said to have long range dependence if the autocovariances are not absolutely summable,
+(cid:80)
+i.e. |c(k)| = ∞. A nice historical background on long memory is given in this paper.
+k
+From a practical point of view data is said to exhibit long range dependence if the autocovari-
+ances do not decay very fast to zero as the lag increases. Returning to the Yahoo data considered
+in Section 13.1.1 we recall that the ACF plot of the absolute log differences, given again in Figure
+8.4 appears to exhibit this type of behaviour. However, it has been argued by several authors that
+0 5 10 15 20 25 30 35
+0.1
+8.0
+6.0
+4.0
+2.0
+0.0
+Lag
+FCA
+Series abs(yahoo.log.diff)
+Figure 8.4: ACF plot of the absolute of the log differences.
+the ‘appearance of long memory’ is really because of a time-dependent mean has not been corrected
+for. Could this be the reason we see the ‘memory’ in the log differences?
+We now demonstrate that one must be careful when diagnosing long range dependence, because
+a slow/none decay of the autocovariance could also imply a time-dependent mean that has not been
+corrected for. This was shown in Bhattacharya et al. (1983), and applied to econometric data in
+283
+
+--- physical page 285 ---
+Mikosch and St˘aric˘a (2000) and Mikosch and St˘aric˘a (2003). A test for distinguishing between long
+range dependence and change points is proposed in Berkes et al. (2006).
+Suppose that Y satisfies
+t
+Y = µ + ε ,
+t t t
+where {ε } are iid random variables and the mean µ depends on t. We observe {Y } but do not
+t t t
+know the mean is changing. We want to evaluate the autocovariance function, hence estimate the
+autocovariance at lag k using
+n−|k|
+1 (cid:88)
+cˆ (k) = (Y − Y¯ )(Y − Y¯ ).
+n n t n t+|k| n
+t=1
+Observe that Y¯ is not really estimating the mean but the average mean! If we plotted the empirical
+n
+ACF {cˆ (k)} we would see that the covariances do not decay with time. However the true ACF
+n
+would be zero and at all lags but zero. The reason the empirical ACF does not decay to zero is
+because we have not corrected for the time dependent mean. Indeed it can be shown that
+n−|k|
+1 (cid:88)
+cˆ (k) = (Y − µ + µ − Y¯ )(Y − µ + µ − Y¯ )
+n n t t t n t+|k| t+k t+k n
+t=1
+n−|k| n−|k|
+1 (cid:88) 1 (cid:88)
+≈ (Y − µ )(Y − µ ) + (µ − Y¯ )(µ − Y¯ )
+n t t t+|k| t+k n t n t+k n
+t=1 t=1
+n−|k|
+1 (cid:88)
+≈ c(k) + (µ − Y¯ )(µ − Y¯ )
+t n t+k n
+n
+(cid:124)(cid:123)(cid:122)(cid:125)
+t=1
+true autocovariance=0
+(cid:124) (cid:123)(cid:122) (cid:125)
+additional term due to time-dependent mean
+Expanding the second term and assuming that k << n and µ ≈ µ(t/n) (and is thus smooth) we
+t
+284
+
+--- physical page 286 ---
+have
+n−|k|
+1 (cid:88)
+(µ − Y¯ )(µ − Y¯ )
+t n t+k n
+n
+t=1
+n (cid:32) n (cid:33)2
+1 (cid:88) 1 (cid:88)
+≈ µ2 − µ + o (1)
+n t n t p
+t=1 t=1
+n n (cid:32) n (cid:33)2
+1 (cid:88) (cid:88) 1 (cid:88)
+= µ2 − µ + o (1)
+n2 t n t p
+s=1 t=1 t=1
+n n n n n n
+1 (cid:88) (cid:88) 1 (cid:88) (cid:88) 1 (cid:88) (cid:88)
+= µ (µ − µ ) = (µ − µ )2 + µ (µ − µ )
+n2 t t s n2 t s n2 s t s
+s=1 t=1 s=1 t=1 s=1 t=1
+(cid:124) (cid:123)(cid:122) (cid:125)
+=−
+n
+1
+2
+(cid:80)n
+s=1
+(cid:80)n
+t=1
+µt(µt−µs)
+n n n n n n
+1 (cid:88) (cid:88) 1 (cid:88) (cid:88) 1 (cid:88) (cid:88)
+= (µ − µ )2 + µ (µ − µ ) − µ (µ − µ )
+n2 t s 2n2 s t s 2n2 t t s
+s=1 t=1 s=1 t=1 s=1 t=1
+n n n n n n
+1 (cid:88) (cid:88) 1 (cid:88) (cid:88) 1 (cid:88) (cid:88)
+= (µ − µ )2 + (µ − µ ) (µ − µ ) = (µ − µ )2 .
+n2 t s 2n2 s t t s 2n2 t s
+s=1 t=1 s=1 t=1 s=1 t=1
+Therefore
+n−|k| n n
+1 (cid:88) 1 (cid:88) (cid:88)
+(µ − Y¯ )(µ − Y¯ ) ≈ (µ − µ )2 .
+n t n t+k n 2n2 t s
+t=1 s=1 t=1
+Thus we observe that the sample covariances are positive and don’t tend to zero for large lags.
+This gives the false impression of long memory.
+It should be noted if you study a realisation of a time series with a large amount of dependence,
+it is unclear whether what you see is actually a stochastic time series or an underlying trend. This
+makes disentangling a trend from data with a large amount of correlation extremely difficult.
+285

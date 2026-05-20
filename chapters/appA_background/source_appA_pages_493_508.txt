@@ -1,0 +1,853 @@
+--- physical page 493 ---
+Appendix A
+Background
+A.1 Some definitions and inequalities
+• Some norm definitions.
+The norm of an object, is a postive numbers which measure the ‘magnitude’ of that object.
+Suppose x = (x , . . . , x ) ∈ Rn, then we define (cid:107)x(cid:107) = (cid:80)n |x | and (cid:107)x(cid:107) = ( (cid:80)n |x2)1/2
+1 n 1 j=1 j 2 j=1 j
+(this is known as the Euclidean norm). There are various norms for matrices, the most
+popular is the spectral norm (cid:107) · (cid:107) : let A be a matrix, then (cid:107)A(cid:107) = λ (AA(cid:48)), where
+spec spec max
+λ denotes the largest eigenvalue.
+max
+• Z denotes the set of a integers {. . . , −1, 0, 1, 2, . . .}. R denotes the real line (−∞, ∞).
+• Complex variables.
+√
+i = −1 and the complex variable z = x + iy, where x and y are real.
+Often the radians representation of a complex variable is useful. If z = x + iy, then it can
+(cid:112)
+also be written as r exp(iθ), where r = x2 + y2 and θ = tan−1(y/x).
+If z = x + iy, its complex conjugate is z¯ = x − iy.
+• The roots of a rth order polynomial a(z), are those values λ , . . . , λ where a(λ ) = 0 for
+1 r i
+i = 1, . . . , r.
+• Let λ(A) denote the spectral radius of the the matrix A (the largest eigenvalue in absolute
+terms). Then for any matrix norm (cid:107)A(cid:107) we have lim (cid:107)Aj(cid:107)1/j = λ(A) (see Gelfand’s
+j→∞
+492
+
+--- physical page 494 ---
+formula). Suppose λ(A) < 1, then Gelfand’s formula implies that for any λ(A) < ρ < 1,
+there exists a constant, C, (which only depends A and ρ), such that (cid:107)Aj(cid:107) ≤ C ρj.
+A,ρ
+• The mean value theorem.
+This basically states that if the partial derivative of the function f (x , x , . . . , x ) has a
+1 2 n
+bounded in the domiain Ω, then for x = (x , . . . , x ) and y = (y , . . . , y )
+1 n 1 n
+n
+(cid:88) ∂f
+f (x , x , . . . , x ) − f (y , y , . . . , y ) = (x − y ) (cid:99)
+1 2 n 1 2 n i i x=x∗
+∂x
+i
+i=1
+where x∗ lies somewhere between x and y.
+• The Taylor series expansion.
+This is closely related to the mean value theorem and a second order expansion is
+(cid:88) n ∂f (cid:88) n ∂f 2
+f (x , x , . . . , x ) − f (y , y , . . . , y ) = (x − y ) + (x − y )(x − y ) (cid:99)
+1 2 n 1 2 n i i i i j j x=x∗
+∂x ∂x ∂x
+i i j
+i=1 i,j=1
+• Partial Fractions.
+We use the following result mainly for obtaining the MA(∞) expansion of an AR process.
+Suppose that |g
+i
+| > 1 for 1 ≤ i ≤ n. Then if g(z) = (cid:81)n
+i=1
+(1 − z/g
+i
+)ri, the inverse of g(z)
+satisfies
+1 (cid:88)
+n
+(cid:8) (cid:88)
+ri
+g i,j (cid:9)
+= ,
+g(z) (1 − z )j
+i=1 j=1 gi
+where g = ..... Now we can make a polynomial series expansion of (1 − z )−j which is valid
+i,j gi
+for all |z| ≤ 1.
+• Dominated convergence.
+Suppose a sequence of functions f (x) is such that pointwise f (x) → f (x) and for all n and
+n n
+(cid:82) (cid:82)
+x, |f (x)| ≤ g(x), then f (x)dx → f (x)dx as n → ∞.
+n n
+We use this result all over the place to exchange infinite sums and expectations. For example,
+493
+
+--- physical page 495 ---
+if
+(cid:80)∞
+|a |E(|Z |) < ∞, then by using dominated convergence we have
+j=1 j j
+∞ ∞
+(cid:88) (cid:88)
+E( a Z ) = a E(Z ).
+j j j j
+j=1 j=1
+• Dominated convergence can be used to prove the following lemma. A more hands on proof
+is given below the lemma.
+Lemma A.1.1 Suppose
+(cid:80)∞
+|c(k)| < ∞, then we have
+k=−∞
+(n−1)
+1 (cid:88)
+|kc(k)| → 0
+n
+k=−(n−1)
+as n → ∞. Moreover, if (cid:80)∞ |kc(k)| < ∞, then 1 (cid:80)(n−1) |kc(k)| = O( 1 ).
+k=−∞ n k=−(n−1) n
+PROOF. The proof is straightforward in the case that
+(cid:80)∞
+|kc(k)| < ∞ (the second asser-
+k=∞
+tion), in this case (cid:80)(n−1) |k| |c(k)| = O( 1 ). The proof is slightly more tricky in the case
+k=−(n−1) n n
+that
+(cid:80)∞
+|c(k)| < ∞. First we note that since
+(cid:80)∞
+|c(k)| < ∞ for every ε > 0 there
+k=∞ k=−∞
+(cid:80)
+exists a N such that for all n ≥ N , |c(k)| < ε. Let us suppose that n > N , then we
+ε ε |k|≥n ε
+have the bound
+1
+(n
+(cid:88)
+−1)
+1
+(N
+(cid:88)
+ε−1)
+1 (cid:88)
+|kc(k)| ≤ |kc(k)| + |kc(k)|
+n n n
+k=−(n−1) k=−(Nε−1) Nε≤|k|≤n
+1
+(N
+(cid:88)
+ε−1)
+≤ |kc(k)| + ε.
+2πn
+k=−(Nε−1)
+Hence if we keep N fixed we see that 1 (cid:80)(Nε−1) |kc(k)| → 0 as n → ∞. Since this is
+ε n k=−(Nε−1)
+true for all ε (for different thresholds N ) we obtain the required result. (cid:3)
+ε
+• Cauchy Schwarz inequality.
+In terms of sequences it is
+∞ ∞ ∞
+(cid:88) (cid:88) (cid:88)
+| a b | ≤ ( a2)1/2( b2)1/2
+j j j j
+j=1 j=1 j=1
+494
+
+--- physical page 496 ---
+. For integrals and expectations it is
+E|XY | ≤ E(X2)1/2E(Y 2)1/2
+• Holder’s inequality.
+This is a generalisation of the Cauchy Schwarz inequality. It states that if 1 ≤ p, q ≤ ∞ and
+p + q = 1, then
+E|XY | ≤ E(|X|p)1/pE(|Y |q)1/q
+. A similar results is true for sequences too.
+• Martingale differences. Let F be a sigma-algebra, where X , X , . . . ∈ F . Then {X } is a
+t t t−1 t t
+sequence of martingale differences if E(X |F ) = 0.
+t t−1
+• Minkowski’s inequality.
+If 1 < p < ∞, then
+n n
+(cid:88) (cid:88)
+(E( X )p)1/p ≤ (E(|X |p))1/p.
+i i
+i=1 i=1
+• Doob’s inequality.
+This inequality concerns martingale differences. Let S =
+(cid:80)n
+X , then
+n t=1 t
+E( sup |S |2) ≤ E(S2 ).
+n N
+n≤N
+• Burkh¨older’s inequality.
+Suppose that {X } are martingale differences and define S =
+(cid:80)n
+X . For any p ≥ 2 we
+t n k=1 t
+have
+n
+{E(Sp)}1/p ≤ (cid:0) 2p (cid:88) E(Xp)2/p(cid:1)1/2 .
+n k
+k=1
+An application, is to the case that {X } are identically distributed random variables, then
+t
+we have the bound E(Sp) ≤ E(Xp)2(2p)p/2np/2.
+n 0
+It is worthing noting that the Burkh¨older inequality can also be defined for p < 2 (see
+495
+
+--- physical page 497 ---
+Davidson (1994), pages 242). It can also be generalised to random variables {X } which are
+t
+not necessarily martingale differences (see Dedecker and Doukhan (2003)).
+• Riemann-Stieltjes Integrals.
+(cid:82)
+In basic calculus we often use the basic definition of the Riemann integral, g(x)f (x)dx, and if
+the function F (x) is continuous and F (cid:48)(x) = f (x), we can write (cid:82) g(x)f (x)dx = (cid:82) g(x)dF (x).
+There are several instances where we need to broaden this definition to include functions F
+which are not continuous everywhere. To do this we define the Riemann-Stieltjes integral,
+which coincides with the Riemann integral in the case that F (x) is continuous.
+(cid:82) (cid:82)
+g(x)dF (x) is defined in a slightly different way to the Riemann integral g(x)f (x)dx.
+Let us first consider the case that F (x) is the step function F (x) =
+(cid:80)n
+a I , then
+i=1 i [xi−1,xi]
+(cid:82)
+g(x)dF (x) is defined as
+(cid:82)
+g(x)dF (x) =
+(cid:80)n
+(a − a )g(x ) (with a = 0). Already
+i=1 i i−1 i −1
+we see the advantage of this definition, since the derivative of the step function is not
+well defined at the jumps. As most functions can be written as the limit of step func-
+tions (F (x) = lim F (x), where F (x) =
+(cid:80)n
+k a I ), we define
+(cid:82)
+g(x)dF (x) =
+k∞ k k i=1 i,n k [x ik−1−1,xik ]
+lim
+(cid:80)n
+k (a − a )g(x ).
+k→∞ i=1 i,n k i−1,n k i k
+In statistics, the function F will usually be non-decreasing and bounded. We call such
+functions distributions.
+Theorem A.1.1 (Helly’s Theorem) Suppose that {F } are a sequence of distributions with
+n
+F (−∞) = 0 and sup F (∞) ≤ M < ∞. There exists a distribution F , and a subsequence
+n n n
+F such that for each x ∈ R F → F and F is right continuous.
+n n
+k k
+A.2 Martingales
+Definition A.2.1 A sequence {X } is said to be a martingale difference if E[X |F ], where
+t t t−1
+F = σ(X , X , . . .). In other words, the best predictor of X given the past is simply zero.
+t=1 t−1 t−2 t
+Martingales are very useful when proving several results, including central limit theorems.
+Martingales arise naturally in several situations. We now show that if correct likelihood is
+used (not the quasi-case), then the gradient of the conditional log likelihood evaluated at the true
+parameter is the sum of martingale differences. To see why, let B =
+(cid:80)T
+log f (X |X , . . . , X )
+T t=2 θ t t−1 1
+496
+
+--- physical page 498 ---
+be the conditonal log likelihood and C (θ) its derivative, where
+T
+T
+(cid:88) ∂ log f θ (X t |X t−1 , . . . , X 1 )
+C (θ) = .
+T
+∂θ
+t=2
+We want to show that C (θ ) is the sum of martingale differences. By definition if C (θ ) is the
+T 0 T 0
+sum of martingale differences then
+(cid:18) (cid:12) (cid:19)
+∂ log f θ (X t |X t−1 , . . . , X 1 ) (cid:12)
+E
+∂θ
+(cid:99) θ=θ0 (cid:12)
+(cid:12)
+X t−1 , X t−2 , . . . , X 1 = 0,
+we will show this. Rewriting the above in terms of integrals and exchanging derivative with integral
+we have
+(cid:18) (cid:12) (cid:19)
+∂ log f θ (X t |X t−1 , . . . , X 1 ) (cid:12)
+E
+∂θ
+(cid:99) θ=θ0 (cid:12)
+(cid:12)
+X t−1 , X t−2 , . . . , X 1
+(cid:90)
+∂ log f (x |X , . . . , X )
+θ t t−1 1
+= (cid:99) f (x |X , . . . , X )dx
+∂θ
+θ=θ0 θ0 t t−1 1 t
+(cid:90)
+1 ∂f (x |X , . . . , X )
+θ t t−1 1
+= (cid:99) f (x |X , . . . , X )dx
+f (x |X , . . . , X ) ∂θ
+θ=θ0 θ0 t t−1 1 t
+θ0 t t−1 1
+(cid:18)(cid:90) (cid:19)
+∂
+= f (x |X , . . . , X )dx (cid:99) = 0.
+∂θ
+θ t t−1 1 t θ=θ0
+Therefore {
+∂ log f
+θ
+(Xt|Xt−1,...,X1)
+(cid:99) } are a sequence of martingale differences and C (θ ) is the sum
+∂θ θ=θ0 t t 0
+of martingale differences (hence it is a martingale).
+A.3 The Fourier series
+The Fourier transform is a commonly used tool. We recall that {exp(2πijω); j ∈ Z} is an orthogonal
+basis of the space L2[0, 1]. In other words, if f ∈ L2[0, 1] (ie, (cid:82) 2 f (ω)2dω < ∞) then
+0
+n (cid:90) 1
+(cid:88)
+f (u) = c eiju2π c = f (u) exp(i2πju)du,
+n j j
+0
+j=−n
+where (cid:82) |f (u) − f (u)|2du → 0 as n → ∞. Roughly speaking, if the function is continuous then we
+n
+can say that
+(cid:88)
+f (u) = c eiju.
+j
+j∈Z
+497
+
+--- physical page 499 ---
+An important property is that f (u) ≡constant iff c = 0 for all j (cid:54)= 0. Moreover, for all n ∈ Z
+j
+f (u + n) = f (u) (hence f is periodic).
+Some relations:
+(i) Discrete Fourier transforms of finite sequences
+It is straightforward to show (by using the property
+(cid:80)n
+exp(i2πk/n) = 0 for k (cid:54)= 0) that if
+j=1
+n
+1 (cid:88)
+d = √ x exp(i2πjk/n),
+k j
+n
+j=1
+then {x } can be recovered by inverting this transformation
+r
+n
+1 (cid:88)
+x = √ d exp(−i2πrk/n),
+r k
+n
+k=1
+(ii) Fourier sums and integrals
+Of course the above only has meaning when {x } is a finite sequence. However suppose that
+k
+{x } is a sequence which belongs to (cid:96) (that is (cid:80) x2 < ∞), then we can define the function
+k 2 k k
+∞
+1 (cid:88)
+f (ω) = √ x exp(ikω),
+k
+2π
+k=−∞
+where (cid:82) 2π f (ω)2dω = (cid:80) x2, and we we can recover {x } from f (ω), through
+0 k k k
+1 (cid:90) 2π
+x = √ f (ω) exp(−ikω).
+k
+2π
+0
+(iii) Convolutions. Let us suppose that (cid:80) |a |2 < ∞ and (cid:80) |b |2 < ∞ and we define the
+k k k k
+Fourier transform of the sequences {a } and {b } as A(ω) = √1 a exp(ikω) and B(ω) =
+k k k
+2π
+√1 (cid:80) b exp(ikω) respectively. Then
+2π k k
+∞ (cid:90) 2π
+(cid:88)
+a b = A(ω)B(−ω) exp(−ikω)dω
+j k−j
+0
+j=−∞
+∞ (cid:90) 2π
+(cid:88)
+a b exp(ijω) = A(λ)B(ω − λ)dλ. (A.1)
+j j
+0
+j=−∞
+498
+
+--- physical page 500 ---
+The proof of the above follows from
+∞ ∞ (cid:90) 2π (cid:90) 2π
+(cid:88) (cid:88)
+a b exp(ijω) = A(λ )B(λ ) exp(−ir(λ + λ )) exp(ijω)
+j j 1 2 1 2
+j=−∞ r=−∞ 0 0
+(cid:90) (cid:90) ∞
+(cid:88)
+= A(λ )B(λ ) exp(ir(ω − λ − λ )) dλ dλ
+1 2 1 2 1 2
+r=−∞
+(cid:124) (cid:123)(cid:122) (cid:125)
+=δω(λ1+λ2)
+(cid:90) 2π
+= A(λ)B(ω − λ)dλ.
+0
+(iv) Using the DFT to calculate convolutions. Our objective is calculate
+(cid:80)n
+a b for
+j=k j j−s
+all s = 0, . . . , n − 1 in as few computing computing operations. This is typically done via the
+DFT. Examples in time series where this is useful is in calculating the sample autocovariance
+function.
+Suppose we have two sequences a = (a , . . . , a ) and b = (b , . . . , b ). Let A (ω ) =
+1 n 1 n n k,n
+(cid:80)n
+a exp(ijω ) and B (ω ) =
+(cid:80)n
+b exp(ijω ) where ω = 2πk/n. It is straight-
+j=1 j k,n n k,n j=1 j k,n k,n
+forward to show that
+n n s−1
+1 (cid:88) (cid:88) (cid:88)
+A (ω )B (ω ) exp(−isω ) = a b + a b ,
+n k,n n k,n k,n j j−s j j−s+n
+n
+k=1 j=s j=1
+this is very fast to compute (requiring only O(n log n) operations using first the FFT and
+then inverse FFT). The only problem is that we don’t want the second term.
+By padding the sequences and defining A (ω ) =
+(cid:80)n
+a exp(ijω ) =
+(cid:80)2n
+a exp(ijω ),
+n k,2n j=1 j k,2n j=1 j k,2n
+with ω = 2πk/2n (where we set a = 0 for j > 0) and analogously B (ω ) =
+k,2n j n k,2n
+(cid:80)n
+b exp(ijω ), we are able to remove the second term. Using the same calculations
+j=1 j k,2n
+we have
+2n n s−1
+1 (cid:88) (cid:88) (cid:88)
+A (ω )B (ω ) exp(−isω ) = a b + a b .
+n k,2n n k,2n k,2n j j−s j j−s+2n
+n
+k=1 j=s j=1
+(cid:124) (cid:123)(cid:122) (cid:125)
+=0
+This only requires O(2n log(2n)) operations to compute the convolution for all 0 ≤ k ≤ n − 1.
+(v) The Poisson Summation Formula Suppose we do not observe the entire function and
+observe a sample from it, say f = f ( t ) we can use this to estimate the Fourier coefficient
+t,n n
+499
+
+--- physical page 501 ---
+c via the Discrete Fourier Transform:
+j
+n
+1 (cid:88) t 2πt
+c = f ( ) exp(ij ).
+j,n
+n n n
+t=1
+The Poisson Summation formula is
+∞ ∞
+(cid:88) (cid:88)
+c = c + c + c ,
+j,n j j+kn j−kn
+k=1 k=1
+which we can prove by replacing f ( t ) with (cid:80) c eij2πt/n. In other words, c cannot
+n j∈Z j j,n
+disentangle frequency eijω from it’s harmonics ei(j+n)ω (this is aliasing).
+(vi) Error in the DFT By using the Poisson summation formula we can see that
+∞ ∞
+(cid:88) (cid:88)
+|c − c | ≤ |c | + |c |
+j,n j j+kn j−kn
+k=1 k=1
+It can be shown that if a function f (·) is (p + 1) times differentiable with bounded derivatives
+or that f p(·) is bounded and piecewise montonic then the corresponding Fourier coefficients
+satisfy
+|c | ≤ C|j|−(p+1).
+j
+Using this result and the Poisson summation formula we can show that for |j| ≤ n/2 that
+if if a function f (·) is (p + 1) times differentiable with bounded derivatives or that f p(·) is
+piecewise montonic and p ≥ 1 then
+|c − c | ≤ Cn−(p+1), (A.2)
+j,n j
+where C is some finite constant. However, we cannot use this result in the case that f is
+bounded and piecewise monotone, however it can still be shown that
+|c − c | ≤ Cn−1, (A.3)
+j,n j
+see Section 6.3, page 189, Briggs and Henson (1997).
+500
+
+--- physical page 502 ---
+A.4 Application of Burkholder’s inequality
+There are two inequalities (one for 1 < p ≤ 2). Which is the following:
+Theorem A.4.1 Suppose that Y are martingale differences and that S =
+(cid:80)n
+Y , then for
+k n j=1 k
+0 < q ≤ 2
+n
+E|S |q ≤ 2 (cid:88) E(Xq), (A.4)
+n k
+j=1
+See for example Davidson (p. 242, Theorem 15.17).
+And one for (p ≥ 2), this is the statement for the Burk¨older inequality:
+Theorem A.4.2 Suppose {S : F } is a martingale and 1 < p < ∞. Then there exists constants
+i i
+C , C depending only on p such that
+1 2
+(cid:32) m (cid:33)p/2 (cid:32) m (cid:33)p/2
+(cid:88) (cid:88)
+C E X2 ≤ E|S |p ≤ C E X2 . (A.5)
+1 i n 2 i
+i=1 i=1
+An immediately consequence of the above for p ≥ 2 is the following corollary (by using H¨older’s
+inequality):
+Corollary A.4.1 Suppose {S : F } is a martingale and 2 ≤ p < ∞. Then there exists constants
+i i
+C , C depending only on p such that
+1 2
+(cid:32) m (cid:33)1/2
+(cid:107)S (cid:107)E ≤ C 2/p (cid:88) (cid:107)X2(cid:107)E . (A.6)
+n p 2 i p/2
+i=1
+PROOF. By using the right hand side of (A.5) we have
+
+
+(cid:32) m (cid:33)p/2
+2/p
+1/2
+(cid:8) E|S n |p(cid:9)1/p ≤   C 2 E (cid:88) X i 2   
+i=1
+ (cid:13)
+m
+(cid:13)E 1/2
+= C 2 2/p (cid:13) (cid:13) (cid:13) (cid:88) X i 2 (cid:13) (cid:13) (cid:13)  . (A.7)
+(cid:13) (cid:13)
+i=1 p/2
+501
+
+--- physical page 503 ---
+By using H¨older inequality we have
+(cid:34) m (cid:35)1/2
+(cid:8) E|S |p(cid:9)1/p ≤ C 2/p (cid:88) (cid:107)X2(cid:107)E . (A.8)
+n 2 i p/2
+i=1
+Thus we have the desired result. (cid:3)
+We see the value of the above result in the following application. Suppose S = 1 (cid:80)n X
+n n k=1 k
+and (cid:107)X (cid:107)E ≤ K. Then we have
+k p
+(cid:32) n (cid:33)p (cid:34) n (cid:35)p/2
+E 1 (cid:88) X ≤ 1 C 2/p (cid:88) (cid:107)X2(cid:107)E
+n k n 2 k p/2
+k=1 k=1
+(cid:34) n (cid:35)p/2 (cid:34) n (cid:35)p/2
+≤ C 2 (cid:88) (cid:107)X2(cid:107)E ≤ C 2 (cid:88) K2 = O( 1 ). (A.9)
+np k p/2 np np/2
+k=1 k=1
+Below is the result that that Moulines et al (2004) use (they call it the generalised Burkholder
+inequality) the proof can be found in Dedecker and Doukhan (2003). Note that it is for p ≥ 2,
+which I forgot to state in what I gave you.
+Lemma A.4.1 Suppose {φ : k = 1, 2, . . .} is a stochastic process which satisfies E(φ ) = 0 and
+k k
+E(φp) < ∞ for some p ≥ 2. Let F = σ(φ , φ , . . .). Then we have that
+k k k k−1
+(cid:13)
+s
+(cid:13)E 
+s s
+1/2
+(cid:13)(cid:88) (cid:13) (cid:88) (cid:88)
+(cid:13) (cid:13) φ k (cid:13) (cid:13) ≤ 2p (cid:107)φ k (cid:107)E p (cid:107)E(φ j |F k )(cid:107)E p  . (A.10)
+(cid:13) (cid:13)
+k=1 p k=1 j=k
+We note if (cid:80)s (cid:107)E(φ |F )(cid:107)E < ∞, then we (A.11) is very similar to (A.6), and gives the same
+j=k j k p
+rate as (A.9).
+But I think one can obtain something similar for 1 ≤ p ≤ 2. I think the below is correct.
+Lemma A.4.2 Suppose {φ : k = 1, 2, . . .} is a stochastic process which satisfies E(φ ) = 0 and
+k k
+E(φq ) < ∞ for some 1 < q ≤ 2. Let F = σ(φ , φ , . . .). Further, we suppose that there exists a
+k k k k−1
+0 < ρ < 1, and 0 < K < ∞ such that (cid:107)E(φ |F )(cid:107) < Kρj. Then we have that
+t t−j q
+(cid:13) (cid:13)(cid:88) s (cid:13) (cid:13) E K∗ (cid:32) (cid:88) s (cid:33)1/q
+(cid:13) a φ (cid:13) ≤ |a |q , (A.11)
+(cid:13) k k(cid:13) 1 − ρ k
+(cid:13) (cid:13)
+k=1 q k=1
+502
+
+--- physical page 504 ---
+where K∗ is a finite constant.
+PROOF. Let E (φ ) = E(φ |F ). We note that by definition {φ } is a mixingale (see, for
+j k k k−j k
+example, Davidson (1997), chapter 16), therefore amost surely φ satisfies the representation
+k
+∞
+(cid:88)
+φ = [E (φ ) − E (φ )]. (A.12)
+k k−j k k−j−1 k
+j=0
+By substituting the above into the sum
+(cid:80)s
+a φ we obtain
+k=1 k k
+s s ∞ ∞ (cid:32) s (cid:33)
+(cid:88) (cid:88) (cid:88) (cid:88) (cid:88)
+a φ = [E (φ ) − E (φ )] = [E (φ ) − E (φ )] . (A.13)
+k k k−j k k−j−1 k k−j k k−j−1 k
+k=1 k=1 j=0 j=0 k=1
+Keeping j constant, we see that {E (φ ) − E (φ )} is a martingale sequence. Hence
+k−j k k−j−1 k k
+(cid:80)s
+[E (φ ) − E (φ )] is the sum of martingale differences. This implies we can apply
+k=1 k−j k k−j−1 k
+(A.4) to (A.13), and get
+(cid:13)
+s
+(cid:13)E
+∞
+(cid:13)
+s
+(cid:13)E
+(cid:13)(cid:88) (cid:13) (cid:88) (cid:13)(cid:88) (cid:13)
+(cid:13) a φ (cid:13) ≤ (cid:13) |a |[E (φ ) − E (φ )](cid:13)
+(cid:13) k k(cid:13) (cid:13) k k−j k k−j−1 k (cid:13)
+(cid:13) (cid:13) (cid:13) (cid:13)
+k=1 q j=0 k=1 q
+∞ (cid:32) s (cid:33)1/q
+(cid:88) (cid:88)
+≤ 2 |a |((cid:107)E (φ ) − E (φ )(cid:107)E)q
+k k−j k k−j−1 k q
+j=0 k=1
+Under the stated assumption (cid:107)E (φ ) − E (φ )(cid:107)E ≤ 2Kρj. Substituting this inequality into
+k−j k k−j−1 k q
+the above gives
+(cid:13) s (cid:13)E ∞ (cid:32) s (cid:33)1/q ∞ (cid:32) s (cid:33)1/q
+(cid:13)(cid:88) (cid:13) (cid:88) (cid:88) (cid:88) (cid:88)
+(cid:13) a φ (cid:13) ≤ 2 |a |q(2Kρj)q ≤ 21+1/qK ρj |a |q .
+(cid:13) k k(cid:13) k k
+(cid:13) (cid:13)
+k=1 q j=0 k=1 j=0 k=1
+Thus we obtain the desired result. (cid:3)
+A.5 The Fast Fourier Transform (FFT)
+The Discrete Fourier transform is used widely in several disciplines. Even in areas its use may
+not be immediately obvious (such as inverting Toeplitz matrices) it is still used because it can be
+evalated in a speedy fashion using what is commonly called the fast fourier transform (FFT). It is
+an algorithm which simplifies the number of computing operations required to compute the Fourier
+503
+
+--- physical page 505 ---
+transform of a sequence of data. Given that we are in the age of ‘big data’ it is useful to learn what
+one of most popular computing algorithms since the 60s actually does.
+Recalling the notation in Section ?? the Fourier transform is the linear transformation
+F X = (J (ω ), . . . , J (ω )).
+n n n 0 n n−1
+If this was done without any using any tricks this requires O(n2) computing operations. By using
+some neat factorizations, the fft reduces this to n log n computing operations.
+To prove this result we will ignore the standardization factor (2πn)−1/2 and consider just the
+Fourier transform
+n
+(cid:88)
+d(ω ) = x exp (itω ),
+k,n t k,n
+t=1
+(cid:124) (cid:123)(cid:122) (cid:125)
+k different frequencies
+where ω = 2πk . Here we consider the proof for general n, later in Example A.5.1 we consider
+k,n n
+the specific case that n = 2m. Let us assume that n is not a prime (if it is then we simply pad the
+vector with one zero and increase the length to n + 1), then it can be factorized as n = pq. Using
+these factors we write t as t = t p + tmodp where t is some integer value that lies between 0 to
+1 1
+q − 1 and t = tmodp lies between 0 to p − 1. Substituting this into d(ω ) gives
+0 k
+n
+(cid:88)
+d(ω ) = x exp [i(t p + tmodp)ω ]
+k t 1 k,n
+t=1
+p−1 q−1 p−1 q−1
+(cid:88) (cid:88) (cid:88) (cid:88)
+= x exp [i(t p + t )ω ] = exp [it ω ] x exp [it pω ]
+t1p+t0 1 0 k,n 0 k,n t1p+t0 1 k,n
+t0=0 t1=0 t0=0 t1=0
+It is straightforward to see that t pω = 2πt1pk = 2πt1k = t ω and that exp(it pω ) =
+1 k,n n q 1 k,q 1 k,n
+504
+
+--- physical page 506 ---
+exp(it ω ) = exp(it ω ). This means d(ω ) can be simplified as
+1 k,q 1 kmodq,q k
+p−1 q−1
+(cid:88) (cid:88)
+d(ω ) = exp [it ω ] x exp [it ω ]
+k 0 k,n t1p+t0 1 kmodq,q
+t0=0 t1=0
+p−1 q−1
+(cid:88) (cid:88)
+= exp [it ω ] x exp [it ω ]
+0 k,n t1p+t0 1 k0,q
+t0=0 t1=0
+(cid:124) (cid:123)(cid:122) (cid:125)
+embedded Fourier transform
+p−1
+(cid:88)
+= exp [it ω ] A(t , kmodq),
+0 k,n 0
+(cid:124) (cid:123)(cid:122) (cid:125)
+t0=0
+q frequencies
+where k = kmodq can take values from 0, . . . , q − 1. Thus to evaluate d(ω ) we need to evaluate
+0 k
+A(t , kmodq) for 0 ≤ t ≤ p − 1, 0 ≤ k ≤ q − 1. To evaluate A(t , kmodq) requires q computing
+0 0 0 0
+operations, to evaluate it for all t and kmodq requires pq2 operations. Note, the key is that less
+0
+frequencies need to be evaluated when calculating A(t , kmodq), in particular q frequencies rather
+0
+than N . After evaluating {A(t , k ); 0 ≤ t ≤ p − 1, 0 ≤ k ≤ q − 1} we then need to take the
+0 0 0 0
+Fourier transform of this over t to evaluate d(ω ) which is p operations and this needs to be done
+0 k
+n times (to get all {d(ω )} ) this leads to np. Thus in total this leads to
+k k
+p2q + np = pq2 + pn = n(q + p). (A.14)
+(cid:124)(cid:123)(cid:122)(cid:125) (cid:124)(cid:123)(cid:122)(cid:125)
+evaluation of all A evaluation of the transforms of A
+Observe that n(p + q) is a lot smaller than n2.
+Looking back at the above calculation we observe that q2 operations were required to calculate
+A(t , kmodq) = A(t , k ) for all 0 ≤ k ≤ q − 1. However A(t , k ) is a Fourier transform
+0 0 0 0 0 0
+q−1
+(cid:88)
+A(t , k ) = x exp [it ω ] .
+0 0 t1p+t0 1 k0,q
+t1=0
+Therefore, we can use the same method as was used above to reduce this number. To do this we
+505
+
+--- physical page 507 ---
+need to factorize q into p = p q and using the above method we can write this as
+1 1
+p1−1 q1−1
+(cid:88) (cid:88)
+A(t , k ) = x exp [i(t + t p )ω ]
+0 0 (t2+t3p1)p+t0 2 3 1 k0,q
+t2=0 t3=0
+p1−1 q1−1
+(cid:88) (cid:88)
+= exp [it ω ] x exp [it p ω ]
+2 k0,q (t2+t3p1)p+t0 3 1 k0,q
+t2=0 t3=0
+p1−1 q1−1
+(cid:88) (cid:88)
+= exp [it ω ] x exp [it ω ] .
+2 k0,q (t2+t3p1)p+t0 3 k0modq1,q1
+t2=0 t3=0
+We note that k modq = (kmod(p q )modq ) = kmodq , substituting this into the above we have
+0 1 1 1 1 1
+p1−1 q1−1
+(cid:88) (cid:88)
+A(t , k ) = exp [it ω ] x exp [it ω ]
+0 0 2 k0,q (t2+t3p1)p+t0 3 k0modq1,q1
+t2=0 t3=0
+p1−1
+(cid:88)
+= exp [it ω ] A(t , t , k modq ) .
+2 k0,q 0 2 0 1
+(cid:124) (cid:123)(cid:122) (cid:125)
+t2=0
+q1 frequencies
+Thus we see that q computing operations are required to calculate A(t , t , k modq ) and to cal-
+1 0 2 0 1
+culate A(t , t , kmodq ) for all 0 ≤ t ≤ p − 1 and 0 ≤ kmodq ≤ q − 1 requires in total q2p
+0 2 1 2 1 1 1 1 1
+computing operations. After evaluating {A(t , t , k modq ); 0 ≤ t ≤ q − 1, 0 ≤ kmodq ≤ q − 1}
+0 2 0 1 2 2 1 1
+we then need to take its Fourier transform over t to evaluate A(t , k ), which is p operations.
+2 0 0 1
+Thus in total to evaluate A(t , k ) over all k we require q2p + p q operations. Thus we have
+0 0 0 1 1 1
+reduced the number of computing operations for A(t , k ) from q2 to q(p + q ), substituting this
+0 0 1 1
+into (A.14) gives the total number of computing operations to calculate {d(ω )}
+k
+pq(p + q ) + np = n(p + p + q ).
+1 1 1 1
+In general the same idea can be used to show that given the prime factorization of n =
+(cid:81)m
+p ,
+s=1 s
+then the number of computing operations to calculate the DFT is n(
+(cid:80)m
+p ).
+s=1 s
+506
+
+--- physical page 508 ---
+Example A.5.1 Let us suppose that n = 2m then we can write d(ω ) as
+k
+n n/2 (n/2)−1
+(cid:88) (cid:88) (cid:88)
+d(ω ) = x exp(itω ) = X exp(i2tω ) + X exp(i(2t + 1)ω )
+k t k 2t k 2t+1 k
+t=1 t=1 t=0
+n/2 (n/2)−1
+(cid:88) (cid:88)
+= X exp(i2tω ) + exp(iω ) X exp(i2tω )
+2t k k 2t+1 k
+t=1 t=0
+= A(0, kmod(n/2)) + exp(iω )A(1, kmod(n/2)),
+k
+(cid:80)n/2 (cid:80)n/2
+since X exp(i2tω ) and X exp(i2tω ) are the Fourier transforms of {X } on a
+t=1 2t k t=1 2t+1 k t
+coarser scale, therefore we can only identify the frequencies on a coarser scale. It is clear from the
+above that the evaluation of A(0, kmod(n/2)) for 0 ≤ kmod(n/2) ≤ n/2 requires (n/2)2 operations
+and same for A(1, kmod(n/2)). Thus to evaluate both A(0, kmod(n/2)) and A(1, kmod(n/2)) re-
+quires 2(n/2)2 operations. Then taking the Fourier transform of these two terms over all 0 ≤ k ≤
+n − 1 is an additional 2n operations leading to
+2(n/2)2 + 2n = n2/2 + 2n operations < n2.
+We can continue this argument and partition
+n/2
+(cid:88)
+A(0, kmod(n/2)) = X exp(i2tω )
+2t k
+t=1
+n/4 (n/4)−1
+(cid:88) (cid:88)
+= X exp(i4tω ) + exp(i2ω ) X exp(i4tω ).
+4t k k 4t+2 k
+t=1 t=0
+Using the same argument as above the calculation of this term over all k requires 2(n/4)2 +2(n/2) =
+n2/8 + n operations. The same decomposition applies to A(1, kmod(n/2)). Thus calculation of both
+terms over all k requires 2[n2/8 + n] = n2/4 + 2n operations. In total this gives
+(n2/4 + 2n + 2n)operations.
+Continuing this argument gives mn = n log n operations, which is the often cited rate.
+2
+Typically, if the sample size is not of order 2m zeros are added to the end of the sequence (called
+padding) to increase the length to 2m.
+507

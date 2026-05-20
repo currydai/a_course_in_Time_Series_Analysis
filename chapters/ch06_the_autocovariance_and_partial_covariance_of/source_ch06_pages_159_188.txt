@@ -1,0 +1,1393 @@
+--- physical page 159 ---
+Chapter 6
+The autocovariance and partial
+covariance of a stationary time series
+Objectives
+• Be able to determine the rate of decay of an ARMA time series.
+• Be able ‘solve’ the autocovariance structure of an AR process.
+• Understand what partial correlation is and how this may be useful in determining the order
+of an AR model.
+6.1 The autocovariance function
+The autocovariance function (ACF) is defined as the sequence of covariances of a stationary process.
+Precisely, suppose {X } is a stationary process with mean zero, then {c(r) : k ∈ Z} is the ACF of
+t
+{X } where c(r) = cov(X , X ). The autocorrelation function is the standardized version of the
+t 0 r
+autocovariance and is defined as
+c(r)
+ρ(r) = .
+c(0)
+Clearly different time series give rise to different features in the ACF. We will explore some of these
+features below.
+158
+
+--- physical page 160 ---
+Before investigating the structure of ARMA processes we state a general result connecting linear
+time series and the summability of the autocovariance function.
+Lemma 6.1.1 Suppose the stationary time series X satisfies the linear representation
+(cid:80)∞
+ψ ε .
+t j=−∞ j t−j
+The covariance is c(r) =
+(cid:80)∞
+ψ ψ .
+j=−∞ j j+r
+(i) If
+(cid:80)∞
+|ψ | < ∞, then
+(cid:80)
+|c(k)| < ∞.
+j=∞ j k
+(ii) If
+(cid:80)∞
+|jψ | < ∞, then
+(cid:80)
+|k · c(k)| < ∞.
+j=∞ j k
+(iii) If (cid:80)∞ |ψ |2 < ∞, then we cannot say anything about summability of the covariance.
+j=∞ j
+PROOF. It is straightforward to show that
+(cid:88)
+c(k) = var[ε ] ψ ψ .
+t j j−k
+j
+(cid:80) (cid:80) (cid:80) (cid:80)
+Using this result, it is easy to see that |c(k)| ≤ |ψ | · |ψ |, thus |c(k)| < ∞, which
+k k j j j−k k
+proves (i).
+The proof of (ii) is similar. To prove (iii), we observe that (cid:80) |ψ |2 < ∞ is a weaker condition
+j j
+then (cid:80) |ψ | < ∞ (for example the sequence ψ = |j|−1 satisfies the former condition but not the
+j j j
+latter). Thus based on the condition we cannot say anything about summability of the covariances.
+(cid:3)
+First we consider a general result on the covariance of a causal ARMA process (always to obtain
+the covariance we use the MA(∞) expansion - you will see why below).
+6.1.1 The rate of decay of the autocovariance of an ARMA process
+We evaluate the covariance of an ARMA process using its MA(∞) representation. Let us suppose
+that {X } is a causal ARMA process, then it has the representation in (4.20) (where the roots of
+t
+φ(z) have absolute value greater than 1 + δ). Using (4.20) and the independence of {ε } we have
+t
+∞ ∞
+(cid:88) (cid:88)
+cov(X , X ) = cov( a ε , a ε )
+t τ j1 t−j1 j2 τ−j2
+j1=0 j2=0
+∞ ∞
+(cid:88) (cid:88)
+= a a cov(ε , ε ) = a a var(ε ) (6.1)
+j1 j2 t−j τ−j j j+|t−τ| t
+j=0 j=0
+159
+
+--- physical page 161 ---
+(here use the MA(∞) expansion). Using (4.21) we have
+(cid:88)
+∞
+(cid:88)
+∞ ρ|t−τ|
+|cov(X , X )| ≤ var(ε )C2 ρjρj+|t−τ| ≤ C2ρ|t−τ| ρ2j = C2 , (6.2)
+t τ t ρ ρ 1 − ρ2
+j=0 j=0
+for any 1/(1 + δ) < ρ < 1.
+The above bound is useful, it tells us that the ACF of an ARMA process decays exponentially
+fast. In other words, there is very little memory in an ARMA process. However, it is not very
+enlightening about features within the process. In the following we obtain an explicit expression for
+the ACF of an autoregressive process. So far we have used the characteristic polynomial associated
+with an AR process to determine whether it was causal. Now we show that the roots of the
+characteristic polynomial also give information about the ACF and what a ‘typical’ realisation of
+a autoregressive process could look like.
+6.1.2 The autocovariance of an autoregressive process and the
+Yule-Walker equations
+Simple worked example Let us consider the two AR(1) processes considered in Section 4.3.2. We
+recall that the model
+X = 0.5X + ε
+t t−1 t
+has the stationary causal solution
+∞
+(cid:88)
+X = 0.5jε .
+t t−j
+j=0
+Assuming the innovations has variance one, the ACF of X is
+t
+1 0.5|k|
+c (0) = c (k) =
+X 1 − 0.52 X 1 − 0.52
+The corresponding autocorrelation is
+ρ (k) = 0.5|k|.
+X
+160
+
+--- physical page 162 ---
+Let us consider the sister model
+Y = 2Y + ε ,
+t t−1 t
+this has the noncausal stationary solution
+∞
+(cid:88)
+Y = − (0.5)j+1ε .
+t t+j+1
+j=0
+Thus process has the ACF
+0.52 0.52+|k|
+c (0) = c (k) = .
+Y 1 − 0.52 X 1 − 0.52
+The corresponding autocorrelation is
+ρ (k) = 0.5|k|.
+X
+Comparing the two ACFs, both models have identical autocorrelation function.
+Therefore, we observe an interesting feature, that the non-causal time series has the same
+correlation structure of its dual causal time series. For every non-causal time series there exists
+a causal time series with the same autocovariance function. The dual is easily constructed. If an
+autoregressive model has characteristic function φ(z) = 1 − (cid:80)p φ zj with roots λ , . . . , λ . If all
+j=1 j 1 p
+the roots lie inside the unit circle, then φ(z) corresponds to a non-causal time series. But by flipping
+the roots λ−1, . . . , λ−1 all the roots now lie outside the unit circle. This means the characteristic
+1 p
+polynomial corresponding to λ−1, . . . , λ−1 leads to a causal AR(p) model (call this φ(cid:101)(z)). More over
+1 p
+the characteristic polynomial of the AR(p) models associated with φ(z) and φ(cid:101)(z) have the same
+autocorrelation function. They are duals. In summary, autocorrelation is ‘blind’ to non-causality.
+Another worked example Consider the AR(2) model
+X = 2r cos(θ)X − r2X + ε , (6.3)
+t t−1 t−2 t
+where {ε } are iid random variables with mean zero and variance one. We assume 0 < r < 1
+t
+(which imposes causality on the model). Note, that the non-casual case (r > 1) will have the
+same autocovariance as the causal case with r flipped to r−1. The corresponding characteristic
+161
+
+--- physical page 163 ---
+polynomial is 1 − 2r cos(θ)z + r2z2, which has roots r−1 exp(±iθ). By using (6.11), below, the ACF
+is
+c(k) = r|k| (cid:2) C exp(ikθ) + C¯ exp(−ikθ) (cid:3) .
+1 1
+Setting C = a exp(ib), then the above can be written as
+1
+c(k) = ar|k| (exp(i(b + kθ)) + exp(−i(b + kθ))) = 2ar|k| cos (kθ + b) , (6.4)
+where the above follows from the fact that the sum of a complex number and its conjugate is two
+times the real part of the complex number.
+Consider the AR(2) process
+X = 1.5X − 0.75X + ε , (6.5)
+t t−1 t−2 t
+where {ε } are iid random variables with mean zero and variance one. The corresponding character-
+t
+(cid:112)
+istic polynomial is 1−1.5z+0, 75z2, which has roots 4/3 exp(iπ/6). Using (6.4) the autocovariance
+function of {X } is
+t
+(cid:112) (cid:16) π (cid:17)
+c(k) = a( 3/4)|k| cos k + b .
+6
+We see that the covariance decays at an exponential rate, but there is a periodicity within the
+decay. This means that observations separated by a lag k = 12 are more closely correlated than
+other lags, this suggests a quasi-periodicity in the time series. The ACF of the process is given
+in Figure 6.1. Notice that it decays to zero (relatively fast) but it also undulates. A plot of a
+realisation of the time series is given in Figure 6.2, notice the quasi-periodicity of about 2π/12. To
+measure the magnitude of the period we also give the corresponding periodogram in Figure 6.2.
+Observe a peak at the frequency about frequency 2π/12 ≈ 0.52. We now generalise the results in
+the above AR(1) and AR(2) examples. Let us consider the general AR(p) process
+p
+(cid:88)
+X = φ X + ε .
+t j t−j t
+j=1
+Suppose the roots of the corresponding characteristic polynomial are distinct and we split them
+162
+
+--- physical page 164 ---
+0 10 20 30 40 50
+0.1
+8.0
+6.0
+4.0
+2.0
+0.0
+2.0−
+4.0−
+lag
+fca
+Figure 6.1: The ACF of the time series X = 1.5X − 0.75X + ε
+t t−1 t−2 t
+Time
+2ra
+6
+4
+2
+0
+2−
+4−
+l l l l
+l l
+l l l l
+l l l l
+l l l l l l
+l
+l l l ll l l ll l l l
+l
+ll l ll l l lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll l l ll l l
+0 24 48 72 96 120 144 0 1 2 3 4 5 6
+5.0
+4.0
+3.0
+2.0
+1.0
+0.0
+frequency
+margodoireP
+Figure 6.2: Left: A realisation from the time series X = 1.5X − 0.75X + ε . Right:
+t t−1 t−2 t
+The corresponding periodogram.
+163
+
+--- physical page 165 ---
+into real and complex roots. Because the characteristic polynomial is comprised of real coefficients,
+the complex roots come in complex conjugate pairs. Hence let us suppose the real roots are {λ }r
+j j=1
+(p−r)/2
+and the complex roots are {λ , λ } . The covariance in (6.10) can be written as
+j j j=r+1
+r (p−2)/2
+(cid:88) (cid:88)
+c(k) = C λ−k + a |λ |−k cos(kθ + b )
+j j j j j j
+j=1 j=r+1
+where for j > r we write λ = |λ | exp(iθ ) and a and b are real constants. Notice that as the
+j j j j j
+example above the covariance decays exponentially with lag, but there is undulation. A typical
+realisation from such a process will be quasi-periodic with periods at θ , . . . , θ , though the
+r+1 (p−r)/2
+magnitude of each period will vary.
+Exercise 6.1 Recall the AR(2) models considered in Exercise 4.5. Now we want to derive their
+ACF functions.
+(i) (a) Obtain the ACF corresponding to
+7 2
+X = X − X + ε ,
+t t−1 t−2 t
+3 3
+where {ε } are iid random variables with mean zero and variance σ2.
+t
+(b) Obtain the ACF corresponding to
+√
+4 × 3 42
+X = X − X + ε ,
+t 5 t−1 52 t−2 t
+where {ε } are iid random variables with mean zero and variance σ2.
+t
+(c) Obtain the ACF corresponding to
+X = X − 4X + ε ,
+t t−1 t−2 t
+where {ε } are iid random variables with mean zero and variance σ2.
+t
+(ii) For all these models plot the true ACF in R. You will need to use the function ARMAacf.
+BEWARE of the ACF it gives for non-causal solutions. Find a method of plotting a causal
+solution in the non-causal case.
+Exercise 6.2 In Exercise 4.6 you constructed a causal AR(2) process with period 17.
+164
+
+--- physical page 166 ---
+Load Shumway and Stoffer’s package astsa into R (use the command install.packages("astsa")
+and then library("astsa").
+Use the command arma.spec to make a plot of the corresponding spectral density function. How
+does your periodogram compare with the ‘true’ spectral density function?
+Derivation of the ACF of general models (advanced)
+Worked example Let us suppose that X satisfies the model X = (a + b)X − abX + ε . We
+t t t−1 t−2 t
+have shown that if |a| < 1 and |b| < 1, then it has the solution
+∞
+X = 1 (cid:0) (cid:88) (cid:0) bj+1 − aj+1)ε (cid:1) .
+t t−j
+b − a
+j=0
+By matching the innovations it can be shown that for r > 0
+∞
+(cid:88)
+cov(X , X ) = (bj+1 − aj+1)(bj+1+r − aj+1+r). (6.6)
+t t+r
+j=0
+Even by using the sum of a geometric series the above is still cumbersome. Below we derive the
+general solution, which can be easier to interprete.
+General AR(p) models
+Let us consider the zero mean AR(p) process {X } where
+t
+p
+(cid:88)
+X = φ X + ε . (6.7)
+t j t−j t
+j=1
+From now onwards we will assume that {X } is causal (the roots of φ(z) lie outside the unit circle).
+t
+Evaluating the covariance of above with respect X (k ≤ 0) gives the sequence of equations
+t−k
+p
+(cid:88)
+cov(X X ) = φ cov(X , X ). (6.8)
+t t−k j t−j t−k
+j=1
+It is worth mentioning that if the process were not causal this equation would not hold, since ε
+t
+and X are not uncorrelated. Let c(r) = cov(X , X ) and substituting into the above gives the
+t−k 0 r
+sequence of difference equations
+p
+(cid:88)
+c(k) − φ c(k − j) = 0, k ≥ 0. (6.9)
+j
+j=1
+165
+
+--- physical page 167 ---
+The autocovariance function of {X } is the solution of this difference equation. Solving (6.9) is
+t
+very similar to solving homogenuous differential equations, which some of you may be familar with
+(do not worry if you are not).
+Recall the characteristic polynomial of the AR process φ(z) = 1 − (cid:80)p φ zj = 0, which has
+j=1 j
+the roots λ , . . . , λ . In Section 4.3.3 we used the roots of the characteristic equation to find the
+1 p
+stationary solution of the AR process. In this section we use the roots characteristic to obtain the
+solution (6.9). We show below that if the roots are distinct (the roots are all different) the solution
+of (6.9) is
+p
+(cid:88) −|k|
+c(k) = C λ , (6.10)
+j j
+j=1
+where the constants {C } are chosen depending on the initial values {c(k) : 1 ≤ k ≤ p}. If λ is
+j j
+real, then C is real. If λ is complex, then it will have another root λ . Consequently, C and
+j j j+1 j
+C will be complex conjugations of each other. This is to ensure that {c(k)} is real.
+j+1 k
+Example p = 2 Suppose the roots of φ(z) = 1 − φ z − φ z2 are complex (and this conjugates). Then
+1 2
+c(k) = C λ −|k| + C λ −|k| = Cλ−|k| + Cλ −|k| . (6.11)
+1 1 2 2
+Proof of (6.10) The simplest way to prove (6.10) is to use the plugin method (guess a solution and
+plug it in). Plugging c(k) = (cid:80)p C λ−k into (6.9) gives
+j=1 j j
+p p (cid:18) p (cid:19)
+c(k) − (cid:88) φ c(k − j) = (cid:88) C λ−k − (cid:88) φ λ −(k−i)
+j j j i j
+j=1 j=1 i=1
+p (cid:18) p (cid:19)
+(cid:88) (cid:88)
+= C λ−k 1 − φ λi = 0.
+j j i j
+j=1 i=1
+(cid:124) (cid:123)(cid:122) (cid:125)
+φ(λi)
+which proves that it is a solution. (cid:3)
+Non-distinct roots In the case that the roots of φ(z) are not distinct, let the roots be λ , . . . , λ
+1 s
+with multiplicity m , . . . , m (
+(cid:80)s
+m = p). In this case the solution is
+1 s k=1 k
+s
+(cid:88)
+c(k) = λ−kP (k),
+j mj
+j=1
+166
+
+--- physical page 168 ---
+where P (k) is m th order polynomial and the coefficients {C } are now ‘hidden’ in P (k).
+mj j j mj
+6.1.3 The autocovariance of a moving average process
+Suppose that {X } satisfies
+t
+q
+(cid:88)
+X = ε + θ ε .
+t t j t−j
+j=1
+The covariance is
+
+
+(cid:80)p
+θ θ k = −q, . . . , q
+i=0 i i−k
+cov(X , X ) =
+t t−k
+ 0 otherwise
+where θ = 1 and θ = 0 for i < 0 and i ≥ q. Therefore we see that there is no correlation when
+0 i
+the lag between X and X is greater than q.
+t t−k
+6.1.4 The autocovariance of an ARMA process (advanced)
+We see from the above that an MA(q) model is only really suitable when we believe that there
+is no correlaton between two random variables separated by more than a certain distance. Often
+autoregressive models are fitted. However in several applications we find that autoregressive models
+of a very high order are needed to fit the data. If a very ‘long’ autoregressive model is required
+a more suitable model may be the autoregressive moving average process. It has several of the
+properties of an autoregressive process, but can be more parsimonuous than a ‘long’ autoregressive
+process. In this section we consider the ACF of an ARMA process.
+Let us suppose that the causal time series {X } satisfies the equations
+t
+p q
+(cid:88) (cid:88)
+X − φ X = ε + θ ε .
+t i t−i t j t−j
+i=1 j=1
+We now define a recursion for ACF, which is similar to the ACF recursion for AR processes. Let
+us suppose that the lag k is such that k > q, then it can be shown that the autocovariance function
+of the ARMA process satisfies
+p
+(cid:88)
+cov(X , X ) − φ cov(X , X ) = 0 k > q.
+t t−k i t−i t−k
+i=1
+167
+
+--- physical page 169 ---
+On the other hand, if k ≤ q, then we have
+p q q
+(cid:88) (cid:88) (cid:88)
+cov(X , X ) − φ cov(X , X ) = θ cov(ε , X ) = θ cov(ε , X ).
+t t−k i t−i t−k j t−j t−k j t−j t−k
+i=1 j=1 j=k
+We recall that X has the MA(∞) representation X =
+(cid:80)∞
+a ε (see (4.20)), therefore for
+t t j=0 j t−j
+k ≤ j ≤ q we have cov(ε , X ) = a var(ε ) (where a(z) = θ(z)φ(z)−1). Altogether the above
+t−j t−k j−k t
+gives the difference equations
+p q
+(cid:88) (cid:88)
+c(k) − φ c(k − i) = var(ε ) θ a for 1 ≤ k ≤ q
+i t j j−k
+i=1 j=k
+p
+(cid:88)
+c(k) − φ c(k − i) = 0, for k > q,
+i
+i=1
+where c(k) = cov(X , X ). Since the above is a is homogenuous difference equation, then it can be
+0 k
+shown that the solution is
+s
+(cid:88)
+c(k) = λ−kP (k),
+j mj
+j=1
+(cid:80)
+where λ , . . . , λ with multiplicity m , . . . , m ( m = p) are the roots of the characteristic
+1 s 1 s k s
+polynomial 1 − (cid:80)p φ zj. The coefficients in the polynomials P are determined by initial
+j=1 j mj
+condition.
+Further reading: Brockwell and Davis (1998), Chapter 3.3 and Shumway and Stoffer (2006),
+Chapter 3.4.
+6.1.5 Estimating the ACF from data
+Suppose we observe {Y }n , to estimate the covariance we can estimate the covariance c(k) =
+t t=1
+cov(Y , Y ) from the the observations. One such estimator is
+0 k
+n−|k|
+1 (cid:88)
+c (k) = (Y − Y¯ )(Y − Y¯ ), (6.12)
+(cid:98)n n t n t+|k| n
+t=1
+168
+
+--- physical page 170 ---
+since E[(Y − Y¯ )(Y − Y¯ )] ≈ c(k). Of course if the mean of Y is known to be zero (Y = X ),
+t n t+|k| n t t t
+then the simpler covariance estimator is
+n−|k|
+1 (cid:88)
+c (k) = X X .
+(cid:98)n n t t+|k|
+t=1
+The sample autocorrelation is the ratio
+c (r)
+ρ (r) =
+(cid:98)n
+.
+(cid:98)n
+c (0)
+(cid:98)n
+Thus for r = 0, we have ρ (0) = 1. Most statistical software will have functions that evaluate the
+(cid:98)n
+sample autocorrelation function. In R, the standard function is acf. To illustrate the differences
+between the true ACF and estimated ACF (with sample size n = 100) we consider the model
+X = 2 · 0.9 cos(π/3)X − 0.92X + ε .
+t t−1 t−2 t
+We make a plot of the true ACF and estimated ACF in Figure ??. As a contrast we consider the
+estimated and true ACF of the MA model
+X = ε + 2 · 0.9 cos(π/3)ε − 0.92ε . (6.13)
+t t t−1 t−2
+This plot is given in Figure 6.4.
+Observe that estimated autocorrelation plot contains a blue line. This blue line corresponds to
+√
+±1.96/ n (where n is the sample size). These are the error bars, which are constructed under the
+assumption the data is actually iid. We show in Section 8.2 if {X } are iid random variables then
+t
+for all h ≥ 1
+√
+D
+nc (h) → N (0, 1). (6.14)
+(cid:98)n
+√
+This gives rise to the critical values ±1.96/ n.
+169
+
+--- physical page 171 ---
+0 5 10 15 20
+0.1
+5.0
+0.0
+5.0−
+Lag
+FCA
+Estimated ACF
+5 10 15 20
+0.1
+5.0
+0.0
+5.0−
+True ACF
+lag
+fca
+Figure 6.3: The AR(2) model. Left: Estimated ACF based on n = 100. Right: True ACF
+0 5 10 15 20
+0.1
+5.0
+0.0
+5.0−
+Lag
+FCA
+Estimated ACF
+5 10 15 20
+0.1
+8.0
+6.0
+4.0
+2.0
+0.0
+2.0−
+4.0−
+True ACF
+lag
+fca
+Figure 6.4: The MA(2) model. Left: Estimated ACF based on n = 100. Right: True ACF
+6.2 Partial correlation in time series
+6.2.1 A general definition
+In Section 5.3 we introduced the notion of partial correlation for multivariate data. We now apply
+this notion to time series.
+Definition 6.2.1 Suppose that {X } is a time series. The partial covariance/correlation between
+t t
+X and X is defined as the partial covariance/correlation between X and X after con-
+t t+k+1 t t+k+1
+ditioning out the ‘inbetween’ time series Y (cid:48) = (X , . . . , X ). We denote this as ρ (k),
+t+1 t+k t,t+k+1
+170
+
+--- physical page 172 ---
+where
+cov(X − P (X ), X − P (X ))
+t Y t t+k+1 Y t+k+1
+ρ (t) = ,
+k (cid:112)
+var(X − P (X ))var(X − P (X ))
+t Y t t+k+1 Y t+k+1
+with
+cov(X − P (X ), X − P (X ))
+t Y t t+k+1 Y t+k+1
+= cov(X , X ) − cov(X , Y )(cid:48)[var(Y )]−1cov(X , Y )
+t t+k+1 t t+k+1
+var(X − P (X ))
+t Y t
+= var(X ) − cov(X , Y )(cid:48)[var(Y )]−1cov(X , Y )
+t t t
+var(X − P (X ))
+t+k+1 Y t+k+1
+= var(X ) − cov(X , Y )(cid:48)[var(Y )]−1cov(X , Y ).
+t+k+1 t+k+1 t+k+1
+The above expression is horribly unwieldy. But many simplifications can be made once we impose
+the condition of second order stationarity.
+6.2.2 Partial correlation of a stationary time series
+If the time series is stationary, then the shift t becomes irrelevant (observe cov(X , X ) =
+t t+k+1
+c(k + 1), cov(X , X ) = c(0) etc). We can center everything about t = 0, the only term that is
+t t
+relevant is the spacing k and define
+cov(X − P (X ), X − P (X ))
+0 Y 0 k+1 Y k+1
+ρ = ,
+k+1|k+1 (cid:112)
+var(X − P (X ))var(X − P (X ))
+0 Y 0 k+1 Y k+1
+where Y (cid:48) = (X , X , . . . , X ),
+1 2 k
+cov(X − P (X ), X − P (X )) = c(k + 1) − cov(X , Y )(cid:48)[var(Y )]−1cov(X , Y )
+t Y t t+k+1 Y t+k+1 0 k+1
+var(X − P (X )) = c(0) − cov(X , Y )(cid:48)[var(Y )]−1cov(X , Y )
+0 Y 0 0 0
+var(X − P (X )) = c(0) − cov(X , Y )(cid:48)[var(Y )]−1cov(X , Y ).
+k+1 Y k+1 k+1 k+1
+But there exists another interesting trick that will simplify the above. The value of the above
+expression is that given the autocovariance function, one can evaluate the above. However, this
+involves inverting matrices. Below we simplify the above expression even further, and in Section
+171
+
+--- physical page 173 ---
+7.5.1 we show how partial correlation can be evaluated without inverting any matrices. We first
+note that by stationarity
+cov(X , Y (cid:48)) = (c(1), c(2) . . . , c(k + 1))
+0
+and cov(X , Y (cid:48)) = (c(k + 1), c(2) . . . , c(1)).
+n+1
+Thus the two vectors cov(X , Y (cid:48)) and cov(X , Y (cid:48)) are flips/swaps of each other. The flipping
+0 k+1
+action can be done with a matrix transformation cov(X , Y ) = E cov(X , Y ) where
+0 k k+1
+ 
+0 0 0 . . . 0 1
+ 
+ 0 0 0 . . . 1 0 
+ 
+E k =  . . . . .  .
+ . . . . . 
+. . . . .
+ 
+ . 
+.
+1 0 . 0 0 0
+We now describe some useful implications of this result.
+Time reversibility property of stationary time series For stationary time series, predicting into the
+future and predicting into the past leads to the same set of prediction coefficients (they are
+just flipped round). More precisely, the projection of X onto the space spanned by Y =
+k+1
+(X , X , . . . , X ), is the best linear predictor of X given X . We will denote the projection
+1 2 k k+1 k
+of X onto the space spanned by Y (cid:48) = (X , X , . . . , X ) as P (X ). Thus
+k 1 2 k Y k+1
+k
+(cid:88)
+P (X ) = Y (cid:48)var[Y ]−1cov[X , Y ] = Y (cid:48)Σ−1c := φ X ,
+Y k+1 k+1 k k k,j k+1−j
+j=1
+where Σ = var(Y ) and c = cov(X , Y ). But by flipping/swapping the coefficients, the same
+k k k+1
+construction can be used to predict into the past X :
+0
+k k
+(cid:88) (cid:88)
+P (X ) = φ X = φ X . (6.15)
+Y 0 k,j j k,k+1−j k+1−j
+j=1 j=1
+Proof of equation (6.15)
+P (X ) = Y (cid:48)(var[Y ]−1cov[X , Y ]).
+Y 0 0
+172
+
+--- physical page 174 ---
+However, second order stationarity implies that cov[X , Y ]) = E cov[X , Y ]) = E c Thus
+0 k k+1 k k
+P (X ) = (Σ−1E cov[X , Y ])
+Y 0 k k k+1
+k
+(cid:88)
+= Y (cid:48)Σ−1E c = Y (cid:48)E Σ−1c := φ X .
+k k k k k k k,k+1−j k+1−j
+j=1
+Thus proving (6.15). (cid:3)
+With a little thought, we realize the partial correlation between X and X (where k > 0) is
+t t+k
+the correlation X −P (X ) = X −
+(cid:80)k
+φ X and X −P (X ) = X −
+(cid:80)k
+φ X ,
+0 Y 0 0 j=1 k,j j k+1 Y k+1 k+1 j=1 k,j k+1−j
+some algebra gives
+cov(X − P (X ), X − P (X )) = c(0) − c(cid:48) E Σ−1c
+t Y t t+k+1 Y t+k+1 k k k k
+var(X − P (X )) = var(X − P (X )) = var(X ) − c(cid:48) Σ−1c .
+0 Y 0 k+1 Y k+1 0 k k k
+The last line of the above is important. It states that the variance of the prediction error in the past
+X − P (X ) has the same as the variance of the prediction error into the future X − P (X ).
+0 Y 0 k+1 Y k+1
+This is because the process is stationary.
+Thus the partial correlation is
+c(k + 1) − c(cid:48) E Σ−1c
+ρ = k k k k . (6.16)
+k+1|k1 c(0) − c(cid:48) Σ−1c
+k k k
+In the section below we show that ρ can be expressed in terms of the best fitting AR(k + 1)
+k+1|k+1
+parameters (which we will first have to define).
+6.2.3 Best fitting AR(p) model
+So far we have discussed time series which is generated with an AR(2). But we have not discussed
+fitting an AR(p) model to any stationary time series (not necessarily where the true underlying
+data generating mechanism is an AR(p)), which is possibly more important. We will show that the
+partial correlation is related to these fitted parameters. We state precisely what we mean below.
+Suppose that the stationary time series is genuinely generated with the causal AR(p) model
+p
+(cid:88)
+X = φ X + ε (6.17)
+t j t−j t
+j=1
+173
+
+--- physical page 175 ---
+where {ε } are iid random variables. Then the projection of X onto Y = (X , . . . , X ) is
+t t t−p t−1
+p
+(cid:88)
+P (X ) = φ X .
+Y t j t−j
+j=1
+Since Y does not contain any (linear information) about the innovations {ε } . This means that
+t t
+{X }p are independent of ε . However, because (6.17) is the true model which generates the
+t−j j=1 t
+data, ε is independent of all {X } for j ≥ 1. But this is by virtue of the model and not the
+t t−j
+projection. The project can only ensure that X − P (X ) and Y are uncorrelated.
+t Y t
+The best fitting AR(p) Now let us suppose that {X } is a general second order stationary time
+t
+series with autocovariance {c(r)} . We consider the projection of X onto Y = (X , . . . , X )
+r t t−p t−1
+(technically onto sp(X , . . . , X )) this is
+1 n
+p
+(cid:88)
+P (X ) = φ X .
+Y t p,j t−j
+j=1
+By construction X −P (X ) and Y are uncorrelated but X −P (X ) is not necessarily uncorrelated
+t Y t t Y t
+with {X } for j ≥ (p + 1). We call {φ } the best fitting AR(p) coefficients, because if the
+t−j p,j
+true model were an AR(p) model φ = φ . The best fitting AR(p) model is very important in
+p,j j
+applications. It is often used to forecast the time series into the future. Note we have already
+alluded to
+(cid:80)p
+φ X in the previous section. And we summarize these results again. Since
+j=1 p,j t−j
+(cid:80)p φ X is a projection onto Y , the coefficients {φ }p are
+j=1 p,j t−j p,j j=1
+φ = [var(Y )]−1cov(X , Y ) = Σ−1c ,
+p t p p
+where [Σ ] = c(t−τ ) and c(cid:48) = (c(1), c(2), . . . , c(p)) (observe stationarity means these are invariant
+p t,τ p
+to shift).
+6.2.4 Best fitting AR(p) parameters and partial correlation
+We now state the main result which connects the best fitting AR(p) parameters with partial cor-
+relation. The partial correlation at lag (p + 1) is the last best fitting AR(p) coefficient φ .
+p+1,p+1
+More precisely
+ρ = φ . (6.18)
+p+1|p+1 p+1,p+1
+174
+
+--- physical page 176 ---
+It is this identity that is used to calculate (from the true ACF) and estimate (from the estimated
+ACF) partial correlation (and not the identity in (6.16), which is more cumbersome).
+Proof of identity (6.18) To prove this result. We return to the classical multivariate case (in Sec-
+tion 5.3). In particular the identity (5.12) which relates the regression coefficients to the partial
+correlation:
+(cid:115)
+var(ε )
+ρ = φ
+0|X1,...,Xp+1
+p+1|p+1 p+1|p+1 var(ε )
+p+1|X0,...,Xp
+where
+ε = X − P (X ) and ε = X − P (X ).
+0|X1,...,Xp+1 0 X1,...,Xp+1 0 p+1|X0,...,Xp p+1 X0,...,Xp p+1
+Now the important observation. We recall from the previous section that the variance of the
+prediction error in the past, X − P (X ) is the same as the variance of the prediction error
+0 X1,...,Xp+1 0
+into the future, X − P (X ). Therefore var(ε ) = var(ε ) and
+p+1 X0,...,Xp p+1 0|X1,...,Xp+1 p+1|X0,...,Xp
+ρ = φ .
+p+1|p+1 p+1|p+1
+This proves equation (6.18). (cid:3)
+Important observation Relating the AR(p) model to the partial correlations
+Suppose the true data generating process is an AR(p ), and we fit an AR(p) model to the data.
+0
+If p < p , then
+0
+p
+(cid:88)
+P (X ) = φ X .
+Xt−p,...,Xt−1 t p,j t−j
+j=1
+and ρ = φ . If p = p , then
+p|p p,p 0
+p0
+(cid:88)
+P (X ) = φ X
+Xt−p0 ,...,Xt−1 t j t−j
+j=1
+and φ = ρ = φ . For any p > p , we have
+p0,p0 p0 p0 0
+p0
+(cid:88)
+P (X ) = φ X .
+Xt−p,...,Xt−1 t j t−j
+j=1
+175
+
+--- physical page 177 ---
+Thus the coefficient is ρ = φ = 0.
+p|p p,p
+Thus for AR(p) models, the partial correlation of order greater than p will be zero. We visualize
+this property in the plots in the following section.
+6.2.5 The partial autocorrelation plot
+Of course given the time series {X }n the true partial correlation is unknown. Instead it is
+t t=1
+estimated from the data. This is done by sequentially fitting an AR(p) model of increasing order to
+the time series and extracting the parameter estimator φ(cid:98)p+1,p+1 = ρ
+(cid:98)p|p
+and plotting ρ
+(cid:98)p|p
+against p.
+To illustrate the differences between the true ACF and estimated ACF (with sample size n = 100)
+we consider the model
+X = 2 · 0.9 cos(π/3)X − 0.92X + ε .
+t t−1 t−2 t
+The empirical partial estimated partial autocorrelation plot (n = 100) and true correlation is given
+in Figures 6.5. As a contrast we consider the estimated (n = 100) and true ACF of the MA model
+X = ε + 2 · 0.9 cos(π/3)ε − 0.92ε .
+t t t−1 t−2
+The plot is given in Figure 6.6.
+5 10 15 20
+2.0
+0.0
+2.0−
+4.0−
+6.0−
+Lag
+FCA
+laitraP
+Estimated PACF
+5 10 15 20
+2.0
+0.0
+2.0−
+4.0−
+6.0−
+8.0−
+True PACF
+lag
+fcap
+Figure 6.5: The AR(2): Left Estimated PACF (n = 100). Right: True PACF plot. n = 100
+Observe that the partial correlation plot contains a blue line. This blue line corresponds to
+√
+±1.96/ n (where n is the sample size).
+176
+
+--- physical page 178 ---
+5 10 15 20
+2.0
+0.0
+2.0−
+4.0−
+Lag
+FCA
+laitraP
+Estimated PACF
+5 10 15 20
+0.0
+1.0−
+2.0−
+3.0−
+4.0−
+True PACF
+lag
+fcap
+Figure 6.6: The MA(2): Left Estimated PACF (n = 100). Right: True PACF plot. n = 100
+This blue line can be used as an aid in selecting the Autoregressive order (under certain condi-
+tions on the time series). We show in the next lecture that if {X } is a linear time series with an
+t
+AR(p) representation, then for h > p
+√
+D
+nρ → N (0, 1), (6.19)
+(cid:98)h|h
+√
+which gives the critical values ±1.96/ n. But do not get too excited. We show that this result
+does not necessarily hold for non-linear time series. More precisely, the distribution will not be
+asymptotically pivotal.
+6.2.6 Using the ACF and PACF for model identification
+Figures 6.3, 6.4, 6.5 and 6.6 are very useful in identifying the model. We describe what we should
+observe below.
+Using the ACF for model identification
+If the true autocovariances after a certain lag are zero q, it may be appropriate to fit an MA(q)
+model to the time series. The [−1.96n−1/2, 1.96n−1/2] error bars for an ACF plot cannot be reliably
+used to determine the order of an MA(q) model.
+On the other hand, the autocovariances of any AR(p) process will only decay to zero as the lag
+increases (it will not be zero after a certain number of lags).
+177
+
+--- physical page 179 ---
+Using the PACF for model identification
+If the true partial autocovariances after a certain lag are zero p, it may be appropriate to fit an
+AR(p) model to the time series.
+Of course, in practice we only have the estimated partial autocorrelation at hand and not the
+true one. This is why we require the error bars. In Section 8.4 we show how these error bars are
+derived. The surprisingly result is that the error bars of a PACF can be used to determine the
+order of an AR(p) process. If the order of the autoregressive process is p, then for lag r > p, the
+partial correlation is such that φ(cid:98)rr = N (0, n−1/2) (thus giving rise to the [−1.96n−1/2, 1.96n−1/2]
+error bars). But It should be noted that there will be correlation between the sample partial
+correlations.
+Exercise 6.3 (The partial correlation of an invertible MA(1)) Let φ denote the partial cor-
+t,t
+relation between X and X . It is well known (this is the Levinson-Durbin algorithm, which we
+t+1 1
+cover in Chapter 7) that φ can be deduced recursively from the autocovariance funciton using the
+t,t
+algorithm:
+Step 1 φ = c(1)/c(0) and r(2) = E[X − X ]2 = E[X − φ X ]2 = c(0) − φ c(1).
+1,1 2 2|1 2 1,1 1 1,1
+Step 2 For j = t
+c(t) −
+(cid:80)t−1
+φ c(t − j)
+j=1 t−1,j
+φ =
+t,t
+r(t)
+φ = φ − φ φ 1 ≤ j ≤ t − 1,
+t,j t−1,j t,t t−1,t−j
+and r(t + 1) = r(t)(1 − φ2 ).
+t,t
+(i) Using this algorithm and induction to show that the PACF of the MA(1) process X = ε +
+t t
+θε , where |θ| < 1 (so it is invertible) is
+t−1
+(−1)t+1(θ)t(1 − θ2)
+φ = .
+t,t
+1 − θ2(t+1)
+Exercise 6.4 (Comparing the ACF and PACF of an AR process) Compare the below plots:
+(i) Compare the ACF and PACF of the AR(2) model X = 1.5X − 0.75X + ε using
+t t−1 t−2 t
+ARIMAacf(ar=c(1.5,-0.75),ma=0,30) and ARIMAacf(ar=c(1.5,-0.75),ma=0,pacf=T,30).
+178
+
+--- physical page 180 ---
+(ii) Compare the ACF and PACF of the MA(1) model X = ε −0.5ε using ARIMAacf(ar=0,ma=c(-1.5),30)
+t t t
+and ARIMAacf(ar=0,ma=c(-1.5),pacf=T,30).
+(ii) Compare the ACF and PACF of the ARMA(2, 1) model X − 1.5X + 0.75X = ε − 0.5ε
+t t−1 t−2 t t
+using ARIMAacf(ar=c(1.5,-0.75),ma=c(-1.5),30) and
+ARIMAacf(ar=c(1.5,0.75),ma=c(-1.5),pacf=T,30).
+Exercise 6.5 Compare the ACF and PACF plots of the monthly temperature data from 1996-2014.
+Would you fit an AR, MA or ARMA model to this data?
+Rcode
+The sample partial autocorrelation of a time series can be obtained using the command pacf.
+However, remember just because the sample PACF is not zero, does not mean the true PACF is
+non-zero.
+6.3 The variance and precision matrix of a stationary
+time series
+Let us suppose that {X } is a stationary time series. In this section we consider the variance/co-
+t
+variance matrix var(X ) = Σ , where X = (X , . . . , X )(cid:48). We will consider two cases (i) when
+n k n 1 n
+X follows an MA(p) models and (ii) when X follows an AR(p) model. The variance and inverse
+t t
+of the variance matrices for both cases yield quite interesting results. We will use classical results
+from multivariate analysis, stated in Chapter 5.
+We recall that the variance/covariance matrix of a stationary time series has a (symmetric)
+Toeplitz structure (see wiki for a definition). Let X = (X , . . . , X )(cid:48), then
+n 1 n
+ 
+c(0) c(1) 0 . . . c(n − 2) c(n − 1)
+ 
+ c(1) c(0) c(1) . . . c(n − 3) c(n − 2) 
+ 
+Σ n = var(X n ) =  . . . . .  .
+ . . . . . 
+. . . . .
+ 
+ . 
+.
+c(n − 1) c(n − 2) . . . . c(1) c(0)
+179
+
+--- physical page 181 ---
+6.3.1 Variance matrix for AR(p) and MA(p) models
+(i) If {X } satisfies an MA(p) model and n > p, then Σ will be bandlimited, where p off-
+t n
+diagonals above and below the diagonal will be non-zero and the rest of the off-diagonal will
+be zero.
+(ii) If {X } satisfies an AR(p) model, then Σ will not be bandlimited.
+t n
+Precision matrix for AR(p) models
+We now consider the inverse of Σ . Warning: note that the inverse of a Toeplitz is not necessarily
+n
+Toeplitz. Suppose that the time series {X } has a causal AR(p) representation:
+t t
+p
+(cid:88)
+X = φ X + ε
+t j t−j t
+j=1
+where {ε } are iid random variables with (for simplicity) variance σ2 = 1. Let X = (X , . . . , X )
+t n 1 n
+and suppose n > p.
+Important result The inverse variance matrix Σ−1 is banded, with n non-zero bands off the diagonal.
+n
+Proof of claim We use the results in Chapter 5. Suppose that we have an AR(p) process and we
+consider the precision matrix of X = (X , . . . , X ), where n > p. To show this we use the Cholesky
+n 1 n
+decomposition given in (5.30). This is where
+Σ−1 = L L(cid:48)
+n n n
+where L is the lower triangular matrix:
+n
+ 
+φ 0 . . . 0 0 . . . 0 0 0 . . . 0
+1,0
+ 
+ 
+ φ 2,1 φ 2,0 . . . 0 0 . . . 0 0 0 . . . 0 
+ 
+ . . . . . . . . . . . . . . . . . . . . . . 
+ . . . . . . . . . . . 
+L =   (6.20)
+k  
+ −φ −φ . . . −φ φ . . . 0 0 0 . . . 0 
+ p,p p,p−1 p,1 p,0 
+ . . . . . . . . . . . 
+ . . . . . . . . . . . . . . . . . . . . . . 
+ 
+ 
+−φ −φ . . . . . . . . . −φ −φ −φ φ φ
+n,n n,n−1 n,4 n,3 n,2 n,1 n,0
+where {φ }(cid:96) are the coefficients of the best linear predictor of X given {X }(cid:96)−1 (after stan-
+(cid:96),j j=1 (cid:96) (cid:96)−j j=1
+dardising by the residual variance). Since X is an autoregressive process of order p, if t > p,
+t
+180
+
+--- physical page 182 ---
+then
+
+ φ 1 ≤ j ≤ p
+j
+φ =
+t,j
+ 0 j > p
+This gives the lower triangular p-bandlimited matrix
+ 
+γ 0 . . . 0 0 . . . 0 0 0 . . . 0
+1,0
+ 
+ −γ γ . . . 0 0 . . . 0 0 0 . . . 0 
+ 2,1 2,0 
+ . . . . . . . . . . . 
+ . . . . . . . . . . . 
+ . . . . . . . . . . . 
+ 
+ 
+ −φ p −φ p−1 . . . −φ 1 1 . . . 0 0 0 . . . 0 
+ 
+L n =   . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .   . (6.21)
+ 
+ 
+ 0 0 . . . −φ −φ . . . −φ 1 0 . . . 0 
+ p p−1 1 
+ 
+ 0 0 . . . 0 −φ . . . −φ −φ 1 . . . 0 
+ p 2 1 
+ . . . . . . . . . . . 
+ . . . . . . . . . . . 
+. . . . . . . . . . .
+ 
+ 
+0 0 . . . 0 0 . . . 0 0 0 . . . 1
+Observe the above lower triangular matrix is zero after the pth off-diagonal.
+Since Σ−1 = L L(cid:48) and L is a p-bandlimited matrix, Σ−1 = L L(cid:48) is a bandlimited matrix
+n n n n n n n
+with the p off-diagonals either side of the diagonal non-zero. Let Σij denote the (i, j)th element of
+Σ−1. Then we observe that Σ(i,j) = 0 if |i − j| > p. Moreover, if 0 < |i − j| ≤ p and either i or j is
+k
+greater than p. Further, from Section 5.4 we observe that the coefficients Σ(i,j) are the regression
+coefficients of X (after accounting for MSE).
+i
+Exercise 6.6 Suppose that the time series {X } has the causal AR(2) representation
+t
+X = φ X + φ X + ε .
+t 1 t−1 2 t−2 t
+Let X(cid:48) = (X , . . . , X ) and Σ = var(X ). Suppose L L(cid:48) = Σ−1, where L is a lower triangular
+n 1 n n n n n n n
+matrix.
+(i) What does L looks like?
+n
+(ii) Using L evaluate the projection of X onto the space spanned by {X } .
+n t t−j j(cid:54)=0
+181
+
+--- physical page 183 ---
+Remark 6.3.1 Suppose that X is an autoregressive process X =
+(cid:80)p
+φ X +ε where var[ε ] =
+t t j=1 j t−j t t
+σ2 and {ε } are uncorrelated random variables with zero mean. Let Σ = var[X ] where X =
+t m m m
+(X , . . . , X ). If m > p then
+1 m
+(cid:2) Σ−1(cid:3) = Σmm = σ−2
+m mm
+and det(Σ ) = det(Σ )σ2(m−p).
+m p
+Exercise 6.7 Prove Remark 6.3.1.
+6.4 The ACF of non-causal time series (advanced)
+Here we demonstrate that it is not possible to identify whether a process is noninvertible/noncausal
+from its covariance structure. The simplest way to show result this uses the spectral density
+function, which will now define and then return to and study in depth in Chapter 10.
+Definition 6.4.1 (The spectral density) Given the covariances c(k) (with (cid:80) |c(k)|2 < ∞) the
+k
+spectral density function is defined as
+(cid:88)
+f (ω) = c(k) exp(ikω).
+k
+The covariances can be obtained from the spectral density by using the inverse fourier transform
+1 (cid:90) 2π
+c(k) = f (ω) exp(−ikω).
+2π
+0
+Hence the covariance yields the spectral density and visa-versa.
+For reference below, we point out that the spectral density function uniquely identifies the autoco-
+variance function.
+Let us suppose that {X } satisfies the AR(p) representation
+t
+p
+(cid:88)
+X = φ X + ε
+t i t−i t
+i=1
+where var(ε ) = 1 and the roots of φ(z) = 1 − (cid:80)p φ zj can lie inside and outside the unit circle,
+t j=1 j
+but not on the unit circle (thus it has a stationary solution). We will show in Chapter 10 that the
+182
+
+--- physical page 184 ---
+spectral density of this AR process is
+1
+f (ω) = . (6.22)
+|1 − (cid:80)p φ exp(ijω)|2
+j=1 j
+• Factorizing f (ω).
+Let us supose the roots of the characteristic polynomial φ(z) = 1 + (cid:80)q φ zj are {λ }p ,
+j=1 j j j=1
+thus we can factorize φ(x) 1 + (cid:80)p φ zj = (cid:81)p (1 − λ z). Using this factorization we have
+j=1 j j=1 j
+(6.22) can be written as
+1
+f (ω) = . (6.23)
+(cid:81)p |1 − λ exp(iω)|2
+j=1 j
+As we have not assumed {X } is causal, the roots of φ(z) can lie both inside and outside the
+t
+unit circle. We separate the roots, into those outside the unit circle {λ ; j = 1, . . . , p }
+O,j1 1 1
+and inside the unit circle {λ ; j = 1, . . . , p } (p + p = p). Thus
+I,j2 2 2 1 2
+p1 p2
+(cid:89) (cid:89)
+φ(z) = [ (1 − λ z)][ (1 − λ z)]
+O,j1 I,j2
+j1=1 j2=1
+p1 p2
+(cid:89) (cid:89)
+= (−1)p2λ z−p2[ (1 − λ z)][ (1 − λ−1 z)]. (6.24)
+I,j2 O,j1 I,j2
+j1=1 j2=1
+Thus we can rewrite the spectral density in (6.25)
+1 1
+f (ω) = . (6.25)
+(cid:81)p2 |λ |2 (cid:81)p1 |1 − λ exp(iω)|2 (cid:81)p2 |1 − λ−1 exp(iω)|2
+j2=1 I,j2 j1=1 O,j j2=1 I,j2
+Let
+1
+f (ω) = .
+O (cid:81)p1 |1 − λ exp(iω)|2 (cid:81)p2 |1 − λ−1 exp(iω)|2
+j1=1 O,j j2=1 I,j2
+Then f (ω) = (cid:81)p2 |λ |−2f (ω).
+j2=1 I,j2 O
+• A parallel causal AR(p) process with the same covariance structure always exists.
+We now define a process which has the same autocovariance function as {X } but is causal.
+t
+183
+
+--- physical page 185 ---
+Using (6.24) we define the polynomial
+p1 p2
+(cid:89) (cid:89)
+φ(cid:101)(z) = [ (1 − λ
+O,j1
+z)][ (1 − λ−
+I,
+1
+j2
+z)]. (6.26)
+j1=1 j2=1
+By construction, the roots of this polynomial lie outside the unit circle. We then define the
+AR(p) process
+φ(cid:101)(B)X(cid:101)t = ε
+t
+, (6.27)
+from Lemma 4.3.1 we know that {X(cid:101)t } has a stationary, almost sure unique solution. More-
+over, because the roots lie outside the unit circle the solution is causal.
+By using (6.22) the spectral density of {X(cid:101)t } is f(cid:101)(ω). We know that the spectral density
+function uniquely gives the autocovariance function. Comparing the spectral density of {X(cid:101)t }
+with the spectral density of {X } we see that they both are the same up to a multiplicative
+t
+constant. Thus they both have the same autocovariance structure up to a multiplicative
+constant (which can be made the same, if in the definition (6.27) the innovation process has
+variance (cid:81)p2 |λ |−2).
+j2=1 I,j2
+Therefore, for every non-causal process, there exists a causal process with the same autoco-
+variance function.
+By using the same arguments above, we can generalize to result to ARMA processes.
+Definition 6.4.2 An ARMA process is said to have minimum phase when the roots of φ(z) and
+θ(z) both lie outside of the unit circle.
+Remark 6.4.1 For Gaussian random processes it is impossible to discriminate between a causal
+and non-causal time series, this is because the mean and autocovariance function uniquely identify
+the process.
+However, if the innovations are non-Gaussian, even though the autocovariance function is ‘blind’
+to non-causal processes, by looking for other features in the time series we are able to discriminate
+between a causal and non-causal process.
+184
+
+--- physical page 186 ---
+6.4.1 The Yule-Walker equations of a non-causal process
+Once again let us consider the zero mean AR(p) model
+p
+(cid:88)
+X = φ X + ε ,
+t j t−j t
+j=1
+and var(ε ) < ∞. Suppose the roots of the corresponding characteristic polynomial lie outside the
+t
+unit circle, then {X } is strictly stationary where the solution of X is only in terms of past and
+t t
+present values of {ε }. Moreover, it is second order stationary with covariance {c(k)}. We recall
+t
+from Section 6.1.2, equation (6.8) that we derived the Yule-Walker equations for causal AR(p)
+processes, where
+p p
+(cid:88) (cid:88)
+E(X X ) = φ E(X X ) ⇒ c(k) − φ c(k − j) = 0. (6.28)
+t t−k j t−j t−k j
+j=1 j=1
+Let us now consider the case that the roots of the characteristic polynomial lie both outside
+and inside the unit circle, thus X does not have a causal solution but it is still strictly and second
+t
+order stationary (with autocovariance, say {c(k)}). In the previous section we showed that there
+exists a causal AR(p) φ(cid:101)(B)X(cid:101)t = ε
+t
+(where φ(B) and φ(cid:101)(B) = 1 − (cid:80)p
+j=1
+φ˜
+j
+zj are the characteristic
+polynomials defined in (6.24) and (6.26)). We showed that both have the same autocovariance
+structure. Therefore,
+p
+(cid:88)
+c(k) − φ˜ c(k − j) = 0
+j
+j=1
+This means the Yule-Walker equations for {X } would actually give the AR(p) coefficients of {X˜ }.
+t t
+Thus if the Yule-Walker equations were used to estimate the AR coefficients of {X }, in reality we
+t
+would be estimating the AR coefficients of the corresponding causal {X˜ }.
+t
+6.4.2 Filtering non-causal AR models
+Here we discuss the surprising result that filtering a non-causal time series with the corresponding
+causal AR parameters leaves a sequence which is uncorrelated but not independent. Let us suppose
+185
+
+--- physical page 187 ---
+that
+p
+(cid:88)
+X = φ X + ε ,
+t j t−j t
+j=1
+where ε are iid, E(ε ) = 0 and var(ε ) < ∞. It is clear that given the input X , if we apply the
+t t t t
+filter X −
+(cid:80)p
+φ X we obtain an iid sequence (which is {ε }).
+t j=1 j t−j t
+Suppose that we filter {X
+t
+} with the causal coefficients {φ(cid:101)j }, the output ε
+(cid:101)t
+= X
+t
+−
+(cid:80)p
+j=1
+φ(cid:101)j X
+t−j
+is not an independent sequence. However, it is an uncorrelated sequence. We illustrate this with an
+example.
+Example 6.4.1 Let us return to the AR(1) example, where X = φX + ε . Let us suppose that
+t t−1 t
+φ > 1, which corresponds to a non-causal time series, then X has the solution
+t
+∞
+(cid:88) 1
+X = − ε .
+t φj t+j+1
+j=1
+The causal time series with the same covariance structure as X
+t
+is X(cid:101)t =
+φ
+1 X(cid:101)t−1 + ε (which has
+backshift representation (1 − 1/(φB))X = ε ). Suppose we pass X through the causal filter
+t t t
+1 1 (1 − 1 B)
+φ
+ε = (1 − B)X = X − X = − ε
+(cid:101)t φ t t φ t−1 B(1 − 1 ) t
+φB
+∞
+1 1 (cid:88) 1
+= − ε + (1 − ) ε .
+φ t φ2 φj−1 t+j
+j=1
+Evaluating the covariance of the above (assuming wlog that var(ε) = 1) is
+∞
+1 1 1 1 (cid:88) 1
+cov(ε , ε ) = − (1 − ) + (1 − )2 = 0.
+(cid:101)t (cid:101)t+r φ φ2 φr φ2 φ2j
+j=0
+Thus we see that {ε } is an uncorrelated sequence, but unless it is Gaussian it is clearly not inde-
+(cid:101)t
+pendent. One method to study the higher order dependence of {ε }, by considering it’s higher order
+(cid:101)t
+cumulant structure etc.
+The above above result can be generalised to general AR models, and it is relatively straightforward
+to prove using the Cr´amer representation of a stationary process (see Section 10.5, Theorem ??).
+186
+
+--- physical page 188 ---
+Exercise 6.8 (i) Consider the causal AR(p) process
+X = 1.5X − 0.75X + ε .
+t t−1 t−2 t
+Derive a parallel process with the same autocovariance structure but that is non-causal (it
+should be real).
+(ii) Simulate both from the causal process above and the corresponding non-causal process with
+non-Gaussian innovations (see Section 4.8). Show that they have the same ACF function.
+(iii) Find features which allow you to discriminate between the causal and non-causal process.
+187

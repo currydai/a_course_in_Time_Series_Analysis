@@ -1,0 +1,1293 @@
+--- physical page 135 ---
+Chapter 5
+A review of some results from
+multivariate analysis
+5.1 Preliminaries: Euclidean space and pro jections
+In this section we describe the notion of projections. Understanding linear predictions in terms of
+the geometry of projections leads to a deeper understanding of linear predictions and also algorithms
+for solving linear systems. We start with a short review of projections in Euclidean space.
+5.1.1 Scalar/Inner products and norms
+Suppose x , . . . , x ∈ Rd, where p < d. There are two important quantities associated with the
+1 p
+space Rd:
+(cid:113)
+• The Euclidean norm: (cid:107)x(cid:107) = (cid:80)d x2.
+2 j=1 j
+When we switch to random variables the L2-norm changes to the square root of the variance.
+• The scalar/inner product
+d
+(cid:88)
+(cid:104)x , x (cid:105) = x x .
+a b aj bj
+j=1
+If x and x are orthogonal then the angle between them is 90 degrees and (cid:104)x , x (cid:105) = 0. It is
+a b a b
+clear that (cid:104)x, x(cid:105) = (cid:107)x(cid:107)2.
+2
+134
+
+--- physical page 136 ---
+When we switch to random variables, the inner product becomes the variance covariance.
+Two random variables are uncorrelated if their covariance is zero.
+Let X = sp(x , . . . , x ) denote the space spanned by the vectors x , . . . , x . This means if z ∈
+1 p 1 p
+sp(x , . . . , x ), there exists coefficients {α }p where z = (cid:80)p α x .
+1 p j j=1 j=1 j j
+5.1.2 Projections
+Let y ∈ Rd. Our aim is to project y onto sp(x , . . . , x ). The projection will lead to an error which
+1 p
+is orthogonal to sp(x , . . . , x ). The projection of y onto sp(x , . . . , x ) is the linear combination
+1 p 1 p
+z =
+(cid:80)p
+α x which minimises the Euclidean distance (least squares)
+j=1 j j
+(cid:13) (cid:13)2
+(cid:13) p (cid:13) p p
+(cid:13) (cid:88) (cid:13) (cid:88) (cid:88)
+(cid:13)y − α j x j (cid:13) = (cid:104)y − α j x j , y − α j x j (cid:105).
+(cid:13) (cid:13)
+(cid:13) j=1 (cid:13) j=1 j=1
+2
+The coefficients {α }p which minimise this difference correspond to the normal equations:
+j j=1
+p p
+(cid:88) (cid:88)
+(cid:104)y − α x , x (cid:105) = y(cid:48)x − α x(cid:48) x = 0. 1 ≤ (cid:96) ≤ p. (5.1)
+j j (cid:96) (cid:96) j j (cid:96)
+j=1 j=1
+The normal equations in (5.1) can be put in matrix form
+p
+(cid:88)
+y(cid:48)x − α x(cid:48) x = 0
+(cid:96) j j (cid:96)
+j=1
+⇒ X(cid:48)Xα = Xy (5.2)
+where X(cid:48) = (x , . . . , x ). This leads to the well known solution
+1 p
+α = (X(cid:48)X)−1Xy. (5.3)
+The above shows that the best linear predictors should be such that the error y −
+(cid:80)p
+α x and
+j=1 j j
+x are orthogonal (90 degrees). Let X = sp(x , . . . , x ), to simplify notation we often use the
+(cid:96) 1 p
+notation P (y) to denote the projection of y onto X. For example, P (y) =
+(cid:80)p
+α x , where
+X X j=1 j j
+(cid:104)y − P (y), x (cid:105) = 0 for all 1 ≤ (cid:96) ≤ p. We will often use this notation to simplify the exposition
+X (cid:96)
+below.
+Since the projection error y − P (y) contains no linear information on X, then
+X
+135
+
+--- physical page 137 ---
+• All information on the Inner product between y and x is contained in its projection:
+(cid:96)
+(cid:104)y, x (cid:105) = y(cid:48)x = (cid:104)P (y), x (cid:105) 1 ≤ (cid:96) ≤ p
+(cid:96) (cid:96) X (cid:96)
+• Euclidean distance of projection error:
+(cid:104)y − P (y), y(cid:105)
+X
+= (cid:104)y − P (y), y − P (y) + P (y)(cid:105)
+X X X
+(cid:13) (cid:13)2
+= (cid:104)y − P
+X
+(y), y − P
+X
+(y)(cid:105) + (cid:104)y − P
+X
+(y), P
+X
+(y)(cid:105) = (cid:13)y − P
+X
+(y)(cid:13)
+2
+.
+(cid:124) (cid:123)(cid:122) (cid:125)
+=0
+5.1.3 Orthogonal vectors
+We now consider the simple, but important case that the vectors {x }p are orthogonal. In this
+j j=1
+case, evaluation of the coefficients α(cid:48) = (α , . . . , α ) is simple. From (5.4) we recall that
+1 p
+α = (X(cid:48)X)−1Xy. (5.4)
+If {x }p are orthogonal, then X(cid:48)X is a diagonal matrix where
+j j=1
+(X(cid:48)X) = diag (cid:0) x(cid:48) x , . . . , x(cid:48) x (cid:1) .
+1 1 p p
+Since
+d
+(cid:88)
+(Xy) = x y .
+i i,j j
+j=1
+This gives the very simple, entry wise solution for α
+j
+(cid:80)d
+x y
+j=1 i,j j
+α = .
+j (cid:80)d x2
+j=1 ij
+5.1.4 Projecting in multiple stages
+Suppose that x , . . . , x , x ∈ Rd. Let X = sp(x , . . . , x ) and X = sp(x , . . . , x ). Observe
+1 p p+1 p 1 p p+1 1 p+1
+that X is a subset of X . With a little thought it is clear that X = sp(X , x − P (x )).
+p p+1 p+1 p p+1 Xp p+1
+In other words, x − P (x ) is the additional information in x that is not contained in X .
+p+1 Xp p+1 p+1 p
+136
+
+--- physical page 138 ---
+If x ∈ X , then x − P (x ) = 0.
+p+1 p p+1 Xp p+1
+Let y ∈ Rd. Our aim is to project y onto X , but we do it in stages. By first projecting onto
+p+1
+X , then onto X . Since x − P (x ) is orthogonal to X (this is by the very definition of
+p p+1 p+1 Xp p+1 p
+P (x )) we can write
+Xp p+1
+y = P (y) + P (y) + ε
+Xp x
+p+1
+−PXp (x
+p+1
+)
+= P (y) + α(x − P (x )) + ε.
+Xp p+1 Xp p+1
+The coefficient α can deduced by minimising the Euclidean distance of the above;
+(cid:13) (cid:13)2
+(cid:13)y − P
+Xp
+(y) − α(x
+p+1
+− P
+Xp
+(x
+p+1
+))(cid:13)
+2
+.
+Differentiating with respect to α leads to the normal equation
+(cid:104)y − P (y) − α(x − P (x )), (x − P (x ))(cid:105) = 0
+Xp p+1 Xp p+1 p+1 Xp p+1
+= (cid:104)y − α(x − P (x )), (x − P (x ))(cid:105) = 0,
+p+1 Xp p+1 p+1 Xp p+1
+where the last line is because P (x )) is orthogonal to (x − P (x )). Thus solving the
+Xp p+1 p+1 Xp p+1
+above gives
+(cid:104)y, x − P (x )(cid:105)
+α =
+p+1 Xp p+1
+.
+(cid:107)x − P (x )(cid:107)2
+p+1 Xp p+1 2
+Therefore we can write y as
+(cid:2) (cid:3)
+y = P (y) − αP (x )) + αx + ε. (5.5)
+Xp Xp p+1 p+1
+If α = 0, then x does not contain any additional information of y over what is already in X .
+p+1 p
+The above may seem a little heavy. But with a few sketches using R3 as an example will
+make the derivations obvious. Once you are comfortable with projections in Euclidean space, the
+same ideas transfer to projections of random variables where the innerproduct in the space is the
+covariances (and not the scalar product).
+137
+
+--- physical page 139 ---
+5.1.5 Spaces of random variables
+The set-up described above can be generalized to any general vector space. Our focus will be on
+spaces of random variables. We assume the random variables in the appropriate probability space.
+We then define the (Hilbert) space of random variables
+H = {X; X is a (real) random variables where var(X) < ∞} .
+This looks complicated, but in many ways it is analogous to Euclidean space. There are a few
+additional complications (such as showing the space is complete, which we ignore). In order to
+define a projection in this space project, we need to define the corresponding innerproduct and
+norm for this space. Suppose X, Y ∈ H, then the inner-product is the covariance
+(cid:104)X, Y (cid:105) = cov(X, Y ).
+The norm is clearly the variance
+(cid:107)X(cid:107)2 = (cid:104)X, X(cid:105) = cov(X, X).
+2
+Most properties that apply to Euclidean space also apply to H. Suppose that X , . . . , X are
+1 n
+random variables in H. We define the subspace sp(X , . . . , X )
+1 n
+ 
+p
+ (cid:88) 
+sp(X , . . . , X ) = Y ; where Y = a X ,
+1 n j j
+ 
+j=1
+i.e. all all random variables Z ∈ H which can be expressed as a linear combination of {X }n .
+j j=1
+Now just as in Euclidean space you can project any y ∈ Rd onto the subspace spanned by the
+vectors x , . . . , x , we can project Y ∈ H onto X = sp(X , . . . , X ). The projection is such that
+1 p 1 n
+p
+(cid:88)
+P (Y ) = α X ,
+X j j
+j=1
+where the α(cid:48) = (α , . . . , α ) are such that
+1 p
+p p
+(cid:88) (cid:88)
+(cid:104)X , Y − α X (cid:105) = cov(X , Y − α X ) = 0 1 ≤ j ≤ p.
+(cid:96) j j (cid:96) j j
+j=1 j=1
+138
+
+--- physical page 140 ---
+Using the above we can show that α satisfies
+α = [var(X)]−1cov(X, Y ).
+where Y = (X , . . . , X )(cid:48) (out of slopiness we will often use say we project onto Y rather than
+1 p
+project onto the space spanned by Y which is sp(X , . . . , X )).
+1 n
+The properties described in Section 5.1.2 apply to H too:
+• Inner product between Y and X is contained in the projection:
+(cid:96)
+(cid:104)Y, X (cid:105) = cov(Y, X ) = cov (P (Y ), X ) 1 ≤ (cid:96) ≤ p. (5.6)
+(cid:96) (cid:96) X (cid:96)
+• The projection error
+cov(Y − P (Y ), Y ) = var[Y − P (Y )].
+X X
+This is rather formal. We now connect this to results from multivariate analysis.
+5.2 Linear prediction
+Suppose (Y, X), where X = (X , . . . , X ) is a random vector. The best linear predictor of Y given
+1 p
+X is given by
+p
+(cid:88)
+Y(cid:98) = β
+j
+X
+j
+j=1
+where β = Σ−1 Σ , with β = (β , . . . , β ) and Σ = var(X), Σ = cov[X, Y ]. The corresond-
+XX XY 1 p XX XY
+ing mean squared error is
+ 2
+p
+(cid:88)
+E Y − β j X j = E(Y 2) − Σ Y X Σ− X 1 X Σ XY .
+j=1
+Reason To understand why the above is true, we need to find the θ which minimises
+ 2
+p
+(cid:88)
+E Y − θ j X j ,
+j=1
+139
+
+--- physical page 141 ---
+we assume that X has zero mean. Differentiating the above wrt θ leads to the normal equations
+j i
+ 
+p
+(cid:88)
+−2 E (Y X
+i
+) − θ
+j
+E (X
+j
+X
+i
+) i = 1, . . . , p.
+j=1
+Equating to zero (since we want to find the θ which minimises the above) is
+i
+p
+(cid:88)
+E (Y X ) − θ E (X X ) = 0 i = 1, . . . , p.
+i j j i
+(cid:124) (cid:123)(cid:122) (cid:125) (cid:124) (cid:123)(cid:122) (cid:125)
+j=1
+=cov(Y,Xi) =cov(Xi,Xj)
+Writing the above as a matrix equation gives the solution
+β = var (X)−1 cov (Y, X) = Σ−1 Σ .
+XX XY
+Substituting the above into the mean squared error gives
+ 2
+p
+(cid:88)
+E Y − β j X j = E(Y 2) − 2E(Y Y(cid:98) ) + E(Y(cid:98) 2).
+j=1
+Using that
+Y = Y(cid:98) + e
+where e is uncorrelated with {X
+j
+}, thus it is uncorrelated with Y(cid:98) . This means E[Y Y(cid:98) ] = E[Y(cid:98) 2].
+Therefore
+ 2
+p
+(cid:88)
+E Y − β j X j = E(Y 2) − E(Y(cid:98) 2) = E(Y 2) − β(cid:48)var(X)β
+j=1
+= E(Y 2) − Σ Σ−1 Σ .
+Y X XX XY
+5.3 Partial correlation
+Suppose X = (X , . . . , X )(cid:48) is a zero mean random vector (we impose the zero mean condition
+1 d
+to simplify notation but it’s not necessary). The partial correlation is the covariance between
+X and X , conditioned on the other elements in the vector. In other words, the covariance
+i j
+140
+
+--- physical page 142 ---
+between the residuals of X and X after removing their linear dependence on X (the vector
+i j −(ij)
+not containing X and X ) and the residual of X conditioned on X . To obtain an expression
+i j j −(ij)
+for this correlation we simplify notation and let X = X , Z = X and Y = X
+i j −(ij)
+The notion of partial correlation can also easily be understood through projections and linear
+prediction (though there are other equivalent derivations). We describe this below. Let P (X)
+Y
+denote the projection of the random variable X onto the space spanned by Y . I.e. P (X) minimises
+Y
+the MSE E[X − α(cid:48)Y ]2. The partial correlation between X and Z given Y is
+cov(X − P (X), Z − P (Z))
+Y Y
+ρ = .
+X,Z|Y (cid:112)
+var(X − P (X))var(Z − P (Z))
+Y Y
+By using the results in the previous section we have
+P (X) = α(cid:48) Y and P (Z) = α(cid:48) Y
+Y X,Y Y Z,Y
+where
+α = [var(Y )]−1cov(X, Y ) and α = [var(Y )]−1cov(Z, Y ). (5.7)
+X,Y Z,Y
+Using (5.7) we can write each of the terms in ρ in terms of the elements of the variance matrix:
+X,Z|Y
+i.e.
+cov(X − P (X), Z − P (Z)) = cov(X, Z) − cov(X, Y )(cid:48)[var(Y )]−1cov(Z, Y )
+Y Y
+var(X − P (X)) = var(X) − cov(X, Y )(cid:48)[var(Y )]−1cov(X, Y )
+Y
+var(Z − P (Z)) = var(Z) − cov(Z, Y )(cid:48)[var(Y )]−1cov(Z, Y ).
+Y
+Relating partial correlation and the regression cofficients We show how the above is related to the
+coefficients in linear regression. Using the two-stage projection scheme described in (5.5), but
+switching from Euclidean space (and scalar products) to random variables and covariances we can
+write
+X = P (X) + β (cid:41) (Z − P (Z)) + ε
+Y Z X Y X
+and Z = P (Z) + β (cid:41) (X − P (X)) + ε , (5.8)
+Y X Z Y Z
+141
+
+--- physical page 143 ---
+where
+cov(X, Z − P (Z)) cov(Z, X − P (X))
+β (cid:41) = Y and β (cid:41) = Y .
+Z X X Z
+var(Z − P (Z)) var(X − P (X))
+Y Y
+Since Z − P (Z) is orthogonal to Y (and thus cov(Z − P (Z), P (X)) = 0) we have
+Y Y Y
+cov(X, Z − P (Z)) = cov(X − P (X), Z − P (Z)).
+Y Y Y
+This is the partial covariance (as it is the covariance of the residials after projecting onto Y ). This
+links β (cid:41) and β (cid:41) to the partial covariance, since
+Z X X Z
+cov(X − P (X), Z − P (Z)) cov(Z − P (Z), X − P (X))
+β (cid:41) = Y Y and β (cid:41) = Y Y .
+Z X X Z
+var(Z − P (Z)) var(X − P (X))
+Y Y
+To connect the regression coefficients to the partial correlations we rewrite we rewrite the partial
+covariance in terms of the partial correlation:
+(cid:112)
+cov(X − P (X), Z − P (Z)) = ρ var(X − P (X))var(Z − P (Z)).
+Y Y X,Z|Y Y Y
+Substituting the expression for cov(X − P (X), Z − P (Z)) into the expression for β (cid:41) and β (cid:41)
+Y Y Z X X Z
+gives
+(cid:115) (cid:115)
+var(X − P (X)) var(Z − P (Z))
+β (cid:41) = ρ Y and β (cid:41) = ρ Y . (5.9)
+Z X X,Z|Y var(Z − P (Z)) X Z X,Z|Y var(X − P (X))
+Y Y
+This leads to the linear regressions
+X = (P (X) − β (cid:41) P (Z)) + β (cid:41) Z +ε
+Y Z X Y Z X X
+(cid:124) (cid:123)(cid:122) (cid:125) (cid:124) (cid:123)(cid:122) (cid:125)
+in terms of Y in terms of Z
+Z = (P (Z) − β (cid:41) P (X)) + β (cid:41) X +ε .
+Y X Z Y X Z Z
+(cid:124) (cid:123)(cid:122) (cid:125) (cid:124) (cid:123)(cid:122) (cid:125)
+in terms of Z in terms of X
+For below, keep in mind that var[ε ] = var[X − P (X)] and var[ε ] = var[Z − P (Z)].
+X Y,Z Z Y,X
+The identity in (5.9) relates the regression coefficients to the partial correlation. In particular,
+the partial correlation is zero if an only if the corresponding regression coefficient is zero too.
+We now rewrite (5.9) in terms of var[ε ] = var[X − P (X)] and var[ε ] = var[Z − P (Z)].
+X Y,Z Z Y,X
+142
+
+--- physical page 144 ---
+This requires the following identity
+var(X − P (X)) var(X − P (X))
+Y,Z Y
+= , (5.10)
+var(Z − P (Z)) var(Z − P (Z))
+Y,X Y
+a proof of this identity is given at the end of this section. Using this identity together with (5.9)
+gives
+(cid:115) (cid:115)
+var(ε ) var(ε )
+β (cid:41) = ρ X and β (cid:41) = ρ Z (5.11)
+Z X X,Z|Y var(ε ) X Z X,Z|Y var(ε )
+Z X
+and
+(cid:115) (cid:115)
+var(ε ) var(ε )
+ρ = β (cid:41) Z = β (cid:41) Y (5.12)
+X,Z|Y Z X var(ε ) X Z var(ε )
+X Z
+Proof of identity (5.10) We recall that
+X = P (X ) + β (X − P (X )) + ε
+i X i ij j X j i
+−(i,j) −(i,j)
+X = P (X ) + β (X − P (X )) + ε .
+j X j ji i X i j
+−(i,j) −(i,j)
+To relate var(ε ) and var(ε ) we evaluate
+i i,−j
+var(ε ) = var(X − P (X ))
+i,−j i X i
+−(i,j)
+= var[β (X − P (X ))] + var(ε )
+ij j X j i
+−(i,j)
+= β2 var[X − P (X )] + var(ε )
+ij j X −(i,j) j i
+[cov(X , X − P (X ))]2
+i j X j
+= −(i,j) + var(ε )
+i
+var[X − P (X )]
+j X j
+−(i,j)
+[cov(X − P (X ), X − P (X ))]2
+i X i j X j
+= −(i,j) −(i,j) + var(ε )
+i
+var[X − P (X )]
+j X j
+−(i,j)
+c2
+ij
+= + var(ε ).
+i
+var(ε )
+j,−i
+where c = cov(X − P (X ), X − P (X )). By the same argument we have
+ij i X i j X j
+−(i,j) −(i,j)
+c2
+ij
+var(ε ) = + var(ε )
+j,−i j
+var(ε )
+i,−j
+⇒ ρ2 = var(ε )var(ε ) − var(ε )var(ε ).
+ij j,−i i,−j j i,−j
+143
+
+--- physical page 145 ---
+Putting these two equations together gives
+var(ε )var(ε ) − var(ε )var(ε ) = var(ε )var(ε ) − var(ε )var(ε ).
+j,−i i,−j j i,−j i,−j j,−i i j,−i
+This leads to the required identity
+var(ε ) var(ε )
+i i,−j
+= ,
+var(ε ) var(ε )
+j j,−i
+and the desired result. (cid:3)
+Example 5.3.1 Define the three random vectors X , X and X , where X and X are such that
+1 2 3 1 2
+X = X + ε X = X + ε
+1 3 1 2 3 2
+where ε is independent of X and X and ε is independent of X and X (and of course they are
+1 2 3 2 1 3
+independent of each other). Then cov(X , X ) = var(X ) however the partial covariance between
+1 2 3
+X and X conditioned on X is zero. I.e. X is driving the dependence between the models, once
+1 2 3 3
+it is removed they are uncorrelated and, in this example, independent.
+5.4 Properties of the precision matrix
+5.4.1 Summary of results
+Suppose X(cid:48) = (X , . . . , X ) is a zero mean random vector (we impose the zero mean condition to
+1 d
+simplify notation but it is not necessary), where
+Σ = var[X] and Γ = Σ−1.
+Σ is called the variance matrix, Γ is called the precision matrix. Unless stated otherwise all vectors
+are column vectors. We summarize the main results above in the bullet points below. We then
+relate these quantities to the precision matrix.
+• β(cid:48) = (β , . . . , β ) are the coefficients which minimise E[X − β(cid:48) X ]2, where
+i i,1 i,d i i −i
+X(cid:48) = (X , . . . , X , X , . . . , X ) (all elements in X excluding X ).
+−i 1 i−1 i+1 d i
+144
+
+--- physical page 146 ---
+• β(cid:48) are the coefficients which minimise E[X − β(cid:48) X ]2, where X are all elements
+i,−j i i,−j −(i,j) −(i,j)
+in X excluding X and X .
+i j
+• The partial correlation between X and X is defined as
+i j
+cov(ε , ε )
+i,−j j,−i
+ρ = cor(ε , ε ) = ,
+i,j i,−j j,−i (cid:112)
+var(ε )var(ε )
+i,−j j,−i
+where
+ε = X − β X
+i,−j i i,−j −(i,j)
+ε = X − β X .
+j,−i j j,−i −(i,j)
+It can be shown that
+cov (ε , ε ) = cov(X , X ) − cov(X , X(cid:48) )var[X ]−1cov(X , X )
+i,−j j,−i i j i −(i,j) −(i,j) j −(i,j)
+var (ε ) = var(X ) − cov(X , X(cid:48) )var[X ]−1cov(X , X )
+i,−j i i −(i,j) −(i,j) i −(i,j)
+var (ε ) = var(X ) − cov(X , X(cid:48) )var[X ]−1cov(X , X ).
+j,−i j j −(i,j) −(i,j) j −(i,j)
+• The regression coefficients and partial correlation are related through the identity
+(cid:115)
+var(ε )
+i
+β = ρ . (5.13)
+ij ij
+var(ε )
+j
+Let Γ denote the (i, j)th entry in the precision matrix Γ = Σ−1. Then Γ satisifies the following
+i,j i,j
+well known properties
+1
+Γ = .
+ii E[X − β(cid:48) X ]2
+i i −i
+For i (cid:54)= j we have Γ = −β /E[X − β(cid:48) X ]2 and
+i,j i,j i i −i
+Γ Γ
+i,j i,j
+β = − and ρ = − .
+i,j i,j (cid:112)
+Γ Γ Γ
+ii ii jj
+145
+
+--- physical page 147 ---
+5.4.2 Proof of results
+Regression and the precision matrix The precision matrix contains many hidden treasures. We
+start by showing that the entries of the precision matrix contain the regression coefficients of X
+i
+regressed on the random vector X = (X , . . . , X , X , . . . , X ). We will show that the ith
+−i 1 i−1 i+1 d
+row of Σ−1 is
+(cid:16) (cid:17)
+−β /σ2, −β /σ2, . . . 1/σ2 . . . −β /σ2.
+i1 i i2 i i id i
+where σ2 = E[X − β(cid:48) X ]2, (cid:80) β X is the best linear predictor of X given X and the ith
+2 i i −i j(cid:54)=i ij ij i −i
+entry is 1/σ2 (notation can be simplified if set β = −1). And equivalently the ith column of Σ−1
+i ii
+is the transpose of the vector
+(cid:16) (cid:17)
+−β /σ2 −β /σ2 . . . −β /σ2. .
+i1 i i2 i id i
+Though it may seem surprising at first, the result is very logical.
+We recall that the coefficients β = (β , . . . , β ) are the coefficients which minimise E[X −
+i i,1 i,d i
+β(cid:48) X ]2. This is equivalent to the derivative of the MSE being zero, this gives rise to the classical
+i −i
+normal equations
+(cid:88) (cid:88)
+E[(X − β X )X ] = Σ − β Σ = 0 1 ≤ (cid:96) ≤ j, (cid:96) (cid:54)= i.
+i i,j j (cid:96) i,(cid:96) i,j j,(cid:96)
+j(cid:54)=i j(cid:54)=i
+(cid:80)
+Further, since X − β X is orthogonal to X we have
+i j(cid:54)=i i,j j j
+(cid:88) (cid:88)
+E[(X − β X )X ] = E[(X − β X )2].
+i i,j j i i i,j j
+j(cid:54)=i j(cid:54)=i
+Recall that each row in the precision matrix is orthogonal to all the columns in Σ except one. We
+show below that this corresponds to precisely the normal equation. It is easiest seen through the
+the simple example of a 4 × 4 variance matrix
+ 
+c c c c
+11 12 13 14
+ 
+ c c c c 
+ 21 22 23 24 
+ 
+ 
+c c c c
+ 31 32 33 34 
+ 
+c c c c
+41 42 43 44
+146
+
+--- physical page 148 ---
+and the corresponding regression matrix
+ 
+1 −β −β −β
+12 13 14
+ 
+ −β 1 −β −β 
+ 21 23 24 
+  .
+ 
+−β −β 1 −β
+ 31 32 34 
+ 
+−β −β −β 1
+41 42 43
+We recall from the definition of β that the inner product between c = (c , c , c , c ) and
+1 11 12 13 14
+β(cid:101)
+1
+= (1, −β
+12
+, −β
+13
+, −β
+14
+) is
+β(cid:101)
+1
+c(cid:48)
+1
+= (cid:104)β(cid:101)
+1
+, c
+1
+(cid:105) = c
+11
+− β
+12
+c
+12
+− β
+13
+c
+13
+− β
+13
+c
+13
+4 4
+(cid:88) (cid:88)
+= E[(X − β X )X ] = E[(X − β X )2].
+1 1,j j 1 1 1,j j
+j=2 j=2
+Similarly
+β(cid:101)
+1
+c(cid:48)
+2
+= (cid:104)β(cid:101)1 , c
+2
+(cid:105) = c
+21
+− β
+12
+c
+22
+− β
+13
+c
+23
+− β
+13
+c
+23
+4
+(cid:88)
+= E[(X − β X )X ] = 0.
+1 1,j j 2
+j=2
+The same is true for the other c
+j
+and β(cid:101)
+j
+. Based on these observations, we observe that the
+regression coefficients/normal equations give the orthogonal projections and
+   
+1 −β −β −β c c c c
+12 13 14 11 12 13 14
+   
+ −β 1 −β −β   c c c c 
+  21 23 24     21 22 23 24   = diag(σ2, σ2, σ2, σ2),
+1 2 3 4
+   
+−β −β 1 −β c c c c
+ 31 32 34   31 32 33 34 
+   
+−β −β −β 1 c c c c
+41 42 43 41 42 43 44
+147
+
+--- physical page 149 ---
+where σ2 = E[(X − (cid:80) β X )2]. Therefore the inverse of Σ is
+j j i(cid:54)=j i i
+ 
+1 −β −β −β
+12 13 14
+ 
+ −β 1 −β −β 
+Σ−1 = diag(σ2, σ2, σ2, σ2)−1   21 23 24  
+1 2 3 4
+ 
+−β −β 1 −β
+ 31 32 34 
+ 
+−β −β −β 1
+41 42 43
+ 
+1/σ2 −β /σ2 −β /σ2 −β /σ2
+1 12 1 13 1 14 1
+ 
+ −β /σ2 1/σ2 −β /σ2 −β /σ2 
+ 21 2 2 23 2 24 2 
+=   .
+ −β /σ2 −β /σ2 1/σ2 −β /σ2 
+ 31 3 32 3 3 34 3 
+ 
+−β /σ2 −β /σ2 −β /σ2 1/σ2
+41 4 42 4 43 4 4
+By a similar argument we have
+ 
+1 −β −β −β
+21 31 41
+ 
+ −β 1 −β −β 
+Σ−1 =   12 32 42   diag(σ2, σ2, σ2, σ2)−1
+1 2 3 4
+ 
+−β −β 1 −β
+ 13 23 43 
+ 
+−β −β −β 1
+14 24 34
+ 
+1/σ2 −β /σ2 −β /σ2 −β /σ2
+1 21 2 31 3 41 4
+ 
+ −β /σ2 1/σ2 −β /σ2 −β /σ2 
+ 12 1 2 32 3 42 4 
+=   .
+ −β /σ2 −β /σ2 1/σ2 −β /σ2 
+ 13 1 23 2 3 43 4 
+ 
+−β /σ2 −β /σ2 −β /σ2 1/σ2
+14 1 24 2 34 3 4
+In summary, the normal equations give the matrix multiplication required for a diagonal matrix
+(which is is exactly the definition of ΣΓ = I, up to a change in the diagonal).
+Clearly, the above proof holds for all dimensions and we have
+1
+Γ = ,
+ii σ2
+i
+and
+β Γ
+ij ij
+Γ = − ⇒ β = − .
+ij σ2 i,j Γ
+i ii
+Writing the partial correlation in terms of elements of the precision matrix By using the identity
+148
+
+--- physical page 150 ---
+(5.12) (and that β = β ) we have
+ij j→i
+(cid:115)
+var[ε ]
+j
+ρ = β . (5.14)
+ij ij
+var[ε ]
+i
+We recall that Γ = var(X − P (X ))−1, Γ = var(X − P (X ))−1 and Γ = −β Γ gives
+ii i X−i i jj j X−j j ij ij ii
+(cid:115)
+Γ Γ Γ
+ij ii ij
+ρ = − = − .
+ij (cid:112)
+Γ Γ Γ Γ
+ii jj ii jj
+The above represents the partial correlation in terms of entries of the precision matrix.
+5.5 Appendix
+Alternative derivations based on matrix identities
+The above derivations are based on properties of normal equations and some algebraic manipu-
+lations. An alternative set of derivations is given in terms of the inversions of block matrices,
+specifically with the classical matrix inversions identities
+ −1  
+A B A−1 + A−1BP −1CA−1 −A−1BP −1
+1 1
+  =   (5.15)
+C D −P −1CA−1 P −1
+1 1
+ 
+P −1 −P −1BD−1
+2 2
+=   ,
+−D−1CP −1 D−1 + D−1CP −1BD−1
+2 2
+where P = (D − CA−1B) and P = (A − BD−1C). Or using the idea of normal equations in
+1 2
+projections.
+The precision matrix and partial correlation
+Let us suppose that X = (X , . . . , X ) is a zero mean random vector with variance Σ. The (i, j)th
+1 d
+element of Σ the covariance cov(X , X ) = Σ . Here we consider the inverse of Σ, and what
+i j ij
+information the (i, j)th of the inverse tells us about the correlation between X and X . Let Σij
+i j
+denote the (i, j)th element of Σ−1. We will show that with appropriate standardisation, Σij is the
+149
+
+--- physical page 151 ---
+negative partial correlation between X and X . More precisely,
+i j
+Σij
+√ = −ρ . (5.16)
+ij
+ΣiiΣjj
+The proof uses the inverse of block matrices. To simplify the notation, we will focus on the (1, 2)th
+element of Σ and Σ−1 (which concerns the correlation between X and X ).
+1 2
+Remark 5.5.1 Remember the reason we can always focus on the top two elements of X is because
+we can always use a permutation matrix to permute the X and X such that they become the top
+i j
+two elements. Since the inverse of the permutation matrix is simply its transpose everything still
+holds.
+Let X = (X , X )(cid:48), X = (X , . . . , X )(cid:48), Σ = var(X ), c = cov(X , X )
+1,2 1 2 −(1,2) 3 d −(1,2) −(1,2) 1,2 (1,2) −(1,2)
+and Σ = var(X ). Using this notation it is clear that
+1,2 1,2
+ 
+Σ c
+1,2 1,2
+var(X) = Σ =   . (5.17)
+c(cid:48) Σ
+1,2 −(1,2)
+By using (5.15) we have
+ 
+P −1 −P −1c(cid:48) Σ−1
+Σ−1 =  1,2 −(1,2)  , (5.18)
+−Σ−1 c P −1 P −1 + Σ−1 c P −1c(cid:48) Σ−1
+−(1,2) 1,2 −(1,2) 1,2 1,2 −(1,2)
+where P = (Σ − c(cid:48) Σ−1 c ). Comparing P with (??), we see that P is the 2 × 2 variance/-
+1,2 1,2 −(1,2) 1,2
+covariance matrix of the residuals of X conditioned on X . Thus the partial correlation
+(1,2) −(1,2)
+between X and X is
+1 2
+P
+1,2
+ρ = (5.19)
+1,2 (cid:112)
+P P
+1,1 2,2
+where P denotes the elements of the matrix P . Inverting P (since it is a two by two matrix), we
+ij
+see that
+ 
+P −1 = 1  P 2,2 −P 1,2  . (5.20)
+P P − P 2
+1,1 2,2 1,2 −P 1,2 P 11
+Thus, by comparing (5.18) and (5.20) and by the definition of partial correlation given in (5.19) we
+150
+
+--- physical page 152 ---
+have
+P (1,2)
+√ = −ρ .
+1,2
+P (1,1)P (2,2)
+Let Σij denote the (i, j)th element of Σ−1. Thus we have shown (5.16):
+Σij
+ρ = − √ . (5.21)
+ij
+ΣiiΣjj
+In other words, the (i, j)th element of Σ−1 divided by the square root of its diagonal gives negative
+partial correlation. Therefore, if the partial correlation between X and X given X is zero, then
+i j ij
+Σi,j = 0.
+The precision matrix and the coefficients in regression
+The precision matrix, Σ−1, contains many other hidden treasures. For example, the coefficients of
+Σ−1 convey information about the best linear predictor X given X = (X , . . . , X , X , . . . , X )
+i −i 1 i−1 i+1 d
+(all elements of X except X ). Let
+i
+(cid:88)
+X = β X + ε ,
+i i,j j i
+j(cid:54)=i
+where {β } are the coefficients of the best linear predictor. Then it can be shown that
+i,j
+Σij 1
+β = − and Σii = . (5.22)
+i,j Σii E[X − (cid:80) β X ]2
+i j(cid:54)=i i,j j
+The precision matrix and the mean squared prediction error
+We start with a well known expression, which expresses the prediction errors in terms of the
+determinant of matrices.
+We recall that the prediction error is
+E[Y − Y(cid:98) ]2 = σ
+Y
+− Σ
+Y X
+Σ−
+X
+1
+X
+Σ
+XY
+(5.23)
+151
+
+--- physical page 153 ---
+with σ = var[Y ]. Let
+Y
+ 
+var[Y ] Σ
+Y X
+Σ =   . (5.24)
+Σ Σ
+XY XX
+We show below that the prediction error can be rewritten as
+det(Σ)
+E[Y − Y(cid:98) ]2 = σ
+Y
+− Σ
+Y X
+Σ−
+X
+1
+X
+Σ
+XY
+=
+det(Σ )
+. (5.25)
+XX
+Furthermore,
+(cid:0) Σ−1(cid:1)
+=
+1
+=
+1
+. (5.26)
+11 σ
+Y
+− Σ
+Y X
+Σ−
+X
+1
+X
+Σ
+XY
+E[Y − Y(cid:98) ]2
+Proof of (5.25) and (5.26) To prove this result we use
+ 
+A B
+det   = det(D) det (cid:0) A − BD−1C (cid:1) . (5.27)
+C D
+Applying this to (5.27) gives
+det(Σ) = det(Σ ) (cid:0) σ − Σ Σ−1 Σ (cid:1)
+XX Y Y X XX XY
+⇒ det(Σ) = det(Σ
+XX
+)E[Y − Y(cid:98) ]2, (5.28)
+thus giving (5.25).
+To prove (5.26) we use the following result on the inverse of block matrices
+ −1  
+A B A−1 + A−1BP −1CA−1 −A−1BP −1
+1 1
+  =   (5.29)
+C D −P −1CA−1 P −1
+1 1
+ 
+P −1 −P −1BD−1
+2 2
+=   ,
+−D−1CP −1 D−1 + D−1CP −1BD−1
+2 2
+where P = (D − CA−1B) and P = (A − BD−1C). This block inverse turns out to be crucial in
+1 2
+deriving many of the interesting properties associated with the inverse of a matrix. We now show
+that the the inverse of the matrix Σ, Σ−1 (usually called the precision matrix) contains the mean
+squared error.
+152
+
+--- physical page 154 ---
+Comparing the above with (5.24) and (5.23) we see that
+(cid:0) Σ−1(cid:1)
+=
+1
+=
+1
+.
+11 σ
+Y
+− Σ
+Y X
+Σ−
+X
+1
+X
+Σ
+XY
+E[Y − Y(cid:98) ]2
+which immediately proves (5.26).
+The Cholesky decomposition and the precision matrix
+We now represent the precision matrix through its Cholesky decomposition. It should be mentioned
+that Mohsen Pourahmadi has done a lot of interesting research in this area and he recently wrote
+a review paper, which can be found here.
+We define the sequence of linear equations
+t−1
+(cid:88)
+X = β X + ε , t = 2, . . . , k, (5.30)
+t t,j j t
+j=1
+where {β ; 1 ≤ j ≤ t − 1} are the coefficeints of the best linear predictor of X given X , . . . , X .
+t,j t 1 t−1
+Let σ2 = var[ε ] = E[X − (cid:80)t−1 β X ]2 and σ2 = var[X ]. We standardize (5.30) and define
+t t t j=1 t,j j 1 1
+ 
+t t−1
+(cid:88) 1 (cid:88)
+γ t,j X j = X t − β t,j X j , (5.31)
+σ
+t
+j=1 j=1
+where we set γ = 1/σ and for 1 ≤ j < t − 1, γ = −β /σ . By construction it is clear that
+t,t t t,j t,j i
+var(LX) = I , where
+k
+ 
+γ 0 0 . . . 0 0
+1,1
+ 
+ γ γ 0 . . . 0 0 
+ 2,1 2,2 
+ 
+L =  γ γ γ . . . 0 0  (5.32)
+ 3,1 3,2 3,3 
+ . . . . . . 
+ . . . . . . 
+ . . . . . . 
+ 
+γ γ γ . . . γ γ
+k,1 k,2 k,3 k,k−1 k,k
+and LL = Σ−1 (see Pourahmadi, equation (18)), where Σ = var(X ). Let Σ = var[X ], then
+k k
+k
+(cid:88)
+Σij = γ γ (note many of the elements will be zero).
+is js
+s=1
+153
+
+--- physical page 155 ---
+Remark 5.5.2 (The Cholesky decomposition of a matrix) All positive definite matrices ad-
+mit a Cholesky decomposition. That is H(cid:48)H = Sigma, where H is a lower triangular matrix. Sim-
+ilarly, Sigma−1 = LL(cid:48), where L is a lower triangular matrix and L = H−1. Therefore we observe
+that if Σ = var(X) (where X is a p-dimension random vector), then
+var (LX) = L(cid:48)ΣL = L(cid:48)H(cid:48)HL = I .
+p
+Therefore, the lower triangular matrix L “finds” a linear combination of the elements X such that
+the resulting random vector is uncorrelated.
+We use apply these results to the analysis of the partial correlations of autoregressive processes
+and the inverse of its variance/covariance matrix.
+A little bit more indepth: general vector spaces
+First a brief definition of a vector space. X is called an vector space if for every x, y ∈ X and
+a, b ∈ R (this can be generalised to C), then ax + by ∈ X . An inner product space is a vector
+space which comes with an inner product, in other words for every element x, y ∈ X we can defined
+an innerproduct (cid:104)x, y(cid:105), where (cid:104)·, ·(cid:105) satisfies all the conditions of an inner product. Thus for every
+element x ∈ X we can define its norm as (cid:107)x(cid:107) = (cid:104)x, x(cid:105). If the inner product space is complete
+(meaning the limit of every sequence in the space is also in the space) then the innerproduct space
+is a Hilbert space (see wiki).
+Example 5.5.1 (i) The Euclidean space Rn described above is a classical example of a Hilbert
+space. Here the innerproduct between two elements is simply the scalar product, (cid:104)x, y(cid:105) =
+(cid:80)n
+x y .
+i=1 i i
+(ii) The subset of the probability space (Ω, F , P ), where all the random variables defined on Ω
+have a finite second moment, ie. E(X2) = (cid:82) X(ω)2dP (ω) < ∞. This space is denoted as
+Ω
+L2(Ω, F , P ). In this case, the inner product is (cid:104)X, Y (cid:105) = E(XY ).
+(iii) The function space L2[R, µ], where f ∈ L2[R, µ] if f is mu-measureable and
+(cid:90)
+|f (x)|2dµ(x) < ∞,
+R
+154
+
+--- physical page 156 ---
+is a Hilbert space. For this space, the inner product is defined as
+(cid:90)
+(cid:104)f, g(cid:105) = f (x)g(x)dµ(x).
+R
+It is straightforward to generalize the above to complex random variables and functions defined
+on C. We simply need to remember to take conjugates when defining the innerproduct, ie. (cid:104)X, Y (cid:105) =
+(cid:82)
+cov(X, Y ) and (cid:104)f, g(cid:105) = f (z)g(z)dµ(z).
+C
+In this chapter our focus will be on certain spaces of random variables which have a finite variance.
+Basis
+The random variables {X , X , . . . , X } span the space X 1 (denoted as sp(X , X , . . . , X )), if
+t t−1 1 t t t−1 1
+for every Y ∈ X 1, there exists coefficients {a ∈ R} such that
+t j
+t
+(cid:88)
+Y = a X . (5.33)
+j t+1−j
+j=1
+Moreover, sp(X , X , . . . , X ) = X 1 if for every {a ∈ R}, (cid:80)t a X ∈ X 1. We now
+t t−1 1 t j j=1 j t+1−j t
+define the basis of a vector space, which is closely related to the span. The random variables
+{X , . . . , X } form a basis of the space X 1, if for every Y ∈ X 1 we have a representation (5.33) and
+t 1 t t
+this representation is unique. More precisely, there does not exist another set of coefficients {φ }
+j
+such that Y =
+(cid:80)t
+φ X . For this reason, one can consider a basis as the minimal span, that
+j=1 j t+1−j
+is the smallest set of elements which can span a space.
+Definition 5.5.1 (Projections) The projection of the random variable Y onto the space spanned
+by sp(X , X , . . . , X ) (often denoted as P (Y)) is defined as P (Y) =
+(cid:80)t
+c X ,
+t t−1 1 Xt,Xt−1,...,X1 Xt,Xt−1,...,X1 j=1 j t+1−j
+where {c } is chosen such that the difference Y −P (Y ) is uncorrelated (orthogonal/per-
+j (Xt,Xt−1,...,X1) t
+pendicular) to any element in sp(X , X , . . . , X ). In other words, P (Y ) is the best
+t t−1 1 Xt,Xt−1,...,X1 t
+linear predictor of Y given X , . . . , X .
+t 1
+Orthogonal basis
+An orthogonal basis is a basis, where every element in the basis is orthogonal to every other element
+in the basis. It is straightforward to orthogonalize any given basis using the method of projections.
+155
+
+--- physical page 157 ---
+To simplify notation let X = P (X ). By definition, X − X is orthogonal to
+t|t−1 Xt−1,...,X1 t t t|t−1
+the space sp(X , X , . . . , X ). In other words X − X and X (1 ≤ s ≤ t) are orthogonal
+t−1 t−1 1 t t|t−1 s
+(cov(X , (X − X )), and by a similar argument X − X and X − X are orthogonal.
+s t t|t−1 t t|t−1 s s|s−1
+Thus by using projections we have created an orthogonal basis X , (X −X ), . . . , (X −X )
+1 2 2|1 t t|t−1
+of the space sp(X , (X − X ), . . . , (X − X )). By construction it clear that sp(X , (X −
+1 2 2|1 t t|t−1 1 2
+X ), . . . , (X − X )) is a subspace of sp(X , . . . , X ). We now show that
+2|1 t t|t−1 t 1
+sp(X , (X − X ), . . . , (X − X )) = sp(X , . . . , X ).
+1 2 2|1 t t|t−1 t 1
+To do this we define the sum of spaces. If U and V are two orthogonal vector spaces (which
+share the same innerproduct), then y ∈ U ⊕ V , if there exists a u ∈ U and v ∈ V such that
+y = u + v. By the definition of X 1, it is clear that (X − X ) ∈ X 1, but (X − X ) ∈/ X 1 .
+t t t|t−1 t t t|t−1 t−1
+Hence X 1 = s¯p(X − X ) ⊕ X 1 . Continuing this argument we see that X 1 = s¯p(X − X ) ⊕
+t t t|t−1 t−1 t t t|t−1
+s¯p(X − X )⊕, . . . , ⊕s¯p(X ). Hence s¯p(X , . . . , X ) = s¯p(X − X , . . . , X − X , X ).
+t−1 t−1|t−2 1 t 1 t t|t−1 2 2|1 1
+Therefore for every P (Y ) =
+(cid:80)t
+a X , there exists coefficients {b } such that
+Xt,...,X1 j=1 j t+1−j j
+t t−1
+(cid:88) (cid:88)
+P (Y ) = P (Y ) = P (Y ) = b (X − X ) + b X ,
+Xt,...,X1 Xt−X t|t−1 ,...,X2−X 2|1 ,X1 Xt+1−j−X t+1−j|t−j j t+1−j t+1−j|t−j t 1
+j=1 j=1
+where b = E(Y (X − X ))/E(X − X ))2. A useful application of orthogonal basis is the
+j j j|j−1 j j|j−1
+ease of obtaining the coefficients b , which avoids the inversion of a matrix. This is the underlying
+j
+idea behind the innovations algorithm proposed in Brockwell and Davis (1998), Chapter 5.
+Spaces spanned by infinite number of elements (advanced)
+The notions above can be generalised to spaces which have an infinite number of elements in their
+basis. Let now construct the space spanned by infinite number random variables {X , X , . . .}.
+t t−1
+As with anything that involves ∞ we need to define precisely what we mean by an infinite basis.
+To do this we construct a sequence of subspaces, each defined with a finite number of elements
+in the basis. We increase the number of elements in the subspace and consider the limit of this
+space. Let X −n = sp(X , . . . , X ), clearly if m > n, then X −n ⊂ X −m. We define X−∞, as
+t t −n t t t
+X−∞ = ∪∞ X −n, in other words if Y ∈ X −∞, then there exists an n such that Y ∈ X −n.
+t n=1 t t t
+However, we also need to ensure that the limits of all the sequences lie in this infinite dimensional
+space, therefore we close the space by defining defining a new space which includes the old space and
+also includes all the limits. To make this precise suppose the sequence of random variables is such
+156
+
+--- physical page 158 ---
+that Y ∈ X −s, and E(Y − Y )2 → 0 as s , s → ∞. Since the sequence {Y } is a Cauchy sequence
+s t s1 s2 1 2 s
+there exists a limit. More precisely, there exists a random variable Y , such that E(Y − Y )2 → 0 as
+s
+s → ∞. Since the closure of the space, X −n , contains the set X −n and all the limits of the Cauchy
+t t
+sequences in this set, then Y ∈ X −∞. We let
+t
+X −∞ = sp(X , X , . . .), (5.34)
+t t t−1
+The orthogonal basis of sp(X , X , . . .)
+t t−1
+An orthogonal basis of sp(X , X , . . .) can be constructed using the same method used to orthog-
+t t−1
+onalize sp(X , X , . . . , X ). The main difference is how to deal with the initial value, which in the
+t t−1 1
+case of sp(X , X , . . . , X ) is X . The analogous version of the initial value in infinite dimension
+t t−1 1 1
+space sp(X , X , . . .) is X , but this it not a well defined quantity (again we have to be careful
+t t−1 −∞
+with these pesky infinities).
+Let X (1) denote the best linear predictor of X given X , X , . . .. As in Section 5.5 it is
+t−1 t t−1 t−2
+clear that (X −X (1)) and X for s ≤ t−1 are uncorrelated and X−∞ = sp(X −X (1))⊕X−∞,
+t t−1 s t t t−1 t−1
+where X−∞ = sp(X , X , . . .). Thus we can construct the orthogonal basis (X −X (1)), (X −
+t t t−1 t t−1 t−1
+X (1)), . . . and the corresponding space sp((X − X (1)), (X − X (1)), . . .). It is clear that
+t−2 t t−1 t−1 t−2
+sp((X −X (1)), (X −X (1)), . . .) ⊂ sp(X , X , . . .). However, unlike the finite dimensional
+t t−1 t−1 t−2 t t−1
+case it is not clear that they are equal, roughly speaking this is because sp((X − X (1)), (X −
+t t−1 t−1
+X (1)), . . .) lacks the inital value X . Of course the time −∞ in the past is not really a well
+t−2 −∞
+defined quantity. Instead, the way we overcome this issue is that we define the initial starting
+random variable as the intersection of the subspaces, more precisely let X = ∩∞ X −∞.
+−∞ n=−∞ t
+Furthermore, we note that since X − X (1) and X (for any s ≤ n) are orthogonal, then
+n n−1 s
+sp((X − X (1)), (X − X (1)), . . .) and X are orthogonal spaces. Using X , we have
+t t−1 t−1 t−2 −∞ −∞
+⊕t sp((X − X (1)) ⊕ X = sp(X , X , . . .).
+j=0 t−j t−j−1 −∞ t t−1
+157

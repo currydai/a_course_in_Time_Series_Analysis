@@ -1,0 +1,3139 @@
+--- physical page 189 ---
+Chapter 7
+Prediction
+Prerequisites
+• The best linear predictor.
+• Difference between best linear predictors and best predictors.
+[Need to explain]
+• Some idea of what a basis of a vector space is.
+Objectives
+• Understand that prediction using a long past can be difficult because a large matrix has to
+be inverted, thus alternative, recursive method are often used to avoid direct inversion.
+• Understand the derivation of the Levinson-Durbin algorithm, and why the coefficient, φ ,
+t,t
+corresponds to the partial correlation between X and X .
+1 t+1
+• Understand how these predictive schemes can be used write space of sp(X , X , . . . , X ) in
+t t−1 1
+terms of an orthogonal basis sp(X − P (X ), . . . , X ).
+t Xt−1,Xt−2,...,X1 t 1
+• Understand how the above leads to the Wold decomposition of a second order stationary
+time series.
+• To understand how to approximate the prediction for an ARMA time series into a scheme
+which explicitly uses the ARMA structure. And this approximation improves geometrically,
+when the past is large.
+188
+
+--- physical page 190 ---
+One motivation behind fitting models to a time series is to forecast future unobserved observa-
+tions - which would not be possible without a model. In this chapter we consider forecasting, based
+on the assumption that the model and/or autocovariance structure is known.
+7.1 Using prediction in estimation
+There are various reasons prediction is important. The first is that forecasting has a vast number
+of applications from finance to climatology. The second reason is that it forms the basis of most
+estimation schemes. To understand why forecasting is important in the latter, we now obtain the
+“likelihood” of the observed time series {X }n . We assume the joint density of X = (X , . . . , X )
+t t=1 n 1 n
+is f (x ; θ). By using conditioning it is clear that the likelihood is
+n n
+f (x ; θ) = f (x ; θ)f (x |x ; θ)f (x |x , x ; θ) . . . f (x |x , . . . , x ; θ)
+n n 1 1 2 2 1 3 3 2 1 n n n−1 1
+Therefore the log-likelihood is
+n
+(cid:88)
+log f (x ; θ) = log f (x ) + log f (x |x , . . . , x ; θ).
+n n 1 1 t t t−1 1
+t=1
+The parameters may be the AR, ARMA, ARCH, GARCH etc parameters. However, usually the
+conditional distributions f (x |x , . . . , x ; θ) which make up the joint density f (x; θ) is completely
+t t t−1 1
+unknown. However, often we can get away with assuming that the conditional distribution is
+Gaussian and we can still consistently estimate the parameters so long as the model has been
+correctly specified. Now, if we can “pretend” that the conditional distribution is Gaussian, then
+all we need is the conditional mean and the conditional variance
+E(X |X , . . . , X ; θ) = E (X |X , . . . , X ; θ) and V (X |X , . . . , X , θ) = var (X |X , . . . , X ; θ) .
+t t−1 1 t t−1 1 t t−1 1 t t−1 1
+Using this above and the “Gaussianity” of the conditional distribution gives
+1 (x − E(x |x , . . . , x , θ))2
+t t t−1 1
+log f (x |x , . . . , x ; θ) = − log V (x |x , . . . , x , θ) − .
+t t t−1 1 t t−1 1
+2 V (x |x , . . . , x , θ)
+t t−1 1
+189
+
+--- physical page 191 ---
+Using the above the log density
+1 (cid:88) n (cid:18) (x t − E(x t |x t−1 , . . . , x 1 , θ))2 (cid:19)
+log f (x ; θ) = − log V (x |x , . . . , x , θ) + .
+n n 2 t t−1 1 V (x |x , . . . , x , θ)
+t t−1 1
+t=1
+Thus the log-likelihood
+1 (cid:88) n (cid:18) (X t − E(X t |X t−1 , . . . , X 1 , θ))2 (cid:19)
+L(X ; θ) = − log V (X |X , . . . , X , θ) + .
+n 2 t t−1 1 V (X |X , . . . , X , θ)
+t t−1 1
+t=1
+Therefore we observe that in order to evaluate the log-likelihood, and estimate the parameters, we
+require the conditonal mean and the conditional variance
+E(X |X , . . . , X ; θ) and V (X |X , . . . , X ; θ).
+t t−1 1 t t−1 1
+This means that in order to do any form of estimation we need a clear understanding of what the
+conditional mean (which is simply the best predictor of the observation tomorrow given the past)
+and the conditional variance is for various models.
+Note:
+• Often expressions for conditional mean and variance can be extremely unwieldy. Therefore,
+often we require approximations of the conditonal mean and variance which are tractable (this
+is reminiscent of the Box-Jenkins approach and is till used when the conditional expectation
+and variance are difficult to estimate).
+• Suppose we “pretend” that the time series {X } is Gaussian. Which we can if it is linear,
+t
+even if it is not. But we cannot if the time series is nonlinear (since nonlinear time series
+are not Gaussian), then the conditional variance var(X |X , . . . , X ) will not be random
+t t−1 1
+(this is a well known result for Gaussian random variables). If X is nonlinear, it can be
+t
+conditionally Gaussian but not Gaussian.
+• If the model is linear usually the conditonal expectation E(X |X , . . . , X ; θ) is replaced
+t t−1 1
+with the best linear predictor of X given X , . . . , X . This means if the model is in fact
+t t−1 1
+non-causal the estimator will give a causal solution instead. Though not critical it is worth
+bearing in mind.
+190
+
+--- physical page 192 ---
+7.2 Forecasting for autoregressive processes
+Worked example: AR(1) Let
+X = φX + ε
+t+1 t t+1
+where {ε } are iid random variable. We will assume the process is causal, thus |φ| < 1. Since {X }
+t t t
+are iid random variables, X contains no information about ε . Therefore the best linear (indeed
+t−1 t
+best predictor) of X given all the past information is contained in X
+t+1 t
+X (1) = φX .
+t t
+To quantify the error in the prediction we use the mean squared error
+σ2 = E[X − X (1)]2 = E[X − φX ]2 = var[ε ].
+t+1 t t+1 t t+1
+X (1) gives the one-step ahead prediction. Since
+t
+X = φX + ε = φ2X + φε + ε
+t+2 t+1 t+2 t t+1 t+2
+and {ε } are iid random variables, then the best linear predictor (and best predictor) of X given
+t t+2
+X is
+t
+X (2) = φX (1) = φ2X .
+t t t+1
+Observe it recurses on the previous best linear predictor which makes it very easy to evaluate. The
+mean squared error in the forecast is
+E[X − X (2)]2 = E[φε + ε ]2 = (1 + φ2)var[ε ].
+t+3 t t+1 t+2 t
+Using a similar strategy we can forecast r steps into the future:
+X (r) = φX (r − 1) = φrX
+t t t
+191
+
+--- physical page 193 ---
+where the mean squared error is
+r−1 r−1
+(cid:88) (cid:88)
+E[X − X (r)]2 = E[ φiε ]2 = var[ε ] φ2i.
+t+r t t+r−i t
+i=0 i=0
+Worked example: AR(2) We now extend the above prediction strategy to AR(2) models (it is
+straightfoward to go to the AR(p) model). It is best understood using the vector AR representation
+of the model. Let
+X = φ X + φ X + ε
+t+1 1 t 2 t−1 t+1
+where {ε } are iid random variables and the characteristic function is causal. We can rewrite the
+t t
+AR(2) as a VAR(1)
+       
+X φ φ X ε
+t+1 1 2 t t+1
+  =     +  
+X 1 0 X 0
+t t−1
+⇒ X = ΦX + ε .
+t+1 t t+1
+This looks like a AR(1) and motivates how to forecast into the future. Since ε is independent
+t+1
+of {X } the best linear predictor of X can be obtained using
+t−j j≥0 t+1
+     
+X φ φ X
+t+1 1 2 t
+X t (1) =   =     .
+X 1 0 X
+t t−1
+(1) (1)
+The mean squared error is E[X(cid:98)t (1) − X
+t+1
+]2 = σ2. To forecast two steps into the future we use that
+X = Φ2X + Φε + ε .
+t+2 t t+1 t+2
+Thus the best linear predictor of X is
+t+2
+X (2) = [Φ2X ] = φ (2)X + φ (2)X ,
+t t (1) 1 t 2 t−1
+where [·] denotes the first entry in the vector and (φ (2), φ (2)) is the first row vector in the
+(1) 1 2
+192
+
+--- physical page 194 ---
+matrix Φ2. The mean squared error is a
+E (φ ε + ε )2 = (1 + φ2)var(ε ).
+1 t+1 t+2 1 t
+We continue this iteration to obtain the r-step ahead predictor
+X (r) = [ΦX (r − 1)] = [ΦrX ] = φ (r)X + φ (r)X ,
+t t (1) t (1) 1 t 2 t−1
+as above (φ (r), φ (r)) is the first row vector in the matrix Φr. The mean squared error is
+1 2
+(cid:32)r−1 (cid:33)2
+(cid:88)
+E (X − X (r))2 = E [Φi] ε
+t+r t (1,1) t+r−i
+i=0
+r−1
+(cid:88)
+= var[ε ] ([Φi] )2.
+t (1,1)
+i=0
+7.3 Forecasting for AR(p)
+The above iteration for calculating the best linear predictor easily generalises for any AR(p) process.
+Let
+X = φ X + φ X + . . . + φ X + ε
+t+1 1 t 2 t−1 p t+1−p t+1
+where {ε } are iid random variables and the characteristic function is causal. We can rewrite the
+t t
+AR(p) as a VAR(1)
+   
+   
+X φ φ φ . . . φ X ε
+t+1 1 2 3 p t t+1
+   
+   
+   
+ X t    1 0 0 . . . 0    X t−1    0  
+   
+  . . .   =   0 1 0 . . . 0     . . .   +   0  
+   
+   
+  . . .      . . . · · · . . . . . . 0      . . .      . . .   
+   
+   
+   
+X 0 0 0 . . . 0 X 0
+t−p+1 t−p
+⇒ X = ΦX + ε .
+t+1 t t+1
+193
+
+--- physical page 195 ---
+Therefore the r step ahead predictor is
+p
+(cid:88)
+X (r) = [ΦX (r − 1)] = [ΦrX ] = φ (r)X
+t t (1) t (1) j t+1−j
+j=1
+as above (φ (r), φ (r), . . . , φ (r)) is the first row vector in the matrix Φr. The mean squared error
+1 2 p
+is
+(cid:32)r−1 (cid:33)2
+(cid:88)
+E (X − X (r))2 = E [Φi] ε
+t+r t (1,1) t+r−i
+i=0
+r−1
+(cid:88)
+= var[ε ] ([Φi] )2
+t (1,1)
+i=0
+r−1
+(cid:88)
+= var[ε ] φ (i)2.
+t 1
+i=0
+The above predictors are easily obtained using a recursion. However, we now link {φ (r)}p
+j j=1
+to the underlying AR (and MA) coefficients.
+Lemma 7.3.1 Suppose X has a causal AR(p) representation
+t
+X = φ X + φ X + . . . + φ X + ε
+t+1 1 t 2 t−1 p t+1−p t+1
+and
+p ∞
+(cid:88) (cid:88)
+X = (1 − φ Bj)ε = ψ ε
+t+1 j t j t−j
+j=1 j=0
+is its MA(∞) representation. Then the predictive coefficients are
+p−j min(p,j−1)
+(cid:88) (cid:88)
+φ (r) = φ ψ = φ ψ r ≥ 1
+j j+s r−1−s u r−1+j−u
+s=0 u=0
+and the best r-ahead predictor is
+p p−j
+(cid:88) (cid:88)
+X (r) = X φ ψ r ≥ 1.
+t t+1−j j+s r−1−s
+j=1 s=0
+194
+
+--- physical page 196 ---
+The mean squared error is
+r−1
+(cid:88)
+E[X − X (r)]2 = var[ε ] ψ2
+t+r t t i
+i=0
+with ψ = 1,
+0
+7.4 Forecasting for general time series using infinite
+past
+In the previous section we focussed on time series which had an AR(p) representation. We now
+consider general time series models and best linear predictors (linear forecasts) for such time series.
+Specifically, we focus predicting the future given the (unrealistic situation) of the infinite past. Of
+course, this is an idealized setting, and in the next section we consider linear forecasts based on the
+finite past (for general stationary time series). A technical assumption we will use in this section is
+that the stationary time series {X } has both an AR(∞) and MA(∞) representation (its spectral
+t
+density bounded away from zero and is finite):
+∞ ∞
+(cid:88) (cid:88)
+X = ψ ε = a X + ε , (7.1)
+t+1 j t+1−j j t+1−j t+1
+j=0 j=1
+where {ε } are iid random variables (recall Definition 4.5.2). A technical point is that the assump-
+t
+tion on {ε } can be relaxed to uncorrelated random variables if we are willing to consider best linear
+t
+predictor and not best predictors. Using (7.2), it is clear the best linear one-ahead predictor is
+∞
+(cid:88)
+X (1) = a X . (7.2)
+t j t+1−j
+j=1
+and the mean squared error is E[X − X (1)]2 = σ2. Transfering the ideas for the AR(p) model
+t+1 t
+(predicting r steps ahead), the best linear predictor r-steps ahead for the general time series is
+∞
+(cid:88)
+X (r) = φ (r)X r ≥ 1. (7.3)
+t j t+1−j
+j=1
+195
+
+--- physical page 197 ---
+But analogous to Lemma 7.3.1 we can show that
+∞
+(cid:88)
+φ (r) = a ψ r ≥ 1.
+j j+s r−1−s
+s=0
+Substituting this into (7.3) gives
+∞ ∞
+(cid:88) (cid:88)
+X (r) = X a ψ r ≥ 1.
+t t+1−j j+s r−1−s
+j=1 s=0
+This is not a particularly simple method for estimating the predictors as one goes further in the
+future. Later in this section we derive a recursion for prediction. First, we obtain the mean squared
+error in the prediction.
+To obtain the mean squared error, we note that since X , X , X , . . . is observed, we can
+t t−1 t−2
+obtain ε (for τ ≤ t) by using the invertibility condition
+τ
+∞
+(cid:88)
+ε = X − a X .
+τ τ j τ−i
+j=1
+This means that given the time series {X }∞ (and AR(∞) parameters {a }) we can obtain all
+t−j j=0 j
+the innovations {ε }∞ and visa versa. Based on this we revisit the problem of predicting X
+t−j j=0 t+k
+given {X ; τ ≤ t} but this time in terms of the innovations. Using the MA(∞) presentation (since
+τ
+the time series is causal) of X we have
+t+k
+∞ r−1
+(cid:88) (cid:88)
+X = ψ ε + ψ ε .
+t+r j+r t−j j t+r−j
+j=0 j=0
+(cid:124) (cid:123)(cid:122) (cid:125) (cid:124) (cid:123)(cid:122) (cid:125)
+innovations are ‘observed’ future innovations impossible to predict
+Thus we can write the best predictor of X given {X }∞ as
+t+r t−j j=0
+∞
+(cid:88)
+X (r) = ψ ε (7.4)
+t j+r t−j
+j=0
+∞ (cid:32) ∞ (cid:33)
+(cid:88) (cid:88)
+= ψ X − a X
+j+r t−j i t−j−i
+j=0 i=1
+∞
+(cid:88)
+= φ (r)X .
+j t−j
+j=0
+196
+
+--- physical page 198 ---
+Using the above we see that the mean squared error is
+r−1 r−1
+(cid:88) (cid:88)
+E[X − X (r)]2 = E[ ψ ε ]2 = σ2 ψ2.
+t+r t j t+r−j j
+j=0 j=0
+We now show how X (r) can be evaluated recursively using the invertibility assumption.
+t
+Step 1 We use invertibility in (7.2) to give
+∞
+(cid:88)
+X (1) = a X ,
+t i t+1−i
+i=1
+and E [X − X (1)]2 = var[ε ]
+t+1 t t
+Step 2 To obtain the 2-step ahead predictor we note that
+∞
+(cid:88)
+X = a X + a X + ε
+t+2 i t+2−i 1 t+1 t+2
+i=2
+∞
+(cid:88)
+= a X + a [X (1) + ε ] + ε ,
+i t+2−i 1 t t+1 t+2
+i=2
+thus it is clear that
+∞
+(cid:88)
+X (2) = a X + a X (1)
+t i t+2−i 1 t
+i=2
+and E [X − X (2)]2 = var[ε ] (cid:0) a2 + 1 (cid:1) = var[ε ] (cid:0) 1 + ψ2(cid:1) .
+t+2 t t 1 t 1
+Step 3 To obtain the 3-step ahead predictor we note that
+∞
+(cid:88)
+X = a X + a X + a X + ε
+t+3 i t+2−i 2 t+1 1 t+2 t+3
+i=3
+∞
+(cid:88)
+= a X + a (X (1) + ε ) + a (X (2) + a ε + ε ) + ε .
+i t+2−i 2 t t+1 1 t 1 t+1 t+2 t+3
+i=3
+Thus
+∞
+(cid:88)
+X (3) = a X + a X (1) + a X (2)
+t i t+2−i 2 t 1 t
+i=3
+and E [X − X (3)]2 = var[ε ] (cid:2) (a + a2)2 + a2 + 1 (cid:3) = var[ε ] (cid:0) 1 + ψ2 + ψ2(cid:1) .
+t+3 t t 2 1 1 t 1 2
+197
+
+--- physical page 199 ---
+Step r Using the arguments it can be shown that
+∞ r−1
+(cid:88) (cid:88)
+X (r) = a X + a X (r − i) .
+t i t+r−i i t
+(cid:124) (cid:123)(cid:122) (cid:125)
+i=r i=1
+predicted
+(cid:124) (cid:123)(cid:122) (cid:125)
+observed
+And we have already shown that E[X − X (r)]2 = σ2 (cid:80)r−1 ψ2
+t+r t j=0 j
+Thus the r-step ahead predictor can be recursively estimated.
+We note that the predictor given above is based on the assumption that the infinite past is
+observed. In practice this is not a realistic assumption. However, in the special case that time
+series is an autoregressive process of order p (with AR parameters {φ }p ) and X , . . . , X is
+j j=1 t t−m
+observed where m ≥ p − 1, then the above scheme can be used for forecasting. More precisely,
+p
+(cid:88)
+X (1) = φ X
+t j t+1−j
+j=1
+p r−1
+(cid:88) (cid:88)
+X (r) = φ X + φ X (r − j) for 2 ≤ r ≤ p
+t j t+r−j j t
+j=r j=1
+p
+(cid:88)
+X (r) = φ X (r − j) for r > p. (7.5)
+t j t
+j=1
+However, in the general case more sophisticated algorithms are required when only the finite
+past is known.
+7.4.1 Example: Forecasting yearly temperatures
+We now fit an autoregressive model to the yearly temperatures from 1880-2008 and use this model
+to forecast the temperatures from 2009-2013. In Figure 7.1 we give a plot of the temperature time
+series together with its ACF. It is clear there is some trend in the temperature data, therefore we
+have taken second differences, a plot of the second difference and its ACF is given in Figure 7.2.
+We now use the command ar.yule(res1,order.max=10) (we will discuss in Chapter 9 how this
+function estimates the AR parameters) to estimate the the AR parameters.
+Remark 7.4.1 (The Yule-Walker estimator in prediction) The least squares estimator (or
+equivalently the conditional likelihood) is likely to give a causal estimator of the AR parameters. But
+it is not guaranteed. On the other hand the Yule-Walker estimator is guaranteed to give a causal
+198
+
+--- physical page 200 ---
+Time
+pmet
+1880 1900 1920 1940 1960 1980 2000
+5.0
+0.0
+5.0−
+0 5 10 15 20 25 30
+0.1
+8.0
+6.0
+4.0
+2.0
+0.0
+2.0−
+Lag
+FCA
+Series global.mean
+Figure 7.1: Yearly temperature from 1880-2013 and the ACF.
+Time
+secnereffid.dnoces
+1880 1900 1920 1940 1960 1980 2000
+6.0
+4.0
+2.0
+0.0
+2.0−
+4.0−
+6.0−
+0 5 10 15 20 25 30
+0.1
+5.0
+0.0
+5.0−
+Lag
+FCA
+Series diff2
+Figure 7.2: Second differences of yearly temperature from 1880-2013 and its ACF.
+solution. This will matter for prediction. We emphasize here that the least squares estimator cannot
+consistently estimate non-causal solutions, it is only a quirk of the estimation method that means
+at times the solution may be noncausal.
+If the time series {X } is linear and stationary with mean zero, then if we predict several steps
+t t
+into the future we would expect our predictor to be close to zero (since E(X ) = 0). This is guaran-
+t
+teed if one uses AR parameters which are causal (since the eigenvalues of the VAR matrix is less
+than one); such as the Yule-Walker estimators. On the other hand, if the parameter estimators do
+199
+
+--- physical page 201 ---
+not correspond to a causal solution (as could happen for the least squares estimator), the predictors
+may explode for long term forecasts which makes no sense.
+The function ar.yule uses the AIC to select the order of the AR model. When fitting the
+second differences from (from 1880-2008 - a data set of length of 127) the AIC chooses the AR(7)
+model
+X = −1.1472X − 1.1565X − 1.0784X − 0.7745X − 0.6132X − 0.3515X − 0.1575X + ε ,
+t t−1 t−2 t−3 t−4 t−5 t−6 t−7 t
+with var[ε ] = σ2 = 0.02294. An ACF plot after fitting this model and then estimating the residuals
+t
+{ε } is given in Figure 7.3. We observe that the ACF of the residuals ‘appears’ to be uncorrelated,
+t
+which suggests that the AR(7) model fitted the data well. Later we define the Ljung-Box test,
+which is a method for checking this claim. However since the residuals are estimated residuals and
+not the true residual, the results of this test need to be taken with a large pinch of salt. We will
+show that when the residuals are estimated from the data the error bars given in the ACF plot
+are not correct and the Ljung-Box test is not pivotal (as is assumed when deriving the limiting
+distribution under the null the model is correct). By using the sequence of equations
+0 5 10 15 20
+0.1
+8.0
+6.0
+4.0
+2.0
+0.0
+2.0−
+Lag
+FCA
+Series residuals
+Figure 7.3: An ACF plot of the estimated residuals {ε }.
+(cid:98)t
+200
+
+--- physical page 202 ---
+Xˆ (1) = −1.1472X − 1.1565X − 1.0784X − 0.7745X − 0.6132X
+127 127 126 125 124 123
+−0.3515X − 0.1575X
+122 121
+Xˆ (2) = −1.1472Xˆ (1) − 1.1565X − 1.0784X − 0.7745X − 0.6132X
+127 127 127 126 125 124
+−0.3515X − 0.1575X
+123 122
+Xˆ (3) = −1.1472Xˆ (2) − 1.1565Xˆ (1) − 1.0784X − 0.7745X − 0.6132X
+127 127 127 127 126 125
+−0.3515X − 0.1575X
+124 123
+Xˆ (4) = −1.1472Xˆ (3) − 1.1565Xˆ (2) − 1.0784Xˆ (1) − 0.7745X − 0.6132X
+127 127 127 127 127 126
+−0.3515X − 0.1575X
+125 124
+Xˆ (5) = −1.1472Xˆ (4) − 1.1565Xˆ (3) − 1.0784Xˆ (2) − 0.7745Xˆ (1) − 0.6132X
+127 127 127 127 127 127
+−0.3515X − 0.1575X .
+126 125
+We can use Xˆ (1), . . . , Xˆ (5) as forecasts of X , . . . , X (we recall are the second differences),
+127 127 128 132
+which we then use to construct forecasts of the temperatures. A plot of the second difference
+forecasts together with the true values are given in Figure 7.4. From the forecasts of the second
+differences we can obtain forecasts of the original data. Let Y denote the temperature at time t
+t
+and X its second difference. Then Y = −Y + 2Y + X . Using this we have
+t t t−2 t−1 t
+Y(cid:98)127 (1) = −Y
+126
++ 2Y
+127
++ X
+127
+(1)
+Y(cid:98)127 (2) = −Y
+127
++ 2Y
+127
+(1) + X
+127
+(2)
+Y(cid:98)127 (3) = −Y
+127
+(1) + 2Y
+127
+(2) + X
+127
+(3)
+and so forth.
+We note that (??) can be used to give the mse error. For example
+E[X − Xˆ (1)]2 = σ2
+128 127 t
+E[X − Xˆ (1)]2 = (1 + φ2)σ2
+128 127 1 t
+If we believe the residuals are Gaussian we can use the mean squared error to construct confidence
+intervals for the predictions. Assuming for now that the parameter estimates are the true param-
+eters (this is not the case), and X
+t
+=
+(cid:80)∞
+j=0
+ψ
+j
+(φ(cid:98))ε
+t−j
+is the MA(∞) representation of the AR(7)
+201
+
+--- physical page 203 ---
+model, the mean square error for the kth ahead predictor is
+k−1
+(cid:88)
+σ2 ψ
+j
+(φ(cid:98))2 (using (??))
+j=0
+thus the 95% CI for the prediction is
+ 
+k−1
+(cid:88)
+X t (k) ± 1.96σ2 ψ j (φ(cid:98))2  ,
+j=0
+however this confidence interval for not take into account X (k) uses only parameter estimators
+t
+and not the true values. In reality we need to take into account the approximation error here too.
+If the residuals are not Gaussian, the above interval is not a 95% confidence interval for the
+prediction. One way to account for the non-Gaussianity is to use bootstrap. Specifically, we rewrite
+the AR(7) process as an MA(∞) process
+∞
+(cid:88)
+X
+t
+= ψ
+j
+(φ(cid:98))ε
+t−j
+.
+j=0
+Hence the best linear predictor can be rewritten as
+∞
+(cid:88)
+X
+t
+(k) = ψ
+j
+(φ(cid:98))ε
+t+k−j
+j=k
+thus giving the prediction error
+k−1
+(cid:88)
+X
+t+k
+− X
+t
+(k) = ψ
+j
+(φ(cid:98))ε
+t+k−j
+.
+j=0
+We have the prediction estimates, therefore all we need is to obtain the distribution of (cid:80)k
+j=
+−
+0
+1 ψ
+j
+(φ(cid:98))ε
+t+k−j
+.
+This can be done by estimating the residuals and then using bootstrap1 to estimate the distribu-
+tion of (cid:80)k
+j=
+−
+0
+1 ψ
+j
+(φ(cid:98))ε
+t+k−j
+, using the empirical distribution of (cid:80)
+j
+k
+=
+−
+0
+1 ψ
+j
+(φ(cid:98))ε∗
+t+k−j
+. From this we can
+1Residual bootstrap is based on sampling from the empirical distribution of the residuals i.e. construct
+the “bootstrap” sequence {ε∗
+t+k−j
+}
+j
+by sampling from the empirical distribution F(cid:98)(x) =
+n
+1 (cid:80)n
+t=p+1
+I(ε
+(cid:98)t
+≤
+x) (where ε
+(cid:98)t
+= X
+t
+−
+(cid:80)p
+j=1
+φ(cid:98)j X
+t−j
+). This sequence is used to construct the bootstrap estimator
+(cid:80)k
+j=
+−
+0
+1 ψ
+j
+(φ(cid:98))ε∗
+t+k−j
+. By doing this several thousand times we can evaluate the empirical distribution of
+(cid:80)k
+j=
+−
+0
+1 ψ
+j
+(φ(cid:98))ε∗
+t+k−j
+using these bootstrap samples. This is an estimator of the distribution function of
+(cid:80)k
+j=
+−
+0
+1 ψ
+j
+(φ(cid:98))ε
+t+k−j
+.
+202
+
+--- physical page 204 ---
+construct the 95% CI for the forecasts.
+2000 2002 2004 2006 2008 2010 2012
+3.0
+2.0
+1.0
+0.0
+1.0−
+2.0−
+3.0−
+year
+ecnereffid
+dnoces
+l
+l
+= forecast
+l l = true value
+l
+l l
+l
+l l
+l
+l
+l
+l l
+Figure 7.4: Forecasts of second differences.
+A small criticism of our approach is that we have fitted a rather large AR(7) model to time
+series of length of 127. It may be more appropriate to fit an ARMA model to this time series.
+Exercise 7.1 In this exercise we analyze the Sunspot data found on the course website. In the data
+analysis below only use the data from 1700 - 2003 (the remaining data we will use for prediction).
+In this section you will need to use the function ar.yw in R.
+(i) Fit the following models to the data and study the residuals (using the ACF). Using this
+decide which model
+X = µ + A cos(ωt) + B sin(ωt) + ε or
+t t
+(cid:124)(cid:123)(cid:122)(cid:125)
+AR
+X = µ + ε
+t t
+(cid:124)(cid:123)(cid:122)(cid:125)
+AR
+is more appropriate (take into account the number of parameters estimated overall).
+(ii) Use these models to forecast the sunspot numbers from 2004-2013.
+203
+
+--- physical page 205 ---
+7.5 One-step ahead predictors based on the finite past
+We return to Section 6.2.3 and call the definition of the best fitting AR(p) model.
+The best fitting AR(p) Let us suppose that {X } is a general second order stationary time series
+t
+with autocovariance {c(r)} . We consider the projection of X onto Y = (X , . . . , X ) (techni-
+r t t−p t−1
+cally we should should say sp(X , . . . , X )), this is
+t−p t−1
+p
+(cid:88)
+P (X ) = φ X
+Y t p,j t−j
+j=1
+where
+ 
+φ
+p,1
+ . 
+ . .  = Σ−1r , (7.6)
+  p p
+ 
+φ
+p.p
+where (Σ ) = c(i − j) and (r ) = c(i + 1). We recall that X − P (X ) and Y are uncorrelated
+p i,j p i t Y t
+but X − P (X ) is not necessarily uncorrelated with {X } for j ≥ (p + 1). We call {φ } the
+t Y t t−j p,j
+best fitting AR(p) coefficients, because if the true model were an AR(p) model φ = φ .
+p,j j
+Since X − P (X ) is uncorrelated with Y = (X , . . . , X ), the best linear predictor of X
+t Y t t−p t−1 t
+given Y = (X , . . . , X ) is
+t−p t−1
+p
+(cid:88)
+P (X ) = φ X
+Y t p,j t−j
+j=1
+7.5.1 Levinson-Durbin algorithm
+The Levinson-Durbin algorithm, which we describe below forms the basis of several estimation
+algorithms for linear time series. These include (a) the Gaussian Maximum likelihood estimator,
+(b) the Yule-Walker estimator and (c) the Burg algorithm. We describe these methods in Chapter
+9. But we start with a description of the Levinson-Durbin algorithm.
+The Levinson-Durbin algorithm is a method for evaluating {φ }p for an increasing number
+p,j j=1
+of past regressors (under the assumption of second order stationarity). A brute force method is to
+evaluate {φ }p using (7.15), where Σ−1 is evaluated using standard methods, such as Gauss-
+p,j j=1 p
+Jordan elimination. To solve this system of equations requires O(p3) operations. The beauty of the
+Levinson-Durbin algorithm is that it exploits the (Toeplitz) structure of Σ to reduce the number
+p
+204
+
+--- physical page 206 ---
+of operations to O(p2). It is evaluated recursively by increasing the order of lags p. It was first
+proposed in the 1940s by Norman Levinson (for Toeplitz equations). In the 1960s, Jim Durbin
+adapted the algorithm to time series and improved it. In the discussion below we switch p to t.
+We recall that in the aim in one-step ahead prediction is to predict X given X , X , . . . , X .
+t+1 t t−1 1
+The best linear predictor is
+t
+(cid:88)
+X = P (X ) = X = φ X . (7.7)
+t+1|t X1,...,Xt t+1 t+1|t,...,1 t,j t+1−j
+j=1
+The notation can get a little heavy. But the important point to remember is that as t grows we
+are not predicting further into the future. We are including more of the past in the one-step ahead
+prediction.
+We first outline the algorithm. We recall that the best linear predictor of X given X , . . . , X
+t+1 t 1
+is
+t
+(cid:88)
+X = φ X . (7.8)
+t+1|t t,j t+1−j
+j=1
+The mean squared error is r(t + 1) = E[X − X ]2. Given that the second order stationary
+t+1 t+1|t
+covariance structure, the idea of the Levinson-Durbin algorithm is to recursively estimate {φ ; j =
+t,j
+1, . . . , t} given {φ ; j = 1, . . . , t − 1} (which are the coefficients of the best linear predictor of X
+t−1,j t
+given X , . . . , X ). Let us suppose that the autocovariance function c(k) = cov[X , X ] is known.
+t−1 1 0 k
+The Levinson-Durbin algorithm is calculated using the following recursion.
+Step 1 φ = c(1)/c(0) and r(2) = E[X − X ]2 = E[X − φ X ]2 = c(0) − φ c(1).
+1,1 2 2|1 2 1,1 1 1,1
+Step 2 For j = t
+c(t) −
+(cid:80)t−1
+φ c(t − j)
+j=1 t−1,j
+φ =
+t,t
+r(t)
+φ = φ − φ φ 1 ≤ j ≤ t − 1,
+t,j t−1,j t,t t−1,t−j
+Step 3 r(t + 1) = r(t)(1 − φ2 ).
+t,t
+We give two proofs of the above recursion.
+205
+
+--- physical page 207 ---
+Exercise 7.2 (i) Suppose X = φX +ε (where |φ| < 1). Use the Levinson-Durbin algorithm,
+t t−1 t
+to deduce an expression for φ for (1 ≤ j ≤ t).
+t,j
+(ii) Suppose X = φε + ε (where |φ| < 1). Use the Levinson-Durbin algorithm (and possibly
+t t−1 t
+Maple/Matlab), deduce an expression for φ for (1 ≤ j ≤ t). (recall from Exercise 6.3 that
+t,j
+you already have an analytic expression for φ ).
+t,t
+7.5.2 A proof of the Durbin-Levinson algorithm based on projec-
+tions
+Let us suppose {X } is a zero mean stationary time series and c(k) = E(X X ). Let P (X )
+t k 0 Xt,...,X2 1
+denote the best linear predictor of X given X , . . . , X and P (X ) denote the best linear
+1 t 2 Xt,...,X2 t+1
+predictor of X given X , . . . , X . Stationarity means that the following predictors share the same
+t+1 t 2
+coefficients
+t−1 t−1
+(cid:88) (cid:88)
+X = φ X P (X ) = φ X (7.9)
+t|t−1 t−1,j t−j Xt,...,X2 t+1 t−1,j t+1−j
+j=1 j=1
+t−1
+(cid:88)
+P (X ) = φ X .
+Xt,...,X2 1 t−1,j j+1
+j=1
+The last line is because stationarity means that flipping a time series round has the same correlation
+structure. These three relations are an important component of the proof.
+Recall our objective is to derive the coefficients of the best linear predictor of P (X )
+Xt,...,X1 t+1
+based on the coefficients of the best linear predictor P (X ). To do this we partition the
+Xt−1,...,X1 t
+space sp(X , . . . , X , X ) into two orthogonal spaces sp(X , . . . , X , X ) = sp(X , . . . , X , X ) ⊕
+t 2 1 t 2 1 t 2 1
+sp(X − P (X )). Therefore by uncorrelatedness we have the partition
+1 Xt,...,X2 1
+X = P (X ) + P (X )
+t+1|t Xt,...,X2 t+1 X1−PXt,...,X2 (X1) t+1
+t−1
+(cid:88)
+= φ X + φ (X − P (X ))
+t−1,j t+1−j tt 1 Xt,...,X2 1
+(cid:124) (cid:123)(cid:122) (cid:125)
+j=1
+by projection onto one variable
+(cid:124) (cid:123)(cid:122) (cid:125)
+by (7.9)
+ 
+ 
+t−1 t−1
+(cid:88)  (cid:88) 
+= φ X + φ X − φ X  . (7.10)
+t−1,j t+1−j t,t  1 t−1,j j+1
+ 
+j=1 j=1
+ 
+(cid:124) (cid:123)(cid:122) (cid:125)
+by (7.9)
+206
+
+--- physical page 208 ---
+We start by evaluating an expression for φ (which in turn will give the expression for the other
+t,t
+coefficients). It is straightforward to see that
+E(X (X − P (X )))
+φ =
+t+1 1 Xt,...,X2 1
+(7.11)
+t,t E(X − P (X ))2
+1 Xt,...,X2 1
+E[(X − P (X ) + P (X ))(X − P (X ))]
+=
+t+1 Xt,...,X2 t+1 Xt,...,X2 t+1 1 Xt,...,X2 1
+E(X − P (X ))2
+1 Xt,...,X2 1
+E[(X − P (X ))(X − P (X ))]
+=
+t+1 Xt,...,X2 t+1 1 Xt,...,X2 1
+E(X − P (X ))2
+1 Xt,...,X2 1
+Therefore we see that the numerator of φ is the partial covariance between X and X (see
+t,t t+1 1
+Section 6.2), furthermore the denominator of φ is the mean squared prediction error, since by
+t,t
+stationarity
+E(X − P (X ))2 = E(X − P (X ))2 = r(t) (7.12)
+1 Xt,...,X2 1 t Xt−1,...,X1 t
+Returning to (7.11), expanding out the expectation in the numerator and using (7.12) we have
+φ =
+E(X t+1 (X 1 − P Xt,...,X2 (X 1 )))
+=
+c(0) − E[X t+1 P Xt,...,X2 (X 1 ))]
+=
+c(0) − (cid:80)t j − = 1 1 φ t−1,j c(t − j)
+,
+t,t
+r(t) r(t) r(t)
+(7.13)
+which immediately gives us the first equation in Step 2 of the Levinson-Durbin algorithm. To
+obtain the recursion for φ we use (7.10) to give
+t,j
+t
+(cid:88)
+X = φ X
+t+1|t t,j t+1−j
+j=1
+ 
+t−1 t−1
+(cid:88) (cid:88)
+= φ t−1,j X t+1−j + φ t,t X 1 − φ t−1,j X j+1 .
+j=1 j=1
+To obtain the recursion we simply compare coefficients to give
+φ = φ − φ φ 1 ≤ j ≤ t − 1.
+t,j t−1,j t,t t−1,t−j
+This gives the middle equation in Step 2. To obtain the recursion for the mean squared prediction
+207
+
+--- physical page 209 ---
+error we note that by orthogonality of {X , . . . , X } and X − P (X ) we use (7.10) to give
+t 2 1 Xt,...,X2 1
+r(t + 1) = E(X − X )2 = E[X − P (X ) − φ (X − P (X )]2
+t+1 t+1|t t+1 Xt,...,X2 t+1 t,t 1 Xt,...,X2 1
+= E[X − P (X )]2 + φ2 E[X − P (X )]2
+t+1 X2,...,Xt t+1 t,t 1 Xt,...,X2 1
+−2φ E[(X − P (X ))(X − P (X ))]
+t,t t+1 Xt,...,X2 t+1 1 Xt,...,X2 1
+= r(t) + φ2 r(t) − 2φ E[X (X − P (X ))]
+t,t t,t t+1 1 Xt,...,X2 1
+(cid:124) (cid:123)(cid:122) (cid:125)
+=r(t)φt,t by (7.13)
+= r(t)[1 − φ2 ].
+tt
+This gives the final part of the equation in Step 2 of the Levinson-Durbin algorithm.
+7.5.3 Applying the Durbin-Levinson to obtain the Cholesky de-
+composition
+We recall from Section 5.5 that by sequentially projecting the elements of random vector on the past
+elements in the vector gives rise to Cholesky decomposition of the inverse of the variance/covariance
+(precision) matrix. This is exactly what was done in when we make the Durbin-Levinson algorithm.
+In other words,
+ 
+√X1
+ r(1) 
+ 
+ X1√−φ1,1X2 
+var    r . . (2)    = I n
+ . 
+ 
+ Xn−(cid:80)n
+j=
+−
+√1
+1 φn−1,jXn−j 
+r(n)
+Therefore, if Σ = var[X ], where X = (X , . . . , X ), then Σ−1 = L D L(cid:48) , where
+n n n 1 n n n n n
+ 
+1 0 . . . . . . . . . 0
+ 
+ −φ 1 0 . . . . . . 0 
+ 1,1 
+ 
+L =  −φ −φ 1 0 . . . 0  (7.14)
+n  2,2 2,1 
+   . . . . . . . . . . . . . . . . . .   
+ 
+−φ −φ −φ . . . . . . 1
+n−1,n−1 n−1,n−2 n−1,n−3
+and D = diag(r−1, r−1, . . . , r−1).
+n 1 2 n
+208
+
+--- physical page 210 ---
+7.6 Comparing finite and infinite predictors (advanced)
+We recall that
+t
+(cid:88)
+X = P (X ) = φ X ,
+t+1|t Xt,...,X1 t+1 t,j t−j
+j=1
+which is the best linear predictor given the finite past. However, often φ can be difficult to
+t,j
+evaluate (usually with the Durbin-Levinson algorithm) in comparison to the AR(∞) parameters.
+Thus we define the above approximation
+t
+(cid:88)
+X(cid:98)t+1|t = φ
+j
+X
+t−j
+.
+j=1
+How good an approximation X(cid:98)t+1|t is of X
+t+1|t
+is given by Baxter’s inequality.
+Theorem 7.6.1 (Baxter’s inequality) Suppose {X } has an AR(∞) representation with param-
+t
+eters {φ }∞ such that (cid:80)∞ |φ | < ∞. Let {φ }n denote the parameters of the parameters of
+j j=1 j=1 j n,j j=1
+the best linear predictor of X given {X }t . Then if n is large enough we have
+t+1 j j=1
+n ∞
+(cid:88) (cid:88)
+|φ − φ | ≤ C |φ |,
+n,j j j
+j=1 j=n+1
+where C is a constant that depends on the underlying spectral density.
+We note that since
+(cid:80)∞
+|φ | < ∞, then
+(cid:80)∞
+|φ | → 0 as n → ∞. Thus as n gets large
+j=1 j j=n+1 j
+n
+(cid:88)
+|φ − φ | ≈ 0.
+n,j j
+j=1
+We apply this result to measuring the difference between X
+t+1|t
+and X(cid:98)t+1|t
+t t ∞
+(cid:88) (cid:88) (cid:88)
+E|X
+t+1|t
+− X(cid:98)t+1|t | ≤ |φ
+t,j
+− φ
+j
+| E|X
+t−j
+| ≤ E|X
+t−j
+| |φ
+t,j
+− φ
+j
+| ≤ CE|X
+t
+| |φ
+j
+|.
+j=1 j=1 j=t+1
+Therefore the best linear predictor and its approximation are “close” for large t.
+209
+
+--- physical page 211 ---
+7.7 r-step ahead predictors based on the finite past
+Let Y = (X , . . . , X )
+t−p t−1
+p
+(cid:88)
+P (X ) = φ (r)X
+Y t+r p,j t−j
+j=1
+where
+ 
+φ (r)
+p,1
+ . 
+ . .  = Σ−1r , (7.15)
+  p p,r
+ 
+φ (r)
+p,p
+where (Σ ) = c(i − j) and (r ) = c(i + r). This gives the best finite predictor for the time
+p i,j p,r i
+series at lag r. In practice, one often finds the best fitting AR(p) model, which gives the best finite
+predictor at lag one. And then uses the AR prediction method described in Section 7.3 to predict
+forward
+p
+(cid:88)
+X(cid:98)t (r) = [ΦX(cid:98)
+t
+(r − 1)]
+(1)
+= [Φr
+p
+X
+t
+]
+(1)
+= φ
+j
+(r, p)X
+t+1−j
+j=1
+where
+ 
+φ φ φ . . . φ
+p,1 p,2 3 p.p
+ 
+ 1 0 0 . . . 0 
+ 
+ 
+Φ =  0 1 0 . . . 0  .
+p  
+   . . . · · · . . . . . . 0   
+ 
+0 0 0 . . . 0
+If the true model is not an AR(p) this will not give the best linear predictor, but it will given an
+approximation of it. Suppose that j > n
+For ARMA models
+
+(cid:88) n  O p (ρp) τ ≤ p
+|φ (τ ; p) − φ (τ )||X | =
+j j,n t−j
+ O
+(cid:0) ρpρ|τ−p|(cid:1)
+τ > p.
+j=1 p
+Lemma 7.7.1 Suppose the MA(∞) and AR(∞) parameters satisfy (cid:80) |jK ψ | < ∞ and (cid:80) |jK a | <
+j j j j
+210
+
+--- physical page 212 ---
+∞ for some K > 1. Then
+ (cid:16) (cid:17)
+(cid:88) n  O p 1 K τ ≤ p
+|φ (τ ; p) − φ (τ )|
+j j (cid:16) (cid:17)
+ O 1 τ > p.
+j=1 pK|τ−p|K
+PROOF. If τ < p
+n n ∞ ∞ (cid:18) (cid:19)
+(cid:88) (cid:88) (cid:88) (cid:88) 1
+|φ (τ ; f ) − φ (τ, f )| = | φ (f )ψ (f ) − φ (f )ψ (f )| = O .
+j p j j+s p τ−s p j+s τ−s pK
+j=1 j=1 s=1 s=1
+If τ > p
+n n ∞ ∞ (cid:18) (cid:19)
+(cid:88) (cid:88) (cid:88) (cid:88) 1
+|φ (τ ; f ) − φ (τ, f )| = | φ (f )ψ (f ) − φ (f )ψ (f )| = O .
+j p j j+s p τ−s p j+s τ−s pK |τ − p|K
+j=1 j=1 s=1 s=1
+7.8 Forecasting for ARMA processes
+Given the autocovariance of any stationary process the Levinson-Durbin algorithm allows us to
+systematically obtain one-step predictors of second order stationary time series without directly
+inverting a matrix. In this section we consider the special case of ARMA(p, q) models where the
+ARMA coefficients are known.
+For AR(p) models prediction is especially easy, if the number of observations in the finite past,
+t, is such that p ≤ t. For 1 ≤ t ≤ p one would use the Durbin-Levinson algorithm and for t > p we
+use
+p
+(cid:88)
+X = φ X .
+t+1|t j t+1−j
+j=1
+For ARMA(p, q) models prediction is not so straightforward, but we show below some simple
+approximations can be made.
+We recall that a causal invertible ARMA(p, q) has the representation
+p q
+(cid:88) (cid:88)
+X = φ X + θ ε + ε .
+t+1 j t+1−j i t+1−i t+1
+j=1 i=1
+Then if the infinite past were observed by using equation (7.4) and the AR(∞) and MA(∞) repre-
+211
+
+--- physical page 213 ---
+sentation of the ARMA model the best linear predictor is
+∞
+(cid:88)
+X (1) = ψ ε
+t j t+1−j
+j=1
+∞
+(cid:88)
+= a X
+j t+1−j
+j=1
+where {ψ } and {a } are the AR(∞) and MA(∞) coefficients respectively. The above representation
+j j
+does not explictly use the ARMA representation. However since ε = X −X (1) it is easily
+t−j t−j t−j−1
+seen that an alternative representation is
+p q
+(cid:88) (cid:88)
+X (1) = φ X + θ (X − X (1)) .
+t j t+1−j i t+1−i t−i
+j=1 i=1
+However, for finite predictors the actual one-step ahead prediction formula is not so simple. It can
+be shown that for t ≥ max(p, q)
+p q
+(cid:88) (cid:88)
+X = φ X + θ (X − X ), (7.16)
+t+1|t j t+1−j t,i t+1−i t+1−i|t−i
+j=1 i=1
+where the coefficients θ which can be evaluated from the autocovariance structure of the MA
+t,i
+process. A proof is given in the appendix. It can be shown that θ → θ as t → ∞ (see Brockwell
+t,i i
+and Davis (1998)), Chapter 5.
+The prediction can be simplified if we make a simple approximation (which works well if t is
+relatively large). For 1 ≤ t ≤ max(p, q), set X(cid:98)t+1|t = X
+t
+and for t > max(p, q) we define the
+recursion
+p q
+(cid:88) (cid:88)
+X(cid:98)t+1|t = φ
+j
+X
+t+1−j
++ θ
+i
+(X
+t+1−i
+− X(cid:98)t+1−i|t−i ). (7.17)
+j=1 i=1
+This approximation seems plausible, since in the exact predictor (7.16), θ → θ . By iterating
+t,i i
+backwards, we can show that
+t−max(p,q) max(p,q)
+(cid:88) (cid:88)
+X(cid:98)t+1|t = a
+j
+X
+t+1−j
++ b
+j
+X
+j
+(7.18)
+j=1 j=1
+(cid:124) (cid:123)(cid:122) (cid:125)
+first part of AR(∞) expansion
+212
+
+--- physical page 214 ---
+where |γ | ≤ Cρt, with 1/(1 + δ) < ρ < 1 and the roots of θ(z) are outside (1 + δ). On the other
+j
+hand, the infinite predictor is
+∞ ∞
+(cid:88) (cid:88)
+X (1) = a X (since X = a X + ε ).
+t j t+1−j t+1 j t+1−j t+1
+j=1 j=1
+Remark 7.8.1 We prove (7.18) for the MA(1) model X = θε + ε .The estimated predictor is
+t t−1 t
+(cid:16) (cid:17)
+X(cid:98)t|t−1 = θ X
+t−1
+− X(cid:98)t−1|t−2
+(cid:16) (cid:17)
+⇒ X
+t
+− X(cid:98)t|t−1 = −θ X
+t−1
+− X(cid:98)t−1|t−2 + X
+t
+t−1
+(cid:88) (cid:16) (cid:17)
+= (−θ)jX
+t−j−1
++ (−θ)t X
+1
+− X(cid:98)1|0 .
+j=0
+On the other hand, the infinite predictor is
+(cid:16) (cid:17)
+X(cid:98)t|t−1 = θ X
+t−1
+− X(cid:98)t−1|t−2
+(cid:16) (cid:17)
+⇒ X
+t
+− X(cid:98)t|t−1 = −θ X
+t−1
+− X(cid:98)t−1|t−2 + X
+t
+t−1
+(cid:88) (cid:16) (cid:17)
+= (−θ)jX
+t−j−1
++ (−θ)t X
+1
+− X(cid:98)1|0 .
+j=0
+In summary, we have three one-step ahead predictors. The finite past best linear predictor:
+p q t
+(cid:88) (cid:88) (cid:88)
+X
+t+1|t
+= φ
+j
+X
+t+1−j
++ θ
+i,t
+(X
+t+1−i
+− X(cid:98)t+1−i|t−i ) = φ
+t,s
+X
+t+1−s
+(7.19)
+j=1 i=1 s=1
+The infinite past predictor:
+p q ∞
+(cid:88) (cid:88) (cid:88)
+X (1) = φ X + θ (X − X (1)) = a X (7.20)
+t j t+1−j i t+1−i t−i j t+1−s
+j=1 i=1 s=1
+and the approximate finite predictor:
+p q t max(p,q)
+(cid:88) (cid:88) (cid:88) (cid:88)
+X(cid:98)t+1|t = φ
+j
+X
+t+1−j
++ θ
+i
+(X
+t+1−i
+− X(cid:98)t−i (1)) = a
+j
+X
+t+1−s
++ b
+s
+X
+s
+. (7.21)
+j=1 i=1 s=1 s=1
+These predictors will be very useful in deriving the approximate Gaussian likelihood for the ARMA
+model, see Section 9.2.2. We give a bound for the differences below.
+213
+
+--- physical page 215 ---
+Proposition 7.8.1 Suppose {X } is an ARMA process where the roots of φ(z) and θ(z) have roots
+t
+which are greater in absolute value than 1 + δ. Let X
+t+1|t
+, X
+t
+(1) and X(cid:98)t+1|t be defined as in (7.19),
+(7.20) and (7.21) respectively. Then
+E[X(cid:98)t+1|t − X
+t
+(1)]2 ≤ Kρt, (7.22)
+E[X − X (1)]2 ≤ Kρt (7.23)
+t+1|t t
+and
+(cid:12) (cid:12)E[X t+1 − X t+1|t ]2 − σ2(cid:12) (cid:12) ≤ Kρt (7.24)
+for any 1 < ρ < 1 and var(ε ) = σ2.
+1+δ t
+7.9 ARMA models and the Kalman filter
+7.9.1 The Kalman filter
+The Kalman filter can be used to define a variant of the estimated predictor X(cid:98)t (1) described in
+(7.21). The Kalman filter construction is based on the state space equation
+X = F X + V
+t t−1 t
+where {X } is an unobserved time series, F is a known matrix, var[V ] = Q and {V } are indepen-
+t t t t t
+dent random variables that are independent of X . The observed equation
+t−1
+Y = HX + W
+t t−1 t
+where {Y } is the observed time series, var[W ] = R, {W } are independent that are independent
+t t t t t
+of X . Moreover {V } and {W } are jointly independent. The parameters can be made time-
+t−1 t t t
+dependent, but this make the derivations notationally more cumbersome.
+The standard notation is to let X(cid:98)t+1|t = P
+Y1,...,Yt
+(X
+t+1
+) and P
+t+1|t
+= var[X
+t+1
+− X(cid:98)t+1|t ] (pre-
+dictive) and X(cid:98)t+1|t+1 = P
+Y1,...,Yt
+(X
+t+1
+) and P
+t+1|t+1
+= var[X
+t+1
+− X(cid:98)t+1|t+1 ] (update). The Kalman
+214
+
+--- physical page 216 ---
+filter is an elegant method that iterates between the prediction steps X(cid:98)t+1|t and P
+t+1|t
+and the
+update steps X(cid:98)t+1|t+1 and P
+t+1|t+1
+. A proof is given at the end of the chapter. We summarise the
+algorithm below:
+The Kalman equations
+(i) Prediction step The conditional expectation
+X(cid:98)t+1|t = F X(cid:98)t|t
+and the corresponding mean squared error
+P = F P F ∗ + Q.
+t+1|t t|t
+(ii) Update step The conditional expectation
+(cid:16) (cid:17)
+X(cid:98)t+1|t+1 = X(cid:98)t+1|t + K
+t+1
+Y
+t+1
+− HX(cid:98)t+1|t .
+(note the appearance of Y , this is where the observed data plays a role in the prediction)
+t
+where
+K = P H∗[HP H∗ + R]−1
+t+1 t+1|t t+1|t
+and the corresponding mean squared error
+P = P − K HP = (I − K H)P .
+t+1|t+1 t+1|t t+1 t+1|t t+1 t+1|t
+(iii) There is also a smoothing step (which we ignore for now).
+Thus we observe that if we can write a model in the above notation, then the predictors can be
+recursively updated. It is worth mentioning that in order to initiate the algorithm the initial values
+X and P are required.
+0|0 0|0
+215
+
+--- physical page 217 ---
+7.9.2 The state space (Markov) representation of the ARMA model
+There is no unique state-space representation of the ARMA model. We give below the elegant
+construction proposed in Akaike (1977) and expanded on in Jones (1980). This construction can be
+used as in prediction (via the Kalman filter) and to estimate the parameters in likelihood likelihood
+(but keep in mind initial conditions do matter). The construction is based on the best linear
+predictor of the infinite past.
+We will assume {X } has a causal ARMA(p, q) representation where
+t
+p q
+(cid:88) (cid:88)
+X = φ X + θ ε + ε .
+t j t−j i t−i t
+j=1 i=1
+We now obtain a Markov-type representation of the above. It is based on best linear predictors
+given the infinite past. Let
+X(t + r|t) = P (X ),
+Xt,Xt−1,... t+r
+where we recall that previously we used the notation X (r) = X(t + r|t). The reason we change
+t
+notation is to keep track of the time stamps. To obtain the representation we use that the ARMA
+model has the MA(∞) representation
+∞
+(cid:88)
+X = ψ ε
+t j t−j
+j=0
+where ψ = 1. The MA(∞) coefficients can be derived from the ARMA parameters using the
+0
+recursion
+j−1
+(cid:88)
+ψ = θ + φ θ for j ≥ 1,
+j j k j−k
+k=1
+setting the initial value ψ = 1. Since X(t + r|t) is the best linear predictor given the infinite past
+0
+by using the results from Section 7.4 we have
+∞
+(cid:88)
+X(t + r|t) = P (X ) = ψ ε
+Xt,Xt−1,... t+r j+r t+r−j
+j=r
+∞
+(cid:88)
+X(t + r|t + 1) = P (X ) = ψ ε .
+Xt+1,Xt,Xt−1,... t+r j t+r−j
+j=r−1
+216
+
+--- physical page 218 ---
+Thus taking differences we have
+X(t + r|t + 1) − X(t + r|t) = ψ ε .
+r−1 t+1
+Rewriting the above gives
+X(t + r|t + 1) = X(t + r|t) + ψ ε . (7.25)
+r−1 t+1
+The simplest example of the above is X = X(t + r|t + r) = X(t + r|t + r − 1) + ε . Based on
+t+r t+r
+(7.25) we have
+       
+X(t + 1|t + 1) 0 1 0 . . . 0 0 X(t|t) 1
+       
+       
+ X(t + 2|t + 1)   0 0 1 . . . 0 0   X(t + 1|t)   ψ 1 
+       
+       
+ X(t + 3|t)   0 0 0 . . . 0 0   X(t + 2|t)   ψ 2 
+  =     + ε   .
+  . . .     . . . . . . . . . . . . . . . . . .     . . .   t+1   . . .  
+       
+       
+ X(t + r − 1|t + 1)   0 0 0 . . . 0 1   X(t + r − 2|t)   ψ 
+       r−2 
+       
+X(t + r|t + 1) ? ? ? . . . ? ? X(t + r − 1|t) ψ
+r−1
+The important observation is that the two vectors on the RHS of the above are independent, which
+is getting us towards a state space representation.
+How to choose r in this representation and what are the ?s. Studying the last line in the above
+vector equation we note that
+X(t + r|t + 1) = X(t + r|t) + ψ ε ,
+r−1 t+1
+however X(t + r|t) is not explicitly in the vector. Instead we need to find a linear combination of
+X(t|t), . . . , X(t + r − 1|t) which gives X(t + r|t). To do this we return to the ARMA representation
+p q
+(cid:88) (cid:88)
+X = φ X + θ ε + ε .
+t+r j t+r−j i t+r−i t+r
+j=1 i=1
+The next part gets a little messy (you may want to look at Akaike or Jones for a better explanation).
+217
+
+--- physical page 219 ---
+Suppose that r > q, specifically let r = q + 1, then
+p q
+(cid:88) (cid:88)
+P (X ) = φ P (X ) + θ P (ε ) + P (ε )
+Xt,Xt−1,... t+r j Xt,Xt−1,... t+r−j i Xt,Xt−1,... t+r−i Xt,Xt−1,... t+r
+j=1 i=1
+(cid:124) (cid:123)(cid:122) (cid:125)
+since r > q this is = 0
+p
+(cid:88)
+= φ P (X ).
+j Xt,Xt−1,... t+r−j
+j=1
+If, p < q + 1, then the above reduces to
+p
+(cid:88)
+X(t + r|t) = φ X(t + r − j|t).
+j
+j=1
+If, on the other hand p > r, then
+r
+(cid:88) (cid:88)
+X(t + r|t) = φ X(t + r − j|t) + φ X .
+j j t−j
+j=1 j=r+1
+Building {X }r from {X(t|t), . . . , X(t + r − 1|t)} seems unlikely (it can probably proved it is
+t−j j=1
+not possible, but a proof escapes me for now). Thus, we choose r ≥ max(p, q + 1) (which will then
+gives everything in terms of the predictors). This choice gives
+p
+(cid:88)
+P (X ) = φ X(t + r − j|t).
+Xt,Xt−1,... t+r j
+j=1
+This allows us to construct the recursion equations for any r ≥ max(p, q + 1) by using the above to
+build the last row of the matrix. For simplicility we set r = m = max(p, q + 1). If p < max(p, q + 1),
+then for p + 1 ≤ r ≤ m set φ = 0. Define the recursion
+j
+       
+X(t + 1|t + 1) 0 1 0 . . . 0 0 X(t|t) 1
+       
+       
+ X(t + 2|t + 1)   0 0 1 . . . 0 0   X(t + 1|t)   ψ 1 
+       
+       
+ X(t + 3|t)   0 0 0 . . . 0 0   X(t + 2|t)   ψ 2 
+  =     + ε   .
+  . . .     . . . . . . . . . . . . . . . . . .     . . .   t+1   . . .  
+       
+       
+ X(t + m − 1|t + 1)   0 0 0 . . . 0 1   X(t + m − 2|t)   ψ 
+       m−2 
+       
+X(t + m|t + 1) φ φ φ . . . φ φ X(t + m − 1|t) ψ
+m m−1 m−2 2 1 m−1
+Let Z = (X(t|t), . . . , X(t + m − 1|t)), and observe that Z is independent of ε . This yields the
+t t t+1
+218
+
+--- physical page 220 ---
+state space equation
+Z = F Z + V
+t+1 t t+1
+where Φ is the matrix defined above and V (cid:48) = ε (1, ψ , . . . , ψ ) = ε ψ(cid:48) . By forward
+t+1 t+1 1 m−1 t+1 m
+iterating
+Z = F Z + V t ∈ Z
+t+1 t t+1
+from t = −∞ the top entry of Z gives a stationary solution of the ARMA model. Of course in
+t
+practice, we cannot start at t = −∞ and start at t = 0, thus the initial conditions will play a role
+(and the solution won’t precisely follow a stationary ARMA).
+The observation model is
+Y = (1, 0, . . . , 0)Z ,
+t+1 t+1
+where we note that Y = X . Thus we set Y = X (where X is the observed time series).
+t+1 t+1 t t t
+7.9.3 Prediction using the Kalman filter
+We use the Kalman filter described above where we set Q = var(ε )ψ(cid:48) ψ , R = 0, H = (1, 0, . . . , 0).
+t
+m m
+This gives The Kalman equations
+(1) Start with an initial value Z . This part is where the approximation comes into play sinceY
+0|0 0
+is not observed. Typically a vectors of zeros are imputted for Z and recommendations for
+0|0
+P are given in given in Jones (1980) and Akaiki (1978). Then for t > 0 iterate on steps (2)
+0|0
+and (3) below.
+(2) Prediction step
+Z(cid:98)t+1|t = F Z(cid:98)t|t
+and the corresponding mean squared error
+P = F P F ∗ + Q.
+t+1|t t|t
+219
+
+--- physical page 221 ---
+(3) Update step The conditional expectation
+(cid:16) (cid:17)
+Z(cid:98)t+1|t+1 = Z(cid:98)t+1|t + K
+t+1
+Y
+t+1
+− HZ(cid:98)t+1|t .
+where
+P H∗
+t+1|t
+K =
+t+1 HP H∗
+t+1|t
+and the corresponding mean squared error
+P = P − K HP = (I − K H)P .
+t+1|t+1 t+1|t t t+1|t t t+1|t
+Z(cid:98)t+1|t will contain the linear predictors of X
+t+1
+, . . . , X
+t+m
+given X
+1
+, . . . , X
+t
+. They are “almost” the
+best linear predictors, but as in Section 7.8 the initial value plays a role (which is why it is only
+approximately the best linear predictor). Since we do not observe the infinite past we do not know
+Z (which is set to zero). The only way this can be exactly the best linear predictor is if Z
+m|m m|m
+were known, which it is not. Thus the approximate one-step ahead predictor is
+t
+(cid:88)
+X ≈ [Z ] ≈ a X ,
+t+1|t t+1|t (1) j t−j
+j=1
+where {a }∞ are the coefficients of the AR(∞) expansion corresponding to the ARMA model.
+j j=1
+The approximate r-step ahead predictor is [Z ] (if r ≤ m).
+t+1|t (1)
+7.10 Forecasting for nonlinear models (advanced)
+In this section we consider forecasting for nonlinear models. The forecasts we construct, may not
+necessarily/formally be the best linear predictor, because the best linear predictor is based on
+minimising the mean squared error, which we recall from Chapter 13 requires the existence of the
+higher order moments. Instead our forecast will be the conditional expection of X given the past
+t+1
+(note that we can think of it as the best linear predictor). Furthermore, with the exception of the
+ARCH model we will derive approximation of the conditional expectation/best linear predictor,
+analogous to the forecasting approximation for the ARMA model, X(cid:98)t+1|t (given in (7.17)).
+220
+
+--- physical page 222 ---
+7.10.1 Forecasting volatility using an ARCH(p) model
+We recall the ARCH(p) model defined in Section 13.2
+p
+(cid:88)
+X = σ Z σ2 = a + a X2 .
+t t t t 0 j t−j
+j=1
+Using a similar calculation to those given in Section 13.2.1, we see that
+E[X |X , X , . . . , X ] = E(Z σ |X , X , . . . , X ) = σ E(Z |X , X , . . . , X )
+t+1 t t−1 t−p+1 t+1 t+1 t t−1 t−p+1 t+1 t+1 t t−1 t−p+1
+(cid:124) (cid:123)(cid:122) (cid:125)
+σt+1 function of Xt,...,Xt−p+1
+= σ E(Z ) = 0 · σ = 0.
+t+1 t+1 t+1
+(cid:124) (cid:123)(cid:122) (cid:125)
+by causality
+In other words, past values of X have no influence on the expected value of X . On the other
+t t+1
+hand, in Section 13.2.1 we showed that
+p
+(cid:88)
+E(X2 |X , X , . . . , X ) = E(Z2 σ2 |X , X , . . . , X ) = σ2 E[Z2 ] = σ2 = a X2 ,
+t+1 t t−1 t−p+1 t+1 t+1 t t−2 t−p+1 t+1 t+1 t+1 j t+1−j
+j=1
+thus X has an influence on the conditional mean squared/variance. Therefore, if we let X
+t t+k|t
+denote the conditional variance of X given X , . . . , X , it can be derived using the following
+t+k t t−p+1
+recursion
+p
+(cid:88)
+X2 = a X2
+t+1|t j t+1−j
+j=1
+p k−1
+(cid:88) (cid:88)
+X2 = a X2 + a X2 2 ≤ k ≤ p
+t+k|t j t+k−j j t+k−j|k
+j=k j=1
+p
+(cid:88)
+X2 = a X2 k > p.
+t+k|t j t+k−j|t
+j=1
+7.10.2 Forecasting volatility using a GARCH(1, 1) model
+We recall the GARCH(1, 1) model defined in Section 13.3
+σ2 = a + a X2 + b σ2 = (cid:0) a Z2 + b (cid:1) σ2 + a .
+t 0 1 t−1 1 t−1 1 t−1 1 t−1 0
+221
+
+--- physical page 223 ---
+Similar to the ARCH model it is straightforward to show that E[X |X , X , . . .] = 0 (where we
+t+1 t t−1
+use the notation X , X , . . . to denote the infinite past or more precisely conditioned on the sigma
+t t−1
+algebra F = σ(X , X , . . .)). Therefore, like the ARCH process, our aim is to predict X2.
+t t t−1 t
+We recall from Example 13.3.1 that if the GARCH the process is invertible (satisfied if b < 1),
+then
+∞
+E[X2 |X , X , . . .] = σ2 = a + a X2 + b σ2 = a 0 + a (cid:88) bjX2 . (7.26)
+t+1 t t−1 t+1 0 1 t−1 1 t−1 1 − b 1 t−j
+j=0
+Of course, in reality we only observe the finite past X , X , . . . , X . We can approximate
+t t−1 1
+E[X2 |X , X , . . . , X ] using the following recursion, set σ2 = 0, then for t ≥ 1 let
+t+1 t t−1 1 (cid:98)1|0
+σ2 = a + a X2 + b σ2
+(cid:98)t+1|t 0 1 t 1(cid:98)t|t−1
+(noting that this is similar in spirit to the recursive approximate one-step ahead predictor defined
+in (7.18)). It is straightforward to show that
+σ2 = a 0 (1 − bt+1) + a (cid:88) t−1 bjX2 ,
+(cid:98)t+1|t 1 − b 1 t−j
+j=0
+taking note that this is not the same as E[X2 |X , . . . , X ] (if the mean square error existed
+t+1 t 1
+E[X2 |X , . . . , X ] would give a smaller mean square error), but just like the ARMA process it will
+t+1 t 1
+closely approximate it. Furthermore, from (7.26) it can be seen that σ2 closely approximates
+(cid:98)t+1|t
+σ2
+t+1
+Exercise 7.3 To answer this question you need R install.package("tseries") then remember
+library("garch").
+(i) You will find the Nasdaq data from 4th January 2010 - 15th October 2014 on my website.
+(ii) By taking log differences fit a GARCH(1,1) model to the daily closing data (ignore the adjusted
+closing value) from 4th January 2010 - 30th September 2014 (use the function garch(x,
+order = c(1, 1)) fit the GARCH(1, 1) model).
+(iii) Using the fitted GARCH(1, 1) model, forecast the volatility σ2 from October 1st-15th (not-
+t
+ing that no trading is done during the weekends). Denote these forecasts as σ2 . Evaluate
+t|0
+(cid:80)11 σ2
+t=1 t|0
+222
+
+--- physical page 224 ---
+(iv) Compare this to the actual volatility (cid:80)11 X2 (where X are the log differences).
+t=1 t t
+7.10.3 Forecasting using a BL(1, 0, 1, 1) model
+We recall the Bilinear(1, 0, 1, 1) model defined in Section 13.4
+X = φ X + b X ε + ε .
+t 1 t−1 1,1 t−1 t−1 t
+Assuming invertibility, so that ε can be written in terms of X (see Remark 13.4.2):
+t t
+∞ (cid:32) j−1 (cid:33)
+(cid:88) (cid:89)
+ε = (−b)j X [X − φX ],
+t t−1−j t−j t−j−1
+j=0 i=0
+it can be shown that
+X (1) = E[X |X , X , . . .] = φ X + b X ε .
+t t+1 t t−1 1 t 1,1 t t
+However, just as in the ARMA and GARCH case we can obtain an approximation, by setting
+X(cid:98)1|0 = 0 and for t ≥ 1 defining the recursion
+(cid:16) (cid:17)
+X(cid:98)t+1|t = φ
+1
+X
+t
++ b
+1,1
+X
+t
+X
+t
+− X(cid:98)t|t−1 .
+See ? and ? for further details.
+Remark 7.10.1 (How well does X(cid:98)t+1|t approximate X
+t
+(1)?) We now derive conditions for
+X(cid:98)t+1|t to be a close approximation of X
+t
+(1) when t is large. We use a similar technique to that
+used in Remark 7.8.1.
+We note that X − X (1) = ε (since a future innovation, ε , cannot be predicted). We
+t+1 t t+1 t+1
+will show that X
+t+1
+− X(cid:98)t+1|t is ‘close’ to ε
+t+1
+. Subtracting X(cid:98)t+1|t from X
+t+1
+gives the recursion
+X
+t+1
+− X(cid:98)t+1|t = −b
+1,1
+(X
+t
+− X(cid:98)t|t−1 )X
+t
++ (bε
+t
+X
+t
++ ε
+t+1
+) . (7.27)
+We will compare the above recursion to the recursion based on ε . Rearranging the bilinear
+t+1
+223
+
+--- physical page 225 ---
+equation gives
+ε = −bε X + (X − φ X ) . (7.28)
+t+1 t t t+1 1 t
+(cid:124) (cid:123)(cid:122) (cid:125)
+=bεtXt+εt+1
+We observe that (7.27) and (7.28) are almost the same difference equation, the only difference is
+that an initial value is set for X(cid:98)1|0 . This gives the difference between the two equations as
+t t
+(cid:89) (cid:89)
+ε
+t+1
+− [X
+t+1
+− X(cid:98)t+1|t ] = (−1)tbtX
+1
+ε
+j
++ (−1)tbt[X
+1
+− X(cid:98)1|0 ] ε
+j
+.
+j=1 j=1
+Thus if bt (cid:81)t
+j=1
+ε
+j
+a → .s. 0 as t → ∞, then X(cid:98)t+1|t → P X
+t
+(1) as t → ∞. We now show that if
+E[log |ε | < − log |b|, then bt (cid:81)t ε a → .s. 0. Since bt (cid:81)t ε is a product, it seems appropriate to
+t j=1 j j=1 j
+take logarithms to transform it into a sum. To ensure that it is positive, we take absolutes and
+t-roots
+t t
+(cid:89) 1 (cid:88)
+log |bt ε |1/t = log |b| + log |ε | .
+j j
+t
+j=1 j=1
+(cid:124) (cid:123)(cid:122) (cid:125)
+average of iid random variables
+Therefore by using the law of large numbers we have
+t t
+log |bt (cid:89) ε |1/t = log |b| + 1 (cid:88) log |ε | → P log |b| + E log |ε | = γ.
+j j 0
+t
+j=1 j=1
+Thus we see that |bt (cid:81)t ε |1/t a → .s. exp(γ). In other words, |bt (cid:81)t ε | ≈ exp(tγ), which will only
+j=1 j j=1 j
+converge to zero if E[log |ε | < − log |b|.
+t
+7.11 Nonparametric prediction (advanced)
+In this section we briefly consider how prediction can be achieved in the nonparametric world. Let
+us assume that {X } is a stationary time series. Our objective is to predict X given the past.
+t t+1
+However, we don’t want to make any assumptions about the nature of {X }. Instead we want to
+t
+obtain a predictor of X given X which minimises the means squared error, E[X − g(X )]2. It
+t+1 t t+1 t
+is well known that this is conditional expectation E[X |X ]. (since E[X − g(X )]2 = E[X −
+t+1 t t+1 t t+1
+224
+
+--- physical page 226 ---
+E(X |X )]2 + E[g(X ) − E(X |X )]2). Therefore, one can estimate
+t+1 t t t+1 t
+E[X |X = x] = m(x)
+t+1 t
+nonparametrically. A classical estimator of m(x) is the Nadaraya-Watson estimator
+(cid:80)n−1 X K( x−Xt )
+m (x) = t=1 t+1 b ,
+(cid:98) n (cid:80)n−1 K( x−Xt )
+t=1 b
+where K : R → R is a kernel function (see Fan and Yao (2003), Chapter 5 and 6). Under some
+‘regularity conditions’ it can be shown that m (x) is a consistent estimator of m(x) and converges
+(cid:98) n
+to m(x) in mean square (with the typical mean squared rate O(b4 + (bn)−1)). The advantage of
+going the non-parametric route is that we have not imposed any form of structure on the process
+(such as linear/(G)ARCH/Bilinear). Therefore, we do not run the risk of misspecifying the model
+A disadvantage is that nonparametric estimators tend to be a lot worse than parametric estimators
+(in Chapter ?? we show that parametric estimators have O(n−1/2) convergence which is faster than
+the nonparametric rate O(b2 + (bn)−1/2)). Another possible disavantage is that if we wanted to
+include more past values in the predictor, ie. m(x , . . . , x ) = E[X |X = x , . . . , X = x ] then
+1 d t+1 t 1 t−p d
+the estimator will have an extremely poor rate of convergence (due to the curse of dimensionality).
+A possible solution to the problem is to assume some structure on the nonparametric model,
+and define a semi-parametric time series model. We state some examples below:
+(i) An additive structure of the type
+p
+(cid:88)
+X = g (X ) + ε
+t j t−j t
+j=1
+where {ε } are iid random variables.
+t
+(ii) A functional autoregressive type structure
+p
+(cid:88)
+X = g (X )X + ε .
+t j t−d t−j t
+j=1
+(iii) The semi-parametric GARCH(1, 1)
+X = σ Z , σ2 = bσ2 + m(X ).
+t t t t t−1 t−1
+225
+
+--- physical page 227 ---
+However, once a structure has been imposed, conditions need to be derived in order that the model
+has a stationary solution (just as we did with the fully-parametric models).
+See ?, ?, ?, ?, ? etc.
+7.12 The Wold Decomposition (advanced)
+Section 5.5 nicely leads to the Wold decomposition, which we now state and prove. The Wold
+decomposition theorem, states that any stationary process, has something that appears close to
+an MA(∞) representation (though it is not). We state the theorem below and use some of the
+notation introduced in Section 5.5.
+Theorem 7.12.1 Suppose that {X } is a second order stationary time series with a finite variance
+t
+(we shall assume that it has mean zero, though this is not necessary). Then X can be uniquely
+t
+expressed as
+∞
+(cid:88)
+X = ψ Z + V , (7.29)
+t j t−j t
+j=0
+where {Z } are uncorrelated random variables, with var(Z ) = E(X −X (1))2 (noting that X (1)
+t t t t−1 t−1
+is the best linear predictor of X given X , X , . . .) and V ∈ X = ∩−∞ X −∞, where X −∞
+t t−1 t−2 t −∞ n=−∞ n n
+is defined in (5.34).
+PROOF. First let is consider the one-step ahead prediction of X given the infinite past, denoted
+t
+X (1). Since {X } is a second order stationary process it is clear that X (1) =
+(cid:80)∞
+b X ,
+t−1 t t−1 j=1 j t−j
+where the coefficients {b } do not vary with t. For this reason {X (1)} and {X − X (1)} are
+j t−1 t t−1
+second order stationary random variables. Furthermore, since {X − X (1)} is uncorrelated with
+t t−1
+X for any s ≤ t, then {X − X (1); s ∈ R} are uncorrelated random variables. Define Z =
+s s s−1 s
+X −X (1), and observe that Z is the one-step ahead prediction error. We recall from Section 5.5
+s s−1 s
+that X ∈ sp((X − X (1)), (X − X (1)), . . .) ⊕ s¯p(X ) = ⊕∞ sp(Z ) ⊕ s¯p(X ). Since
+t t t−1 t−1 t−2 −∞ j=0 t−j −∞
+the spaces ⊕∞ sp(Z ) and sp(X ) are orthogonal, we shall first project X onto ⊕∞ sp(Z ),
+j=0 t−j −∞ t j=0 t−j
+due to orthogonality the difference between X and its projection will be in sp(X ). This will
+t −∞
+lead to the Wold decomposition.
+226
+
+--- physical page 228 ---
+First we consider the projection of X onto the space ⊕∞ sp(Z ), which is
+t j=0 t−j
+∞
+(cid:88)
+P (X ) = ψ Z ,
+Zt,Zt−1,... t j t−j
+j=0
+where due to orthogonality ψ = cov(X , (X − X (1)))/var(X − X (1)). Since X ∈
+j t t−j t−j−1 t−j t−j−1 t
+⊕∞ sp(Z ) ⊕ s¯p(X ), the difference X − P X is orthogonal to {Z } and belongs in
+j=0 t−j −∞ t Zt,Zt−1,... t t
+s¯p(X ). Hence we have
+−∞
+∞
+(cid:88)
+X = ψ Z + V ,
+t j t−j t
+j=0
+where V = X −
+(cid:80)∞
+ψ Z and is uncorrelated to {Z }. Hence we have shown (7.29). To show
+t t j=0 j t−j t
+that the representation is unique we note that Z , Z , . . . are an orthogonal basis of sp(Z , Z , . . .),
+t t−1 t t−1
+which pretty much leads to uniqueness. (cid:3)
+Exercise 7.4 Consider the process X = A cos(Bt + U ) where A, B and U are random variables
+t
+such that A, B and U are independent and U is uniformly distributed on (0, 2π).
+(i) Show that X is second order stationary (actually it’s stationary) and obtain its means and
+t
+covariance function.
+(ii) Show that the distribution of A and B can be chosen in such a way that {X } has the same
+t
+covariance function as the MA(1) process Y = ε + φε (where |φ| < 1) (quite amazing).
+t t t
+(iii) Suppose A and B have the same distribution found in (ii).
+(a) What is the best predictor of X given X , X , . . .?
+t+1 t t−1
+(b) What is the best linear predictor of X given X , X , . . .?
+t+1 t t−1
+It is worth noting that variants on the proof can be found in Brockwell and Davis (1998),
+Section 5.7 and Fuller (1995), page 94.
+Remark 7.12.1 Notice that the representation in (7.29) looks like an MA(∞) process. There is,
+however, a significant difference. The random variables {Z } of an MA(∞) process are iid random
+t
+variables and not just uncorrelated.
+We recall that we have already come across the Wold decomposition of some time series. In
+Section 6.4 we showed that a non-causal linear time series could be represented as a causal ‘linear
+227
+
+--- physical page 229 ---
+time series’ with uncorrelated but dependent innovations. Another example is in Chapter 13, where
+we explored ARCH/GARCH process which have an AR and ARMA type representation. Using this
+representation we can represent ARCH and GARCH processes as the weighted sum of {(Z2 − 1)σ2}
+t t
+which are uncorrelated random variables.
+Remark 7.12.2 (Variation on the Wold decomposition) In many technical proofs involving
+time series, we often use results related to the Wold decomposition. More precisely, we often
+decompose the time series in terms of an infinite sum of martingale differences. In particular,
+we define the sigma-algebra F = σ(X , X , . . .), and suppose that E(X |F ) = µ. Then by
+t t t−1 t −∞
+telescoping we can formally write X as
+t
+∞
+(cid:88)
+X − µ = Z
+t t,j
+j=0
+where Z = E(X |F ) − E(X |F ). It is straightforward to see that Z are martingale
+t,j t t−j t t−j−1 t,j
+differences, and under certain conditions (mixing, physical dependence, your favourite dependence
+flavour etc) it can be shown that
+(cid:80)∞
+(cid:107)Z (cid:107) < ∞ (where (cid:107) · (cid:107) is the pth moment). This means
+j=0 t,j p p
+the above representation holds almost surely. Thus in several proofs we can replace X − µ by
+t
+(cid:80)∞
+Z . This decomposition allows us to use martingale theorems to prove results.
+j=0 t,j
+7.13 Kolmogorov’s formula (advanced)
+Suppose {X } is a second order stationary time series. Kolmogorov’s(-Szeg¨o) theorem is an expres-
+t
+sion for the error in the linear prediction of X given the infinite past X , X , . . .. It basically
+t t−1 t−2
+states that
+(cid:18) 1 (cid:90) 2π (cid:19)
+E [X − X (1)]2 = exp log f (ω)dω ,
+n n
+2π
+0
+where f is the spectral density of the time series. Clearly from the definition we require that the
+spectral density function is bounded away from zero.
+To prove this result we use (5.25);
+det(Σ)
+var[Y − Y(cid:98) ] = .
+det(Σ )
+XX
+228
+
+--- physical page 230 ---
+and Szeg¨o’s theorem (see, Gray’s technical report, where the proof is given), which we state later
+on. Let P (X ) =
+(cid:80)n
+φ X (best linear predictor of X given X , . . . , X ).
+X1,...,Xn n+1 j=1 j,n n+1−j n+1 n 1
+Then we observe that since {X } is a second order stationary time series and using (5.25) we have
+t
+ 2
+n
+(cid:88) det(Σ n+1 )
+E X n+1 − φ n,j X n+1−j = ,
+det(Σ )
+n
+j=1
+where Σ = {c(i − j); i, j = 0, . . . , n − 1}, and Σ is a non-singular matrix.
+n n
+Szeg¨o’s theorem is a general theorem concerning Toeplitz matrices. Define the sequence of
+Toeplitz matrices Γ = {c(i − j); i, j = 0, . . . , n − 1} and assume the Fourier transform
+n
+(cid:88)
+f (ω) = c(j) exp(ijω)
+j∈Z
+exists and is well defined ( (cid:80) |c(j)|2 < ∞). Let {γ } denote the Eigenvalues corresponding to Γ .
+j j,n n
+Then for any function G we have
+1 (cid:88) n (cid:90) 2π
+lim G(γ ) → G(f (ω))dω.
+j,n
+n→∞ n
+0
+j=1
+To use this result we return to E[X − (cid:80)n φ X ]2 and take logarithms
+n+1 j=1 n,j n+1−j
+n
+(cid:88)
+log E[X − φ X ]2 = log det(Σ ) − log det(Σ )
+n+1 n,j n+1−j n+1 n
+j=1
+n+1 n
+(cid:88) (cid:88)
+= log γ − log γ
+j,n+1 j,n
+j=1 j=1
+where the above is because det Σ =
+(cid:81)n
+γ (where γ are the eigenvalues of Σ ). Now we
+n j=1 j,n j,n n
+apply Szeg¨o’s theorem using G(x) = log(x), this states that
+1 (cid:88) n (cid:90) 2π
+lim log(γ ) → log(f (ω))dω.
+j,n
+n→∞ n
+0
+j=1
+thus for large n
+n+1 n
+1 (cid:88) 1 (cid:88)
+log γ ≈ log γ .
+j,n+1 j,n
+n + 1 n
+j=1 j=1
+229
+
+--- physical page 231 ---
+This implies that
+n+1 n
+(cid:88) n + 1 (cid:88)
+log γ ≈ log γ ,
+j,n+1 j,n
+n
+j=1 j=1
+hence
+n
+(cid:88)
+log E[X − φ X ]2 = log det(Σ ) − log det(Σ )
+n+1 n,j n+1−j n+1 n
+j=1
+n+1 n
+(cid:88) (cid:88)
+= log γ − log γ
+j,n+1 j,n
+j=1 j=1
+n n n
+n + 1 (cid:88) (cid:88) 1 (cid:88)
+≈ log γ − log γ = log γ .
+j,n j,n j,n
+n n
+j=1 j=1 j=1
+Thus
+n n
+(cid:88) (cid:88)
+lim log E[X − φ X ]2 = lim log E[X − φ X ]2
+t+1 n,j t+1−j n+1 n,j n+1−j
+n→∞ n→∞
+j=1 j=1
+1 (cid:88) n (cid:90) 2π
+= lim log γ = log(f (ω))dω
+j,n
+n→∞ n
+0
+j=1
+and
+n (cid:18)(cid:90) 2π (cid:19)
+(cid:88)
+lim E[X − φ X ]2 = exp log(f (ω))dω .
+t+1 n,j t+1−j
+n→∞
+0
+j=1
+This gives a rough outline of the proof. The precise proof can be found in Gray’s technical report.
+There exists alternative proofs (given by Kolmogorov), see Brockwell and Davis (1998), Chapter 5.
+This is the reason that in many papers the assumption
+(cid:90) 2π
+log f (ω)dω > −∞
+0
+is made. This assumption essentially ensures X ∈/ X .
+t −∞
+Example 7.13.1 Consider the AR(p) process X = φX + ε (assume wlog that |φ| < 1) where
+t t−1 t
+E[ε ] = 0 and var[ε ] = σ2. We know that X (1) = φX and
+t t t t
+E[X − X (1)]2 = σ2.
+t+1 t
+230
+
+--- physical page 232 ---
+We now show that
+(cid:18) 1 (cid:90) 2π (cid:19)
+exp log f (ω)dω = σ2. (7.30)
+2π
+0
+We recall that the spectral density of the AR(1) is
+σ2
+f (ω) =
+|1 − φeiω|2
+⇒ log f (ω) = log σ2 − log |1 − φeiω|2.
+Thus
+1 (cid:90) 2π 1 (cid:90) 2π 1 (cid:90) 2π
+log f (ω)dω = log σ2dω − log |1 − φeiω|2dω .
+2π 2π 2π
+0 0 0
+(cid:124) (cid:123)(cid:122) (cid:125) (cid:124) (cid:123)(cid:122) (cid:125)
+=log σ2 =0
+There are various ways to prove that the second term is zero. Probably the simplest is to use basic
+results in complex analysis. By making a change of variables z = eiω we have
+1 (cid:90) 2π 1 (cid:90) 2π 1 (cid:90) 2π
+log |1 − φeiω|2dω = log(1 − φeiω)dω + log(1 − φe−iω)dω
+2π 2π 2π
+0 0 0
+1 (cid:90) 2π (cid:88) ∞ (cid:20) φjeijω φje−ijω (cid:21)
+= + dω = 0.
+2π j j
+0
+j=1
+From this we immediately prove (7.30).
+7.14 Appendix: Prediction coefficients for an AR(p)
+model
+Define the p-dimension random vector X(cid:48) = (X , . . . , X ). We define the causal VAR(1) model
+t t t−p+1
+in the vector form as
+X = ΦX + ε
+t t−1 t
+231
+
+--- physical page 233 ---
+where ε(cid:48) = (ε , 0, . . . , 0) and
+t t
+ 
+φ φ . . . φ φ
+1 2 p−1 p
+ 
+ 1 0 . . . 0 0 
+ 
+ 
+Φ =  0 1 . . . 0 0  . (7.31)
+ 
+   . . . . . . . . . 0 0   
+ 
+0 0 . . . 1 0
+Lemma 7.14.1 Let Φ be defined as in (7.31) where parameters φ are such that the roots of φ(z) =
+1 − (cid:80)p φ zj lie outside the unit circle. Then
+j=1 j
+p p−(cid:96)
+(cid:88) (cid:88)
+[Φ|τ|+1X ] = X φ ψ . (7.32)
+p (1) (cid:96) (cid:96)+s |τ|−s
+(cid:96)=1 s=0
+where {ψ } are the coefficients in the expansion (1 − (cid:80)p φ e−ijω)−1 = (cid:80)∞ ψ e−isω.
+j j=1 j j=0 s
+PROOF. The proof is based on the observation that the jth row of Φm (m ≥ 1) is the (j − 1)th
+row of Φm−1 (due to the structure of A). Let (φ , . . . , φ ) denote the first row of Φm. Using
+1,m p,m
+this notation we have
+     
+φ φ . . . φ φ φ . . . φ φ φ φ . . . φ
+1,m 2,m p,m 1 2 p−1 p 1,m−1 2,m−1 p,m−1
+     
+ φ φ . . . φ   1 0 . . . 0 0   φ φ . . . φ 
+ 1,m−1 2,m−1 p,m−1     1,m−2 2,m−2 p,m−2 
+   . . . . . . . . . . . .    =    0 1 . . . 0 0       . . . . . . . . . . . .    .
+     
+φ φ . . . φ 0 0 . . . 1 0 φ φ . . . φ
+1,m−p+1 2,m−p+1 p,m−p+1 1,m−p 2,m−p p,m−p
+From the above we observe that φ satisfies the system of equations
+(cid:96),m
+φ = φ φ + φ 1 ≤ (cid:96) ≤ p − 1
+(cid:96),m (cid:96) 1,m−1 (cid:96)+1,m−1
+φ = φ φ . (7.33)
+p,m p 1,m−1
+Our aim is to obtain an expression for φ in terms of {φ }p and {ψ }∞ which we now define.
+(cid:96),m j j=1 j j=0
+Since the roots of φ(·) lies outside the unit circle the function (1 − (cid:80)p φ zj)−1 is well defined
+j=1 j
+for |z| ≤ 1 and has the power series expansion (1 − (cid:80)p φ z)−1 = (cid:80)∞ ψ zi for |z| ≤ 1. We use
+i=1 i i=0 i
+the well know result [Φm] = φ = ψ . Using this we obtain an expression for the coefficients
+1,1 1,m m
+232
+
+--- physical page 234 ---
+{φ ; 2 ≤ (cid:96) ≤ p} in terms of {φ } and {ψ }. Solving the system of equations in (7.33), starting
+(cid:96),m i i
+with φ = ψ and recursively solving for φ , . . . , φ we have
+1,1 1 p,m 2,m
+φ = φ ψ m − p ≤ r ≤ m
+p,r p r−1
+φ = φ φ + φ 1 ≤ (cid:96) ≤ p − 1, m − p ≤ r ≤ m
+(cid:96),r (cid:96) 1,r−1 (cid:96)+1,r−1
+This gives φ = φ ψ , for (cid:96) = p − 1
+p,m p m−1
+φ = φ φ + φ
+p−1,m p−1 1,m−1 p,m−1
+= φ ψ + ψ ψ
+p−1 m−1 p m−2
+φ = φ φ + φ
+p−2,m p−2 1,m−1 p−1,m−1
+= φ ψ + φ ψ + ψ ψ
+p−2 m−1 p−1 m−2 p m−3
+up to
+φ = φ φ + φ
+1,m 1 1,m−1 2,m−1
+p−1
+(cid:88)
+= φ ψ = (ψ ).
+1+s m−1−s m
+s=0
+This gives the general expression
+r
+(cid:88)
+φ = φ ψ 0 ≤ r ≤ p − 1.
+p−r,m p−r+s m−1−s
+s=0
+In the last line of the above we change variables with (cid:96) = p − r to give for m ≥ 1
+p−(cid:96)
+(cid:88)
+φ = φ ψ 1 ≤ (cid:96) ≤ p,
+(cid:96),m (cid:96)+s m−1−s
+s=0
+where we set ψ = 1 and for t < 0, ψ = 0. Therefore
+0 t
+p p−(cid:96)
+(cid:88) (cid:88)
+[Φ|τ|+1X ] = X φ ψ .
+p (1) (cid:96) (cid:96)+s |τ|−s
+(cid:96)=1 s=0
+233
+
+--- physical page 235 ---
+Thus we obtain the desired result. (cid:3)
+A proof of Durbin-Levinson algorithm based on symmetric Toeplitz matrices
+We now give an alternative proof which is based on properties of the (symmetric) Toeplitz matrix.
+We use (7.15), which is a matrix equation where
+ 
+φ
+t,1
+ . 
+Σ t   . .   = r t , (7.34)
+ 
+φ
+t,t
+with
+   
+c(0) c(1) c(2) . . . c(t − 1) c(1)
+   
+ c(1) c(0) c(1) . . . c(t − 2)   c(2) 
+   
+Σ t =    . . . . . . . . . . . . . . .    and r t =    . . .    .
+ . .   
+. .
+c(t − 1) c(t − 2) . . c(0) c(t)
+The proof is based on embedding r and Σ into Σ and using that Σ φ = r .
+t−1 t−1 t−1 t−1 t−1 t−1
+To do this, we define the (t − 1) × (t − 1) matrix E which basically swops round all the
+t−1
+elements in a vector
+ 
+0 0 0 . . . 0 1
+ 
+ 0 0 0 . . . 1 0 
+ 
+E t−1 =  . . . . .  ,
+ . . . . . 
+. . . . .
+ 
+ . 
+.
+1 0 . 0 0 0
+(recall we came across this swopping matrix in Section 6.2). Using the above notation, we have the
+interesting block matrix structure
+ 
+Σ E r
+t−1 t−1 t−1
+Σ t =  
+r(cid:48) E c(0)
+t−1 t−1
+and r = (r(cid:48) , c(t))(cid:48).
+t t−1
+234
+
+--- physical page 236 ---
+Returning to the matrix equations in (7.34) and substituting the above into (7.34) we have
+     
+Σ E r φ r
+Σ t φ t = r t , ⇒  r(cid:48) t E −1 t− c( 1 0) t−1   φ t−1,t  =  c t ( − t) 1  ,
+t−1 t−1 t,t
+where φ(cid:48) = (φ , . . . , φ ). This leads to the two equations
+1,t t−1,t
+t−1,t
+Σ φ + E r φ = r (7.35)
+t−1 t−1,t t−1 t−1 t,t t−1
+r(cid:48) E φ + c(0)φ = c(t). (7.36)
+t−1 t−1 t−1,t t,t
+We first show that equation (7.35) corresponds to the second equation in the Levinson-Durbin
+algorithm. Multiplying (7.35) by Σ−1 , and rearranging the equation we have
+t−1
+φ = Σ−1 r − Σ−1 E r φ .
+t−1,t t−1 t−1 t−1 t−1 t−1 t,t
+(cid:124) (cid:123)(cid:122) (cid:125) (cid:124) (cid:123)(cid:122) (cid:125)
+=φ
+t−1
+=Et−1φ
+t−1
+Thus we have
+φ = φ − φ E φ . (7.37)
+t,t t−1
+t−1,t t−1 t−1
+This proves the second equation in Step 2 of the Levinson-Durbin algorithm.
+We now use (7.36) to obtain an expression for φ , which is the first equation in Step 1.
+t,t
+Substituting (7.37) into φ of (7.36) gives
+t−1,t
+(cid:16) (cid:17)
+r(cid:48) E φ − φ E φ + c(0)φ = c(t). (7.38)
+t−1 t−1 t−1 t,t t−1 t−1 t,t
+Thus solving for φ we have
+t,t
+c(t) − c(cid:48) E φ
+φ = t−1 t−1 t−1 . (7.39)
+t,t c(0) − c(cid:48) φ(cid:48)
+t−1 t−1
+Noting that r(t) = c(0) − c(cid:48) φ(cid:48) . (7.39) is the first equation of Step 2 in the Levinson-Durbin
+t−1 t−1
+equation.
+Note from this proof we do not need that the (symmetric) Toeplitz matrix is positive semi-
+definite. See Pourahmadi (2001), Chapter 7.
+235
+
+--- physical page 237 ---
+Prediction for ARMA models
+Proof of equation (7.16) For the proof, we define the variables {W }, where W = X for 1 ≤ t ≤ p
+t t t
+and for t > max(p, q) let W = ε +
+(cid:80)q
+θ ε (which is the MA(q) part of the process). Since
+t t i=1 i t−i
+X =
+(cid:80)p
+φ X + W and so forth it is clear that sp(X , . . . , X ) = sp(W , . . . , W ) (i.e.
+p+1 j=1 j t+1−j p+1 1 t 1 t
+they are linear combinations of each other). To prove the result we use the following steps:
+p q
+(cid:88) (cid:88)
+P (X ) = φ P (X ) + θ P (ε )
+Xt,...,X1 t+1 j Xt,...,X1 t+1−j i Xt,...,X1 t+1−i
+(cid:124) (cid:123)(cid:122) (cid:125)
+j=1 i=1
+Xt+1−j
+p q
+(cid:88) (cid:88)
+= φ X + θ P (ε )
+j t+1−j i Xt−X
+t|t−1
+,...,X2−X
+2|1
+,X1 t+1−i
+j=1 i=1 (cid:124) (cid:123)(cid:122) (cid:125)
+=PWt−Wt|t−1,...,W2−W2|1,W1 (εt+1−i)
+p q
+(cid:88) (cid:88)
+= φ X + θ P (ε )
+j t+1−j i Wt−W
+t|t−1
+,...,W2−W
+2|1
+,W1 t+1−i
+j=1 i=1
+p q
+(cid:88) (cid:88)
+= φ X + θ P (ε )
+j t+1−j i Wt+1−i−W
+t+1−i|t−i
+,...,Wt−W
+t|t−1
+t+1−i
+j=1 i=1 (cid:124) (cid:123)(cid:122) (cid:125)
+since εt+1−iis independent of Wt+1−i−j;j≥1
+p q i−1
+(cid:88) (cid:88) (cid:88)
+= φ X + θ P (ε )
+j t+1−j i Wt+1−i+s−W
+t+1−i+s|t−i+s
+t+1−i
+j=1 i=1 s=0 (cid:124) (cid:123)(cid:122) (cid:125)
+since Wt+1−i+s−W
+t+1−i+s|t−i+s
+are uncorrelated
+p q
+(cid:88) (cid:88)
+= φ X + θ (W − W )
+j t+1−j t,i t+1−i t+1−i|t−i
+j=1 i=1 (cid:124) (cid:123)(cid:122) (cid:125)
+=Xt+1−i−X
+t+1−i|t−i
+p q
+(cid:88) (cid:88)
+= φ X + θ (X − X ),
+j t+1−j t,i t+1−i t+1−i|t−i
+j=1 i=1
+this gives the desired result.
+We prove (7.18) for the ARMA(1, 2) model We first note that sp(X , X , . . . , X ) = sp(W , W , . . . , W ),
+1 t t 1 2 t
+where W = X and for t ≥ 2 W = θ ε +θ ε +ε . The corresponding approximating predictor
+1 1 t 1 t−1 2 t−2 t
+is defined as W(cid:99)2|1 = W
+1
+, W(cid:99)3|2 = W
+2
+and for t > 3
+W(cid:99)t|t−1 = θ
+1
+[W
+t−1
+− W(cid:99)t−1|t−2 ] + θ
+2
+[W
+t−2
+− W(cid:99)t−2|t−3 ].
+Note that by using (7.17), the above is equivalent to
+X(cid:98)t+1|t − φ
+1
+X
+t
+= θ
+1
+[X
+t
+− X(cid:98)t|t−1 ] +θ
+2
+[X
+t−1
+− X(cid:98)t−1|t−2 ] .
+(cid:124) (cid:123)(cid:122) (cid:125) (cid:124) (cid:123)(cid:122) (cid:125) (cid:124) (cid:123)(cid:122) (cid:125)
+W(cid:99)t+1|t =(Wt−W(cid:99)t|t−1 ) =(Wt−1−W(cid:99)t−1|t−2 )
+236
+
+--- physical page 238 ---
+By subtracting the above from W we have
+t+1
+W
+t+1
+− W(cid:99)t+1|t = −θ
+1
+(W
+t
+− W(cid:99)t|t−1 ) − θ
+2
+(W
+t−1
+− W(cid:99)t−1|t−2 ) + W
+t+1
+. (7.40)
+It is straightforward to rewrite W
+t+1
+− W(cid:99)t+1|t as the matrix difference equation
+       
+W
+t+1
+− W(cid:99)t+1|t θ
+1
+θ
+2
+W
+t
+− W(cid:99)t|t−1 W
+t+1
+  = −     +  
+W
+t
+− W(cid:99)t|t−1 −1 0 W
+t−1
+− W(cid:99)t−1|t−2 0
+(cid:124) (cid:123)(cid:122) (cid:125) (cid:124) (cid:123)(cid:122) (cid:125) (cid:124) (cid:123)(cid:122) (cid:125) (cid:124) (cid:123)(cid:122) (cid:125)
+=ε =Q =ε W
+(cid:98)t+1 (cid:98)t t+1
+We now show that ε
+t+1
+and W
+t+1
+− W(cid:99)t+1|t lead to the same difference equation except for some
+initial conditions, it is this that will give us the result. To do this we write ε as function of {W }
+t t
+(the irreducible condition). We first note that ε can be written as the matrix difference equation
+t
+       
+ε θ θ ε W
+t+1 1 2 t t+1
+  = −     +   (7.41)
+ε −1 0 ε 0
+t t−1
+(cid:124) (cid:123)(cid:122) (cid:125) (cid:124) (cid:123)(cid:122) (cid:125) (cid:124) (cid:123)(cid:122) (cid:125) (cid:124) (cid:123)(cid:122) (cid:125)
+=ε Q ε W
+t+1 t t+1
+Thus iterating backwards we can write
+∞ ∞
+(cid:88) (cid:88)
+ε = (−1)j[Qj] W = ˜b W ,
+t+1 (1,1) t+1−j j t+1−j
+j=0 j=0
+where ˜b = (−1)j[Qj] (noting that ˜b = 1) denotes the (1, 1)th element of the matrix Qj (note
+j (1,1) 0
+we did something similar in Section ??). Furthermore the same iteration shows that
+t−3
+(cid:88)
+ε = (−1)j[Qj] W + (−1)t−2[Qt−2] ε
+t+1 (1,1) t+1−j (1,1) 3
+j=0
+t−3
+(cid:88)
+= ˜b W + (−1)t−2[Qt−2] ε . (7.42)
+j t+1−j (1,1) 3
+j=0
+Therefore, by comparison we see that
+t−3 ∞
+(cid:88) (cid:88)
+ε − ˜b W = (−1)t−2[Qt−2ε ] = ˜b W .
+t+1 j t+1−j 3 1 j t+1−j
+j=0 j=t−2
+We now return to the approximation prediction in (7.40). Comparing (7.41) and (7.41) we see
+237
+
+--- physical page 239 ---
+that they are almost the same difference equations. The only difference is the point at which the
+algorithm starts. ε goes all the way back to the start of time. Whereas we have set initial values
+t
+for W(cid:99)2|1 = W
+1
+, W(cid:99)3|2 = W
+2
+, thus
+(cid:98)
+ε(cid:48)
+3
+= (W
+3
+− W
+2
+, W
+2
+− W
+1
+).Therefore, by iterating both (7.41) and
+(7.41) backwards, focusing on the first element of the vector and using (7.42) we have
+ε − ε = (−1)t−2[Qt−2ε ] +(−1)t−2[Qt−2ε ]
+t+1 (cid:98)t+1 3 1 (cid:98)3 1
+(cid:124) (cid:123)(cid:122) (cid:125)
+=(cid:80)∞
+j=t−2
+˜bjWt+1−j
+We recall that ε
+t+1
+= W
+t+1
++ (cid:80)∞
+j=1
+˜b
+j
+W
+t+1−j
+and that ε
+(cid:98)t+1
+= W
+t+1
+− W(cid:99)t+1|t . Substituting this
+into the above gives
+∞ ∞
+(cid:88) (cid:88)
+W(cid:99)t+1|t − ˜b
+j
+W
+t+1−j
+= ˜b
+j
+W
+t+1−j
++ (−1)t−2[Qt−2
+(cid:98)
+ε
+3
+]
+1
+.
+j=1 j=t−2
+Replacing W with X − φ X gives (7.18), where the b can be easily deduced from ˜b and φ .
+t t 1 t−1 j j 1
+We now state a few results which will be useful later.
+Lemma 7.14.2 Suppose {X } is a stationary time series with spectral density f (ω). Let X =
+t t
+(X , . . . , X ) and Σ = var(X ).
+1 t t t
+(i) If the spectral density function is bounded away from zero (there is some γ > 0 such that
+inf f (ω) > 0), then for all t, λ (Σ ) ≥ γ (where λ and λ denote the smallest and
+ω min t min max
+largest absolute eigenvalues of the matrix).
+(ii) Further, λ (Σ−1) ≤ γ−1.
+max t
+(Since for symmetric matrices the spectral norm and the largest eigenvalue are the same, then
+(cid:107)Σ−1(cid:107) ≤ γ−1).
+t spec
+(iii) Analogously, sup f (ω) ≤ M < ∞, then λ (Σ ) ≤ M (hence (cid:107)Σ (cid:107) ≤ M ).
+ω max t t spec
+PROOF. See Chapter 10. (cid:3)
+Remark 7.14.1 Suppose {X } is an ARMA process, where the roots φ(z) and and θ(z) have
+t
+absolute value greater than 1 + δ and less than δ , then the spectral density f (ω) is bounded
+1 2
+(1− 1 )2p (1−( 1 )2p
+by var(ε ) δ2 ≤ f (ω) ≤ var(ε ) 1+δ1 . Therefore, from Lemma 7.14.2 we have that
+t (1−( 1 )2p t (1− 1 )2p
+1+δ1 δ2
+λ (Σ ) and λ (Σ−1) is bounded uniformly over t.
+max t max t
+238
+
+--- physical page 240 ---
+7.15 Appendix: Proof of the Kalman filter
+In this section we prove the recursive equations used to define the Kalman filter. The proof is
+straightforward and used the multi-stage projection described in Section 5.1.4 (which has been
+already been used to prove the Levinson-Durbin algorithm and forms the basis of the Burg algo-
+rithm).
+The Kalman filter construction is based on the state space equation
+X = F X + V
+t t−1 t
+where {X } is an unobserved time series, F is a known matrix, var[V ] = Q and {V } are indepen-
+t t t t t
+dent random variables that are independent of X . The observed equation
+t−1
+Y = HX + W
+t t−1 t
+where {Y } is the observed time series, var[W ] = R, {W } are independent that are independent
+t t t t t
+of X . Moreover {V } and {W } are jointly independent. The parameters can be made time-
+t−1 t t t
+dependent, but this make the derivations notationally more cumbersome.
+The derivation of the Kalman equations are based on the projections discussed in Section 5.3.
+In particular, suppose that X, Y, Z are random variables then
+P (X) = P (X) + α (Z − P (Z)) (7.43)
+Y,Z Y X Y
+where
+cov(X, Z − P (Z))
+Y
+α =
+X
+var(Z − P (Z))
+Y
+and
+var[X − P (X)] = cov[X, X − P (X)], (7.44)
+Y,Z Y,Z
+these properties we have already used a number of time.
+The standard notation is X(cid:98)t+1|t = P
+Y1,...,Yt
+(X
+t+1
+) and P
+t+1|t
+= var[X
+t+1
+− X(cid:98)t+1|t ] (predictive)
+and X(cid:98)t+1|t+1 = P
+Y1,...,Yt
+(X
+t+1
+) and P
+t+1|t+1
+= var[X
+t+1
+− X(cid:98)t+1|t+1 ] (update).
+239
+
+--- physical page 241 ---
+The Kalman equations
+(i) Prediction step
+The conditional expectation
+X(cid:98)t+1|t = F X(cid:98)t|t
+and the corresponding mean squared error
+P = F P F ∗ + Q.
+t+1|t t|t
+(ii) Update step
+The conditional expectation
+(cid:16) (cid:17)
+X(cid:98)t+1|t+1 = X(cid:98)t+1|t + K
+t+1
+Y
+t+1
+− HX(cid:98)t+1|t .
+where
+K = P H∗[HP H∗ + R]−1
+t+1 t+1|t t+1|t
+and the corresponding mean squared error
+P = P − K HP = (I − K H)P
+t+1|t+1 t+1|t t t+1|t t t+1|t
+(iii) There is also a smoothing step (which we ignore for now).
+The Kalman filter iteratively evaluates step (i) and (ii) for t = 2, 3, . . .. We start with X(cid:98)t−1|t−1
+and P .
+t−1|t−1
+Derivation of predictive equations The best linear predictor:
+X(cid:98)t+1|t = P
+Y1,...,Yt
+(X
+t+1
+) = P
+Y1,...,Yt
+(F X
+t
++ V
+t+1
+)
+= P
+Y1,...,Yt
+(F X
+t
+) + P
+Y1,...,Yt
+(V
+t+1
+) = F P
+Y1,...,Yt
+(X
+t
+) = F X(cid:98)t|t .
+240
+
+--- physical page 242 ---
+The mean squared error
+P
+t+1|t
+= var[X
+t+1
+− X(cid:98)t+1|t ] = var[F X
+t
++ V
+t+1
+− F X(cid:98)t|t ]
+= var[F (X
+t
+− X(cid:98)t|t ) + V
+t+1
+]
+= var[F (X
+t
+− X(cid:98)t|t )] + var[V
+t+1
+]
+= F var[X
+t
+− X(cid:98)t|t ]F ∗ + var[V
+t+1
+] = F P
+t|t
+F ∗ + Q.
+This gives the two predictors from the previous update equations. Next the update equations
+(which is slightly more tricky).
+Derivation of the update equations Now we expand the projection space from sp(Y , . . . , Y ) to
+1 t
+sp(Y , . . . , Y , Y ). But as the recursion uses sp(Y , . . . , Y ) we represent
+1 t t+1 1 t
+sp(Y , . . . , Y , Y ) = sp(Y , . . . , Y , Y − P (Y )).
+1 t t+1 1 t t+1 Y1,...,Yt t+1
+Note that
+Y − P (Y ) = Y − P (HX + W )
+t+1 Y1,...,Yt t+1 t+1 Y1,...,Yt t+1 t+1
+= Y
+t+1
+− HX(cid:98)t+1|t .
+Thus by using (7.43) we have
+(cid:16) (cid:17)
+X(cid:98)t+1|t+1 = P
+Y1,...,Yt,Yt+1
+(X
+t+1
+) = X(cid:98)t+1|t + α Y
+t+1
+− HX(cid:98)t+1|t
+where
+α = var(Y
+t+1
+− HX(cid:98)t+1|t )−1cov(X
+t+1
+, Y
+t+1
+− HX(cid:98)t+1|t ).
+We now find an expression for α = K (K is the typical notation). We recall that Y =
+t+1 t+1 t+1
+HX
+t+1
++ W
+t+1
+, thus Y
+t+1
+− HX(cid:98)t+1|t = H(X
+t+1
+− X
+t+1|t
+) + W
+t+1
+. Thus
+cov(X
+t+1
+, Y
+t+1
+− HX(cid:98)t+1|t ) = cov(X
+t+1
+, H(X
+t+1
+− X
+t+1|t
+) + W
+t+1
+)
+= cov(X , H(X − X )) = cov(X − X , X )H∗
+t+1 t+1 t+1|t t+1 t+1|t t+1
+= var(X − X ) = P H∗ (7.45)
+t+1 t+1|t t+1|t
+241
+
+--- physical page 243 ---
+and
+var(Y
+t+1
+− HX(cid:98)t+1|t ) = var(H(X
+t+1
+− X
+t+1|t
+) + W
+t+1
+)
+= Hvar(X − X )H∗ + var(W )
+t+1 t+1|t t+1
+= HP H∗ + R.
+t+1|t
+Therefore, altogether
+K = P H∗[HP H∗ + R]−1
+t+1 t+1|t t+1|t
+(cid:16) (cid:17)
+X(cid:98)t+1|t+1 = X(cid:98)t+1|t + K
+t+1
+Y
+t+1
+− HX(cid:98)t+1|t .
+(cid:16) (cid:17)
+Often K
+t+1
+or K
+t+1
+Y
+t+1
+− HX(cid:98)t+1|t is referred to as the Kalman gain, which the “gain” when
+including the additional term Y in the prediction. Finally we calculate the variance. Again using
+t+1
+(7.44) we have
+P
+t+1|t+1
+= var[X
+t+1
+− X(cid:98)t+1|t+1 ] = cov[X
+t+1
+, X
+t+1
+− X(cid:98)t+1|t+1 ]
+(cid:104) (cid:16) (cid:17)(cid:105)
+= cov X
+t+1
+, X
+t+1
+− X(cid:98)t+1|t − K
+t
+Y
+t+1
+− HX(cid:98)t+1|t
+(cid:104) (cid:105) (cid:104) (cid:16) (cid:17)(cid:105)
+= cov X
+t+1
+, X
+t+1
+− X(cid:98)t+1|t − cov X
+t+1
+, K
+t
+Y
+t+1
+− HX(cid:98)t+1|t
+= P − K HP = (I − K H)P
+t+1|t t t+1|t t t+1|t
+where the above follows from (7.45). I have a feeling the above may be a little wrong in terms of
+of brackets.
+242

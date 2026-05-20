@@ -1,0 +1,1799 @@
+--- physical page 287 ---
+Chapter 9
+Parameter estimation
+Prerequisites
+• The Gaussian likelihood.
+Objectives
+• To be able to derive the Yule-Walker and least squares estimator of the AR parameters.
+• To understand what the quasi-Gaussian likelihood for the estimation of ARMA models is,
+and how the Durbin-Levinson algorithm is useful in obtaining this likelihood (in practice).
+Also how we can approximate it by using approximations of the predictions.
+• Understand that there exists alternative methods for estimating the ARMA parameters,
+which exploit the fact that the ARMA can be written as an AR(∞).
+We will consider various methods for estimating the parameters in a stationary time series.
+We first consider estimation parameters of an AR and ARMA process. It is worth noting that we
+will look at maximum likelihood estimators for the AR and ARMA parameters. The maximum
+likelihood will be constructed as if the observations were Gaussian. However, these estimators
+‘work’ both when the process is Gaussian is also non-Gaussian. In the non-Gaussian case, the
+likelihood simply acts as a contrast function (and is commonly called the quasi-likelihood). In time
+series, often the distribution of the random variables is unknown and the notion of ‘likelihood’ has
+little meaning. Instead we seek methods that give good estimators of the parameters, meaning that
+they are consistent and as close to efficiency as possible without placing too many assumption on
+286
+
+--- physical page 288 ---
+the distribution. We need to ‘free’ ourselves from the notion of likelihood acting as a likelihood
+(and attaining the Cr´amer-Rao lower bound).
+9.1 Estimation for Autoregressive models
+Let us suppose that {X } is a zero mean stationary time series which satisfies the AR(p) represen-
+t
+tation
+p
+(cid:88)
+X = φ X + ε ,
+t j t−j t
+j=1
+where E(ε ) = 0, var(ε ) = σ2 and the roots of the characteristic polynomial 1 − (cid:80)p φ zj lie
+t t j=1 j
+outside the unit circle. We will assume that the AR(p) is causal (the techniques discussed in this
+section cannot consistently estimate the parameters in the case that the process is non-causal, they
+will only consistently estimate the corresponding causal model). If you use the ar function in R to
+estimate the parameters, you will see that there are several different estimation methods that one
+can use to estimate {φ }. These include, the Yule-Walker estimator, Least squares estimator, the
+j
+Gaussian likelihood estimator and the Burg algorithm. Our aim in this section is to motivate and
+describe these several different estimation methods.
+All these methods are based on their correlation structure. Thus they are only designed to
+estimate stationary, causal time series. For example, if we fit the AR(1) model X = φX + ε .
+t t−1 t
+The methods below cannot consistently estimate non-casual parameters (when |φ| > 1). However,
+depending the method used, the estimator may be non-causal. For example, the classical least
+squares can yield estimators where |φ| > 1. This does not mean the true model is non-causal, it
+simply means the minimum of the least criterion lies outside the parameter space (−1, 1). Similarly,
+unless the parameter space of the MLE is constrained to only search for maximums inside [1, 1] it
+can be give a maximum outside the natural parameter space. For the AR(1) estimator constraining
+the parameter space is quite simple. However, for higher order autoregressive models. Constraining
+the parameter space can be quite difficult.
+On the other hand, both the Yule-Walker estimator and Burg’s algorithm will always yield a
+causal estimator for any AR(p) model. There is no need to constrain the parameter space.
+287
+
+--- physical page 289 ---
+9.1.1 The Yule-Walker estimator
+The Yule-Walker estimator is based on the Yule-Walker equations derived in (6.8) (Section 6.1.4).
+We recall that the Yule-Walker equation state that if an AR process is causal, then for i > 0
+we have
+p p
+(cid:88) (cid:88)
+E(X X ) = φ E(X X ), ⇒ c(i) = φ c(i − j). (9.1)
+t t−i j t−j t−i j
+j=1 j=1
+Putting the cases 1 ≤ i ≤ p together we can write the above as
+r = Σ φ , (9.2)
+p p p
+where (Σ ) = c(i − j), (r ) = c(i) and φ(cid:48) = (φ , . . . , φ ). Thus the autoregressive parameters
+p i,j p i p 1 p
+solve these equations. It is important to observe that φ = (φ , . . . , φ ) minimise the mean squared
+1 p
+p
+error
+p
+(cid:88)
+E[X − φ X ]2,
+t+1 j t+1−j
+j=1
+(see Section 5.5).
+The Yule-Walker equations inspire the method of moments estimator called the Yule-Walker
+estimator. We use (9.2) as the basis of the estimator. It is clear that ˆr and Σˆ are estimators of
+p p
+r and Σ where (Σˆ ) = cˆ (i − j) and (ˆr ) = cˆ (i). Therefore we can use
+p p p i,j n p i n
+φˆ = Σˆ −1ˆr , (9.3)
+p p p
+as an estimator of the AR parameters φ(cid:48) = (φ , . . . , φ ). We observe that if p is large this involves
+1 p
+p
+inverting a large matrix. However, we can use the Durbin-Levinson algorithm to calculate φˆ by
+p
+recursively fitting lower order AR processes to the observations and increasing the order. This way
+an explicit inversion can be avoided. We detail how the Durbin-Levinson algorithm can be used to
+estimate the AR parameters below.
+Step 1 Set φˆ = cˆ (1)/cˆ (0) and rˆ (2) = cˆ (0) − φˆ cˆ (1).
+1,1 n n n n 1,1 n
+288
+
+--- physical page 290 ---
+5 10 15 20
+5.0
+0.0
+5.0−
+Lag
+FCA
+laitraP
+Series ar2
+Figure 9.1: Top: The sample partial autocorrelation plot of the AR(2) process X =
+t
+1.5X + 0.75X + ε with error bars n = 200.
+t−1 t−2 t
+Step 2 For 2 ≤ t ≤ p, we define the recursion
+cˆ (t) − (cid:80)t−1 φˆ cˆ (t − j)
+φˆ = n j=1 t−1,j n
+t,t
+rˆ (t)
+n
+φˆ = φˆ − φˆ φˆ 1 ≤ j ≤ t − 1,
+t,j t−1,j t,t t−1,t−j
+and rˆ (t + 1) = rˆ (t)(1 − φˆ2 ).
+n n t,t
+Step 3 We recall from (7.11) that φ is the partial correlation between X and X , therefore φˆ
+t,t t+1 1 tt
+are estimators of the partial correlation between X and X .
+t+1 1
+As mentioned in Step 3, the Yule-Walker estimators have the useful property that the partial
+correlations can easily be evaluated within the procedure. This is useful when trying to determine
+the order of the model to fit to the data. In Figure 9.1 we give the partial correlation plot corre-
+sponding to Figure 8.1. Notice that only the first two terms are outside the error bars. This rightly
+suggests the time series comes from an autoregressive process of order two.
+In previous chapters it was frequently alluded to that the autocovariance is “blind” to non-
+causality and that any estimator based on estimating the covariance will always be estimating the
+causal solution. In Lemma 9.1.1 we show that the Yule-Walker estimator has the property that the
+parameter estimates {φˆ ; j = 1, . . . , p} correspond to a causal AR(p), in other words, the roots cor-
+j
+responding to φˆ(z) = 1 − (cid:80)p
+j=1
+φ(cid:98)j zj lie outside the unit circle. A non-causal solution cannot arise.
+The proof hinges on the fact that the Yule-Walker estimator is based on the sample autocovariances
+289
+
+--- physical page 291 ---
+{c (r)} which are a positive semi-definite sequence (see Lemma 8.2.1).
+(cid:98)n
+Remark 9.1.1 (Fitting an AR(1) using the Yule-Walker) We generalize this idea to general
+AR(p) models below. However, it is straightforward to show that the Yule-Walker estimator of the
+AR(1) parameter will always be less than or equal to one. We recall that
+(cid:80)n−1
+X X
+φ(cid:98)Y
+W
+= t
+(cid:80)
+=1
+n
+t
+X2
+t+1 .
+t=1 t
+By using Cauchy-Schwarz we have
+(cid:80)n−1 |X X | [ (cid:80)n−1 X2]1/2[ (cid:80)n−1 X2 ] 1/2
+|φ(cid:98)Y
+W
+| ≤ t=
+(cid:80)
+1
+n
+t
+X2
+t+1 ≤ t=1
+(cid:80)
+t
+n X2
+t=1 t+1
+t=1 t t=1 t
+[ (cid:80)n X2]1/2[ (cid:80)n−1 X2 ]1/2
+≤ t=1 t t=0 t+1 = 1.
+(cid:80)n X2
+t=1 t
+We use a similar idea below, but the proof hinges on the fact that the sample covariances forms a
+positive semi-definite sequence.
+An alternative proof using that {c (r)} is the ACF of a stationary time series {Z }. Then
+(cid:98)n t
+c (1) cov(Z , Z ) cov(Z , Z )
+φ(cid:98)Y
+W
+=
+(cid:98)n
+=
+t t+1
+=
+(cid:112)
+t t+1
+,
+(cid:98) c n (0) var(Z t ) var(Z t )var(Z t+1 )
+which is a correlation and thus lies between [−1, 1].
+Lemma 9.1.1 Let us suppose Z = (Z , . . . , Z ) is a zero mean random vector, where var[Z] =
+p+1 1 p+1 p+1
+(Σ ) = c (i − j) (which is Toeplitz). Let Z be the best linear predictor of Z given
+p+1 i,j n p+1|p p+1
+Z , . . . , Z , where φ = (φ , . . . , φ ) = Σ−1r are the coefficients corresponding to the best linear
+p 1 p 1 p p p
+predictor. Then the roots of the corresponding characteristic polynomial φ(z) = 1 − (cid:80)p φ zj lie
+j=1 j
+outside the unit circle.
+PROOF. The proof is based on the following facts:
+(i) Any sequence {φ }p has the following reparameterisation. There exists parameters {a }p
+j j=1 j j=1
+and λ such that a = 1, for 2 ≤ j ≤ p − 2, a − λa = φ and λa = φ . Using {a }p and
+1 j j−1 j p p j j=1
+λ, for rewrite the linear combination {Z }p+1 as
+j j=1
+p p p
+(cid:88) (cid:88) (cid:88)
+Z − φ Z = a Z − λ a Z .
+p+1 j p+1−j j p+1−j j p−j
+j=1 j=1 j=1
+290
+
+--- physical page 292 ---
+(ii) If φ = (φ , . . . , φ )(cid:48) = Σ−1r , then φ minimises the mean square error i.e. for any {b }p
+p 1 p p p p j j=1
+ 2  2
+p p
+(cid:88) (cid:88)
+E Σp+1 Z p+1 − φ j Z p+1−j ≤ E Σp+1 Z p+1 − b j Z p+1−j (9.4)
+j=1 j=1
+where Σ = var[Z ] and Z = (Z , . . . , Z ).
+p+1 p+1 p+1 p+1 1
+We use these facts to prove the result. Our objective is to show that the roots of φ(B) = 1 −
+(cid:80)p φ Bj lie outside the unit circle. Using (i) we factorize φ(B) = (1 − λB)a(B) where a(B) =
+j=1 j
+(cid:80)p a Bj. Suppose by contraction |λ| > 1 (thus at least one root of φ(B) lies inside the unit
+j=1 j
+circle). We will show if this were true, then by the Toeplitz nature of Σ , φ = (φ , . . . , φ )
+p+1 1 p
+p
+cannot be the best linear predictor.
+Let
+p p p p
+(cid:88) (cid:88) (cid:88) (cid:88)
+Y = a BjZ = a Z and Y = BY = B a BjZ = a Z .
+p+1 j t+2 j p+2−j p p+1 j t+2 j p+1−j
+j=1 j=1 j=1 j=1
+By (i) is clear that Z −
+(cid:80)p
+φ Z = Y − λY . Furthermore, since {φ } minimises the
+p+1 j=1 j p+1−j p+1 p j
+mean squared error in (9.4), then λY must be the best linear predictor of Y given Y i.e. λ
+p p+1 p
+must minimise the mean squared error
+λ = arg min E (Y − βY )2 ,
+β
+Σp+1 p+1 p
+that is λ =
+E[Yp+1Yp]
+. However, we now show that |
+E[Yp+1Yp]
+| ≤ 1 which leads to a contradiction.
+E[Y 2] E[Y 2]
+p p
+We recall that Y is a linear combination of a stationary sequence, thus BY has the same
+p+1 p+1
+variance as Y . I.e. var(Y ) = var(Y ). It you want to see the exact calculation, then
+p+1 p+1 p
+p p
+(cid:88) (cid:88)
+E[Y 2] = var[Y ] = a a cov[Y , Y ] = a a c(j − j )
+p p j1 j2 p+1−j1 p+1−j2 j1 j2 1 2
+j1,j2=1 j1,j2=1
+= var[Y ] = E[Y 2 ].
+p+1 p+1
+In other words, since Σ is a Toeplitz matrix, then E[Y 2] = E[Y 2 ] and
+p+1 p p+1
+E[Y Y ]
+p+1 p
+λ = .
+(E[Y 2]E[Y 2 ])1/2
+p p+1
+This means λ measures the correlation between Y and Y and must be less than or equal to one.
+p p+1
+291
+
+--- physical page 293 ---
+Thus leading to a contradiction.
+Observe this proof only works when Σ is a Toeplitz matrix. If it is not we do not have
+p+1
+E[Y 2] = E[Y 2 ] and that λ can be intepretated as the correlation. (cid:3)
+p p+1
+From the above result we can immediately see that the Yule-Walker estimators of the AR(p)
+coefficients yield a causal solution. Since the autocovariance estimators {c (r)} form a positive semi-
+(cid:98)n
+definite sequence, there exists a vector Y
+p
+where var
+Σ(cid:98)p+1
+[Y
+p+1
+] = Σ(cid:98)p+1 with (Σ(cid:98)p+1 ) =
+(cid:98)
+c
+n
+(i − j),
+thus by the above lemma we have that Σ(cid:98) −
+p
+1
+(cid:98)
+r
+p
+are the coefficients of a Causal AR process.
+Remark 9.1.2 (The bias of the Yule-Walker estimator) The Yule-Walker tends to have larger
+bias than other other estimators when the sample size is small and the spectral density correspond-
+ing to the underlying time series is has a large pronounced peak (see Shaman and Stine (1988) and
+Ernst and Shaman (2019)). The large pronounced peak in the spectral density arises when the roots
+of the underlying characteristic polynomial lie close to the unit circle.
+9.1.2 The tapered Yule-Walker estimator
+Substantial improvements to the Yule-Walker estimator can be obtained by tapering the original
+time series (tapering dates back to Tukey, but its application for AR(p) estimation was first proposed
+and proved in Dahlhaus (1988)).
+Tapering is when the original data is downweighted towards the ends of the time series. This
+is done with a positive function h : [0, 1] → R that satisfies certain smoothness properties and is
+such that h(0) = h(1) = 0. And the tapered time series is h( t )X . An illustration is given below:
+n t
+In R, this can be done with the function spec.taper(x,p=0.1) where x is the time series, p is
+the proportion to be tapered). Replacing X with h(t/n)X we define the tapered sample covariance
+t t
+as
+n−|r| (cid:18) (cid:19) (cid:18) (cid:19)
+1 (cid:88) t t + r
+c (r) = h X h X .
+(cid:98)T,n (cid:80)n h(t/n)2 n t n t+r
+t=1 t=1
+292
+
+--- physical page 294 ---
+We now use {c (r)} to define the Yule-Walker estimator for the AR(p) parameters.
+(cid:98)T,n
+9.1.3 The Gaussian likelihood
+Our object here is to obtain the maximum likelihood estimator of the AR(p) parameters. We recall
+that the maximum likelihood estimator is the parameter which maximises the joint density of the
+observations. Since the log-likelihood often has a simpler form, we will focus on the log-likelihood.
+We note that the Gaussian MLE is constructed as if the observations {X } were Gaussian, though it
+t
+is not necessary that {X } is Gaussian when doing the estimation. In the case that the innovations
+t
+are not Gaussian, the estimator may be less efficient (may not obtain the Cramer-Rao lower bound)
+then the likelihood constructed as if the distribution were known.
+Suppose we observe {X ; t = 1, . . . , n} where X are observations from an AR(p) process. Let
+t t
+us suppose for the moment that the innovations of the AR process are Gaussian, this implies that
+X = (X , . . . , X ) is a n-dimension Gaussian random vector, with the corresponding log-likelihood
+n 1 n
+L (a) = − log |Σ (a)| − X(cid:48) Σ (a)−1X , (9.5)
+n n n n n
+where Σ (a) the variance covariance matrix of X constructed as if X came from an AR process
+n n n
+with parameters a. Of course, in practice, the likelihood in the form given above is impossible to
+maximise. Therefore we need to rewrite the likelihood in a more tractable form.
+We now derive a tractable form of the likelihood under the assumption that the innovations come
+from an arbitrary distribution. To construct the likelihood, we use the method of conditioning,
+to write the likelihood as the product of conditional likelihoods. In order to do this, we derive
+the conditional distribution of X given X , . . . , X . We first note that the AR(p) process is
+t+1 t−1 1
+p-Markovian (if it is causal), therefore if t ≥ p all the information about X is contained in the
+t+1
+past p observations, therefore
+P(X ≤ x|X , X , . . . , X ) = P(X ≤ x|X , X , . . . , X ), (9.6)
+t+1 t t−1 1 t+1 t t−1 t−p+1
+by causality. Since the Markov property applies to the distribution function it also applies to the
+density
+f (X |X , . . . , X ) = f (X |X , . . . , X ).
+t+1 t 1 t+1 t t−p+1
+293
+
+--- physical page 295 ---
+By using the (9.6) we have
+p
+(cid:88)
+P(X ≤ x|X , . . . , X ) = P(X ≤ x|X , . . . , X ) = P (ε ≤ x − a X ), (9.7)
+t+1 t 1 t+1 t 1 ε j t+1−j
+j=1
+where P denotes the distribution of the innovation. Differentiating P with respect to X gives
+ε ε t+1
+ 
+∂P (ε ≤ X − (cid:80)p a X ) p
+ε t+1 j=1 j t+1−j (cid:88)
+f (X t+1 |X t , . . . , X t−p+1 ) = = f ε X t+1 − a j X t+1−j . (9.8)
+∂X
+t+1
+j=1
+Example 9.1.1 (AR(1)) To understand why (9.6) is true consider the simple case that p = 1
+(AR(1) with |φ| < 1). Studying the conditional probability gives
+P(X ≤ x |X = x , . . . , X = x ) = P( φX + ε ≤ x |X = x , . . . , X = x )
+t+1 t+1 t t 1 1 t t t+1 t t 1 1
+(cid:124) (cid:123)(cid:122) (cid:125)
+all information contained in Xt
+= P (ε ≤ x − φx ) = P(X ≤ x |X = x ),
+ε t t+1 t t+1 t+1 t t
+where P denotes the distribution function of the innovation ε.
+ε
+Using (9.8) we can derive the joint density of {X }n . By using conditioning we obtain
+t t=1
+n−1
+(cid:89)
+f(X , X , . . . , X ) = f (X , . . . , X ) f(X |X , . . . , X ) (by repeated conditioning)
+1 2 n 1 p t+1 t 1
+t=p
+n−1
+(cid:89)
+= f(X , . . . , X ) f(X |X , . . . , X ) (by the Markov property)
+1 p t+1 t t−p+1
+t=p
+n−1 p
+(cid:89) (cid:88)
+= f(X , . . . , X ) f (X − a X ) (by (9.8)).
+1 p ε t+1 j t+1−j
+t=p j=1
+Therefore the log likelihood is
+n−1 p
+(cid:88) (cid:88)
+log f(X , X , . . . , X ) = log f(X , . . . , X ) + log f (X − a X ) .
+1 2 n 1 p ε t+1 j t+1−j
+(cid:124) (cid:123)(cid:122) (cid:125) (cid:124) (cid:123)(cid:122) (cid:125)
+t=p j=1
+Full log-likelihood Ln(a;X
+n
+) initial observations
+(cid:124) (cid:123)(cid:122) (cid:125)
+conditional log-likelihood=Ln(a;X
+n
+)
+In the case that the sample sizes are large n >> p, the contribution of initial observations
+log f(X , . . . , X ) is minimal and the conditional log-likelihood and full log-likelihood are asymp-
+1 p
+totically equivalent.
+So far we have not specified the distribution of {ε } . From now on we shall assume that it is
+t t
+294
+
+--- physical page 296 ---
+Gaussian. Thus log f (X , . . . , X ; φ) and log f(X , . . . , X ; φ) are multivariate normal with mean
+1 n 1 p
+zero (since we are assuming, for convenience, that the time series has zero mean) and variance
+Σ (φ) and Σ (φ) respectively, where by stationarity Σ (φ) and Σ (φ) are Toeplitz matrices. Based
+n p n p
+on this the (negative) log-likelihood is
+L (a) = log |Σ (a)| + X(cid:48) Σ (a)−1X
+n n p n p
+= log |Σ (a)| + X(cid:48) Σ (a)−1X + L (a; X) . (9.9)
+p p p p n
+(cid:124) (cid:123)(cid:122) (cid:125)
+conditional likelihood
+The maximum likelihood estimator is
+φ(cid:98) = arg max L
+n
+(a). (9.10)
+n a∈Θ
+The parameters in the model are ‘buried’ within the covariance. By constraining the parameter
+space, we can ensure the estimator correspond to a causal AR process (but find suitable parameter
+space is not simple). Analytic expressions do exist for X(cid:48) Σ (a)−1X and log |Σ (a)| but they are
+p p p p
+not so simple. This motivates the conditional likelihood described in the next section.
+9.1.4 The conditional Gaussian likelihood and least squares
+The conditonal likelihood focusses on the conditonal term of the Gaussian likelihood and is defined
+as
+ 2
+n−1 p
+1 (cid:88) (cid:88)
+L n (a; X) = −(n − p) log σ2 − σ2 X t+1 − a j X t+1−j ,
+t=p j=1
+is straightforward to maximise. Since the maximum of the above with respect to {a } does not
+j
+depend on σ2. The conditional likelihood estimator of {φ } is simply the least squares estimator
+j
+ 2
+n−1 p
+(cid:88) (cid:88)
+φ(cid:101) = arg min X t+1 − a j X t+1−j
+p
+t=p j=1
+= Σ(cid:101) −
+p
+1
+(cid:101)
+r
+p
+,
+where (Σ(cid:101)p )
+i,j
+=
+n−
+1
+p
+(cid:80)n
+t=p+1
+X
+t−i
+X
+t−j
+and (
+(cid:101)
+r
+n
+)
+i
+=
+n−
+1
+p
+(cid:80)n
+t=p+1
+X
+t
+X
+t−i
+.
+Remark 9.1.3 (A comparison of the Yule-Walker and least squares estimators) Comparing
+295
+
+--- physical page 297 ---
+the least squares estimator φ(cid:101)
+p
+= Σ(cid:101) −
+p
+1
+(cid:101)
+r
+p
+with the Yule-Walker estimator φ(cid:98)
+p
+= Σ(cid:98) −
+p
+1
+(cid:98)
+r
+p
+we see that
+they are very similar. The difference lies in Σ(cid:101)p and Σ(cid:98)p (and the corresponding
+(cid:101)
+r
+p
+and
+(cid:98)
+r
+p
+). We see
+that Σ(cid:98)p is a Toeplitz matrix, defined entirely by the positive definite sequence
+(cid:98)
+c
+n
+(r). On the other
+hand, Σ(cid:101)p is not a Toeplitz matrix, the estimator of c(r) changes subtly at each row. This means
+that the proof given in Lemma 9.1.1 cannot be applied to the least squares estimator as it relies
+on the matrix Σ (which is a combination of Σ and r ) being Toeplitz (thus stationary). Thus
+p+1 p p
+the characteristic polynomial corresponding to the least squares estimator will not necessarily have
+roots which lie outside the unit circle.
+Example 9.1.2 (Toy Example) To illustrate the difference between the Yule-Walker and least
+squares estimator (at least for example samples) consider the rather artifical example that the time
+series consists of two observations X and X (we will assume the mean is zero). We fit an AR(1)
+1 2
+model to the data, the least squares estimator of the AR(1) parameter is
+X X
+1 2
+φ(cid:98)LS =
+X2
+1
+whereas the Yule-Walker estimator of the AR(1) parameter is
+X X
+1 2
+φ(cid:98)Y
+W
+=
+X2 + X2
+.
+1 2
+It is clear that φ(cid:98)LS < 1 only if X
+2
+< X
+1
+. On the other hand φ(cid:98)Y
+W
+< 1. Indeed since (X
+1
+−X
+2
+)2 > 0,
+we see that φ(cid:98)Y
+W
+≤ 1/2.
+Exercise 9.1 (i) In R you can estimate the AR parameters using ordinary least squares (ar.ols),
+yule-walker (ar.yw) and (Gaussian) maximum likelihood (ar.mle).
+Simulate the causal AR(2) model X = 1.5X − 0.75X + ε using the routine arima.sim
+t t−1 t−2 t
+(which gives Gaussian realizations) and also innovations which from a t-distribution with
+4df. Use the sample sizes n = 100 and n = 500 and compare the three methods through a
+simulation study.
+(ii) Use the (cid:96) -norm defined as
+1
+(cid:12) (cid:12)
+t (cid:12) p (cid:12)
+(cid:88) (cid:12) (cid:88) (cid:12)
+L n (φ) = (cid:12)X t − φ j X t−j(cid:12) ,
+(cid:12) (cid:12)
+t=p+1 (cid:12) j=1 (cid:12)
+296
+
+--- physical page 298 ---
+with φˆ = arg min L (φ) to estimate the AR(p) parameters.
+n n
+You may need to use a Quantile Regression package to minimise the (cid:96) norm. I suggest using
+1
+the package quantreg and the function rq where we set τ = 0.5 (the median).
+Note that so far we have only considered estimation of causal AR(p) models. Breidt et. al. (2001)
+propose a method for estimating parameters of a non-causal AR(p) process (see page 18).
+9.1.5 Burg’s algorithm
+Burg’s algorithm is an alternative method for estimating the AR(p) parameters. It is closely related
+to the least squares estimator but uses properties of second order stationarity in its construction.
+Like the Yule-Walker estimator it has the useful property that its estimates correspond to a causal
+characteristic function. Like the Yule-Walker estimator it can recursively estimate the AR(p)
+parameters by first fitting an AR(1) model and then recursively increasing the order of fit.
+We start with fitting an AR(1) model to the data. Suppose that φ is the true best fitting
+1,1
+AR(1) parameter, that is
+X = P (X ) + ε = φ X + ε .
+t Xt−1 t 1,t 1,1 t−1 1,t
+Then the least squares estimator is based on estimating the projection by using the φ that
+1,1
+minimises
+n
+(cid:88)
+(X − φX )2.
+t t−1
+t=2
+However, the same parameter φ minimises the projection of the future into the past
+1,1
+X = P (X ) + δ = φ X + δ .
+t Xt+1 t 1,t 1,1 t+1 1,t
+Thus by the same argument as above, an estimator of φ is the parameter which minimises
+1,1
+n−1
+(cid:88)
+(X − φX )2.
+t t+1
+t=1
+297
+
+--- physical page 299 ---
+We can combine these two least squares estimators to find the φ which minimises
+(cid:34) n n−1 (cid:35)
+(cid:88) (cid:88)
+φ(cid:98)1,1 = arg min (X
+t
+− φX
+t−1
+)2 + (X
+t
+− φX
+t+1
+)2 .
+t=2 t=1
+Differentiating the above wrt φ and solving gives the explicit expression
+(cid:80)n−1
+X X +
+(cid:80)n
+X X
+φ(cid:98)1,1 = t=
+2
+1
+(cid:80)n
+t
+−1
+t+
+X
+1
+2 + X
+t
+2
+=
++
+2
+X
+t
+2
+t−1
+t=2 t 1 n
+2
+(cid:80)n−1
+X X
+= t=1 t t+1 .
+2 (cid:80)n−1 X2 + X2 + X2
+t=2 t 1 n
+Unlike the least squares estimator φ(cid:98)1,1 is guaranteed to lie between [−1, 1]. Note that φ
+1,1
+is the
+partial correlation at lag one, thus φ(cid:98)1,1 is an estimator of the partial correlation. In the next step we
+estimate the partial correlation at lag two. We use the projection argument described in Sections
+5.1.4 and 7.5.1. That is
+(cid:0) (cid:1)
+P (X ) = P (X ) + ρ X − P (X )
+Xt−2,Xt−1 t Xt−1 t t−2 Xt−1 t−2
+and
+(cid:0) (cid:1)
+X = P (X ) + ε = P (X ) + ρ X − P (X ) + ε
+t Xt−2,Xt−1 t 2,t Xt−1 t t−2 Xt−1 t−2 2,t
+= φ X + ρ (X − φ X ) + ε .
+1,1 t−1 t−2 1,1 t−1 2,t
+Thus we replace φ
+1,1
+in the above with φ(cid:98)1,1 and estimate ρ by minimising least squares criterion
+n
+(cid:88) (cid:104) (cid:16) (cid:17)(cid:105)
+X
+t
+− φ(cid:98)1,1 X
+t−1
+− ρ X
+t−2
+− φ(cid:98)1,1 X
+t−1
+.
+t=3
+However, just as in the estimation scheme of φ we can estimate ρ by predicting into the past
+1,1
+(cid:0) (cid:1)
+P (X ) = P (X ) + ρ X − P (X )
+Xt+2,Xt+1 t Xt+1 t t+2 Xt+1 t+2
+to give
+X = φ X + ρ (X − φ X ) + δ .
+t 1,1 t+1 t+2 1,1 t+1 2,t
+298
+
+--- physical page 300 ---
+This leads to an alternative estimator of ρ that minimises
+n−2
+(cid:88) (cid:104) (cid:16) (cid:17)(cid:105)
+X
+t
+− φ(cid:98)1,1 X
+t+1
+− ρ X
+t+2
+− φ(cid:98)1,1 X
+t+1
+.
+t=1
+The Burg algorithm estimator of ρ minimises both the forward and backward predictor simultane-
+ously
+(cid:32) n n−2 (cid:33)
+(cid:88) (cid:104) (cid:16) (cid:17)(cid:105) (cid:88) (cid:104) (cid:16) (cid:17)(cid:105)
+ρ
+(cid:98)2
+= arg min X
+t
+− φ(cid:98)1,1 X
+t−1
+− ρ X
+t−2
+− φ(cid:98)1,1 X
+t−1
++ X
+t
+− φ(cid:98)1,1 X
+t+1
+− ρ X
+t+2
+− φ(cid:98)1,1 X
+t+1
+.
+ρ
+t=3 t=1
+Differentiating the above wrt ρ and solving gives an explicit solution for ρ . Moreover we can show
+(cid:98)2
+that |ρ | ≤ 1. The estimators of the best fitting AR(2) parameters (φ , φ ) are
+(cid:98)2 1,2 2,2
+(cid:16) (cid:17)
+φ(cid:98)1,2 = φ(cid:98)1,1 − ρ
+(cid:98)2
+φ(cid:98)1,1
+and φ(cid:98)2,2 = ρ
+(cid:98)2
+.
+Using the same method we can obtain estimators for {φ(cid:98)r,r }
+r
+which can be used to construct the
+estimates of the best fitting AR(p) parameters {φ(cid:98)j,p }p
+j=1
+. It can be shown that the parameters
+{φ(cid:98)j,p }p
+j=1
+correspond to a causal AR(p) model.
+Proof that 0 ≤ |φ(cid:98)1,1 | ≤ 1 To prove the result we pair the terms in the estimator
+2 [X X + X X + . . . + X X ]
+1 2 2 3 n−1 n
+φ(cid:98)1,1 =
+(X2 + X2) + (X2 + X2) + . . . + (X2 + X2 ) + (X2 + X2)
+.
+1 2 2 3 n−2 n−1 n−1 n
+Each term in the numerator can be paired with the term in the denominator i.e. using that
+(|X | − |X |)2 ≥ 0 we have
+t t+1
+2|X X | ≤ X2 + X2 1 ≤ t ≤ (n − 1).
+t t+1 t t+1
+Thus the absolute of the numerator is smaller that the denominator and we have
+2 [|X X | + |X X | + . . . + |X X |]
+1 2 2 3 n−1 n
+|φ(cid:98)1,1 | =
+(X2 + X2) + (X2 + X2) + . . . + (X2 + X2 ) + (X2 + X2)
+≤ 1.
+1 2 2 3 n−2 n−1 n−1 n
+This proves the claim. (cid:3)
+299
+
+--- physical page 301 ---
+9.1.6 Sampling properties of the AR regressive estimators
+Both the Yule-Walker, least squares and Gaussian likelihood estimator have the same asymptotic
+sampling properties (under the assumption of stationarity) (the estimator for the tapered Yule-
+Walker is a little different). Suppose that {X } has a causal AR(p ) representation
+t 0
+p0
+(cid:88)
+X = φ X + ε
+t j t−j t
+j=1
+where {ε } are iid random variables with var[ε ] = σ2 and E[|ε |2+δ] < ∞ for some δ > 0.
+t t t
+Suppose the AR(p) model is fitted to the time series, using either least squares or Yule-Walker
+estimator. We denote this estimator as φ(cid:98)p . If p ≥ p
+0
+, then
+√
+n(φ(cid:98) − φ ) →
+D
+N
+(cid:0)
+0,
+σ2Σ−1(cid:1)
+,
+p p p
+where Σ = var[X ] and X = (X , . . . , X ).
+p p p 1 p
+Remark 9.1.4 We note that the assumption E|ε2+δ| < ∞ implies that E[|X |2+δ] < ∞. In the
+t t
+proof below we use the stronger assumption E(ε4) < ∞ to make the proof easier to follow.
+t
+Tools to prove the result: Martingale central limit theorem (advanced)
+We summarize the result, see Billingsley (1995) Hall and Heyde (1980) (Theorem 3.2 and Corollary
+3.1) for the details.
+Definition 9.1.1 The random variables {Z } are called martingale differences if
+t
+E(Z |Z , Z , . . .) = 0.
+t t−1 t−2
+The sequence {S } , where
+n n
+n
+(cid:88)
+S = Z
+n t
+t=1
+are called martingales if {Z } are martingale differences. Observe that E[S |S ] = S .
+t n n−1 n−1
+Remark 9.1.5 (Martingales and covariances) We observe that if {Z } are martingale differ-
+t
+300
+
+--- physical page 302 ---
+ences then
+E[Z ] = E[E[Z |F ]] = 0,
+t t t−1
+where F = σ(Z , Z , . . .) and for t > s and
+s s s−1
+(cid:0) (cid:1) (cid:0) (cid:1)
+cov(Z , Z ) = E(Z Z ) = E E(Z Z |F ) = E Z E(Z |F ) = E(Z × 0) = 0.
+s t s t s t s s t s s
+Hence martingale differences are uncorrelated.
+Example 9.1.3 Suppose that X = φX + ε , where {ε } are iid r.v. with E(ε ) = 0 and |φ| < 1.
+t t−1 t t t
+Then {ε X } are martingale differences. To see why note that
+t t−1 t
+E [ε X |ε X ; j ≥ 1] = E [E (ε X |ε ; j ≥ 1) |ε X ; j ≥ 1]
+t t−1 t−j t−j−1 t t−1 t−j t−j t−j−1
+= E [X E (ε |ε ; j ≥ 1) |ε X ; j ≥ 1] = 0, a.s
+t−1 t t−j t−j t−j−1
+since σ(ε X ; j ≥ 1) ⊆ σ(ε ; j ≥ 1). In general, if X is a causal time series then {ε X }
+t−j t−j−1 t−j t t t−j t
+are martingale differences (j > 0).
+Let
+n
+1 (cid:88)
+S = Z , (9.11)
+n t
+n
+t=1
+and F = σ(Z , Z , . . .), E(Z |F ) = 0 and E(Z2) < ∞. We shall show asymptotic normality of
+t t t−1 t t−1 t
+√ √
+P
+n(S − E(S )). The reason for normalising by n, is that (S − E(S )) → 0 as n → ∞, hence in
+n n n n
+terms of distributions it converges towards the point mass at zero. Therefore we need to increase
+√
+the magnitude of the difference. If it can show that var(S ) = O(n−1), then n(S −E(S ) = O(1).
+n n 0
+Theorem 9.1.1 Let S be defined as in (14.16). Further suppose
+n
+n
+1 (cid:88) Z2 → P σ2, (9.12)
+n t
+t=1
+where σ2 is a finite constant, for all η > 0,
+1 (cid:88) n E(Z2I(|Z | > η √ n)|F ) → P 0, (9.13)
+n t t t−1
+t=1
+301
+
+--- physical page 303 ---
+(this is known as the conditional Lindeberg condition) and
+n
+1 (cid:88) E(Z2|F ) → P σ2. (9.14)
+n t t−1
+t=1
+Then we have
+n1/2S → D N (0, σ2). (9.15)
+n
+Remark 9.1.6 (The conditional likelihood and martingales) It is interesting to note that
+the derivative of conditional log-likelihood of a time series at the true parameter is a martingale so
+long as the likelihood is correctly specified. In other works, using that
+n
+(cid:88)
+log f (X , . . . , X |X ; θ) = log f (X |X , . . . , X ; θ),
+n 1 1 t t−1 1
+t=2
+then
+∂ log f(Xt|Xt−1,...,X1;θ)
+is a martingale difference. To see why, note that if we can take the
+∂θ
+derivative outside the integral then
+(cid:20) (cid:21)
+∂ log f (X t |X t−1 , . . . , X 1 ; θ) (cid:12)
+E (cid:12)X
+t−1
+, . . . , X
+1
+∂θ
+(cid:90)
+∂ log f (X |X , . . . , X ; θ)
+t t−1 1
+= f (X |X , . . . , X ; θ)dX
+t t−1 1 t
+∂θ
+(cid:90) (cid:90)
+∂f (X |X , . . . , X ; θ) ∂
+t t−1 1
+= dX = f (X |X , . . . , X ; θ)dX = 0.
+t t t−1 1 t
+∂θ ∂θ
+Asymptotic normality of the least squares estimator of the AR(1) parameter
+In this section we show asymptotic normality of the least squares estimator of the AR(1), where
+φˆ = arg max L (a) and
+n n
+n
+1 (cid:88)
+L (a) = (X − aX )2.
+n t t−1
+n − 1
+t=2
+302
+
+--- physical page 304 ---
+The first and the second derivative (at the true parameter) is
+n n
+−2 (cid:88) −2 (cid:88)
+∇L (a)(cid:99) = X (X − φX ) = X ε
+n a=φ t−1 t t−1 t−1 t
+n − 1 n − 1
+(cid:124) (cid:123)(cid:122) (cid:125)
+t=2 t=2
+=εt
+n
+2 (cid:88)
+and ∇2L (a) = X2 (does not depend on unknown parameters).
+n n − 1 t−1
+t=2
+Thus it is clear that
+(φ(cid:98)n − φ) = − (cid:0) ∇2L
+n
+(cid:1)−1 ∇L
+n
+(φ). (9.16)
+Since {X2} are ergodic random variables, by using the ergodic theorem we have ∇2L a → .s. 2E(X2).
+t n 0
+This, together with (9.16), implies
+√ (cid:80)n X X
+n(φ(cid:98)n − φ) =
+(cid:80)
+t=
+n
+2
+X
+t
+2
+t−1 − φ
+t=2 t−1
+(cid:80)n
+X (X − φX )
+(cid:80)n
+X ε
+= t=2 t−1 t t−1 = t=2 t−1 t
+(cid:80)n X2 (cid:80)n X2
+t=2 t−1 t=2 t−1
+√ √
+= − (cid:0) ∇2L (cid:1)−1 n∇L (φ) = −Σ−1 nS + O (n−1/2),
+n n 1 n p
+(cid:124) (cid:123)(cid:122) (cid:125)
+a → .s. (2E(X2))−1
+0
+√
+where S
+n
+=
+n−
+1
+1
+(cid:80)n
+t=2
+X
+t−1
+ε
+t
+. Thus to show asymptotic normality of n(φ(cid:98)n − φ), will need only
+√
+show asymptotic normality of nS . S is the sum of martingale differences, since E(X ε |X ) =
+n n t−1 t t−1
+X E(ε |X ) = X E(ε ) = 0, therefore we apply the martingale central limit theorem (sum-
+t−1 t t−1 t−1 t
+marized in the previous section).
+√
+To show that nS is asymptotically normal, we need to verify conditions (9.12)-(9.14). We
+n
+note in our example that Z := X ε , and that the series {X ε } is an ergodic process (this
+t t−1 t t−1 t t
+simply means that sample means converge almost surely to their expectation, so it is a great tool
+to use). Furthermore, since for any function g, E(g(X ε )|F ) = E(g(X ε )|X ), where
+t−1 t t−1 t−1 t t−1
+F = σ(X , X , . . .) we need only to condition on X rather than the entire sigma-algebra
+t−1 t−1 t−2 t−1
+F . To simplify the notation we let S = 1 (cid:80)n ε X (included an extra term here).
+t−1 n n t=1 t t−1
+Verification of conditions
+303
+
+--- physical page 305 ---
+C1 : By using the ergodicity of {X ε } we have
+t−1 t t
+n n
+1 (cid:88) Z2 = 1 (cid:88) X2 ε2 → P E(X2 ) E(ε2) = σ2c(0).
+n t n t−1 t t−1 t
+(cid:124) (cid:123)(cid:122) (cid:125)
+t=1 t=1
+=1
+C2 : We now verify the conditional Lindeberg condition.
+1 (cid:88) n √ 1 (cid:88) n √
+E(Z2I(|Z | > η n)|F ) = E(X2 ε2I(|X ε | > η n)|X ).
+n t t t−1 n − 1 t−1 t t−1 t t−1
+t=1 t=1
+We now use the Cauchy-Schwartz inequality for conditional expectations to split X2 ε2 and
+t−1 t
+I(|X ε | > ε) (see the conditional H¨older inequality). We recall that the Cauchy-Schwartz
+t−1 t
+inequality for conditional expectations is E(X Z |G) ≤ [E(X2|G)E(Z2|G)]1/2 almost surely.
+t t t t
+Therefore
+1 (cid:88) n √
+E(Z2I(|Z | > ε n)|F ) (use the conditional Cauchy-Schwartz to split these terms)
+n t t t−1
+t=1
+≤ 1 (cid:88) n (cid:8) E(X4 ε4|X )E(I(|X ε | > η √ n)2|X ) (cid:9)1/2
+n t−1 t t−1 t−1 t t−1
+t=1
+≤ 1 (cid:88) n X2 E(ε4)1/2 (cid:8) E(I(|X ε | > η √ n)2|X ) (cid:9)1/2 , (9.17)
+n t−1 t t−1 t t−1
+t=1
+almost surely. We note that rather than use the conditional Cauchy-Schwartz inequality we
+can use a generalisation of it called the conditional H¨older inequality. The H¨older inequality
+states that if p−1 + q−1 = 1, then E(XY |F ) ≤ {E(Xp|F )}1/p{E(Y q|F )}1/q almost surely.
+The advantage of using this inequality is that one can reduce the moment assumptions on
+X .
+t
+Returning to (9.17), and studying E(I(|X ε | > ε)2|X ) we use that E(I(A)2) = E(I(A)) =
+t−1 t t−1
+P(A) and the Chebyshev inequality to show
+√ √
+E (cid:0) I(|X ε | > η n)2|X (cid:1) = E (cid:0) I(|X ε | > η n)|X (cid:1)
+t−1 t t−1 t−1 t t−1
+√
+(cid:18) (cid:18) (cid:19) (cid:19)
+η n
+= E I |ε | > |X
+t t−1
+X
+t−1
+√
+(cid:18) η n (cid:19) X2 var(ε )
+= P |ε | > ≤ t−1 t . (9.18)
+ε t X η2n
+t−1
+304
+
+--- physical page 306 ---
+Substituting (9.18) into (9.17) we have
+1 (cid:88) n E (cid:0) Z2I(|Z | > η √ n)|F (cid:1) ≤ 1 (cid:88) n X2 E(ε4)1/2 (cid:26) X t 2 −1 var(ε t ) (cid:27)1/2
+n t t t−1 n t−1 t η2n
+t=1 t=1
+E(ε4)1/2
+(cid:88)
+n
+≤ t |X |3E(ε2)1/2
+ηn3/2 t−1 t
+t=1
+E(ε4)1/2E(ε2)1/2 1 (cid:88) n
+≤ t t |X |3.
+t−1
+ηn1/2 n
+t=1
+If E(ε4) < ∞, then E(X4) < ∞, therefore by using the ergodic theorem we have 1 (cid:80)n |X |3 a → .s.
+t t n t=1 t−1
+E(|X |3). Since almost sure convergence implies convergence in probability we have
+0
+1 (cid:88) n E(Z2I(|Z | > η √ n)|F ) ≤ E(ε4 t )1/2E(ε2 t )1/2 1 (cid:88) n |X |3 → P 0.
+n t t t−1 ηn1/2 n t−1
+t=1 t=1
+(cid:124) (cid:123)(cid:122) (cid:125)
+(cid:124) (cid:123)(cid:122) (cid:125)
+→0
+→ P E(|X0|3)
+Hence condition (9.13) is satisfied.
+C3 : Finally, we need to verify that
+n
+1 (cid:88) E(Z2|F ) → P σ2.
+n t t−1
+t=1
+Since {X } is an ergodic sequence we have
+t t
+n n
+1 (cid:88) 1 (cid:88)
+E(Z2|F ) = E(X2 ε2|X )
+n t t−1 n t−1 t t−1
+t=1 t=1
+n n
+= 1 (cid:88) X2 E(ε2|X ) = E(ε2) 1 (cid:88) X2 a → .s. E(ε2)E(X2) = σ2Σ ,
+n t−1 t t−1 t n t−1 0 1
+t=1 t=1
+(cid:124) (cid:123)(cid:122) (cid:125)
+a → .s. E(X2)
+0
+hence we have verified condition (9.14).
+Altogether conditions C1-C3 imply that
+√ n∇L (φ) = √ 1 (cid:88) n X ε → D N (0, σ2Σ ). (9.19)
+n t−1 t 1
+n
+t=1
+305
+
+--- physical page 307 ---
+Therefore
+√ (cid:18) 1 (cid:19)−1 √
+n(φ(cid:98)n − φ) = ∇2L
+n
+nS
+n
+. (9.20)
+2
+(cid:124) (cid:123)(cid:122) (cid:125)
+(cid:124) (cid:123)(cid:122) (cid:125) → D N (0,σ2c(0))
+a → .s. (E(X2))−1
+0
+Using that E(X2) = c(0), this implies that
+0
+√
+n(φˆ − φ) → D N (0, σ2Σ−1). (9.21)
+n 1
+Thus we have derived the limiting distribution of φˆ .
+n
+Remark 9.1.7 We recall that
+1 (cid:80)n ε X
+(φˆ − φ) = − (cid:0) ∇2L (cid:1)−1 ∇L (φ) = n−1 t=2 t t−1 , (9.22)
+n n n 1 (cid:80)n X2
+n−1 t=2 t−1
+and that var( 1 (cid:80)n ε X ) = 1 (cid:80)n var(ε X ) = O( 1 ). This implies
+n−1 t=2 t t−1 n−1 t=2 t t−1 n
+(φˆ − φ) = O (n−1/2).
+n p
+Indeed the results also holds almost surely
+(φˆ − φ) = O(n−1/2). (9.23)
+n
+The same result is true for autoregressive processes of arbitrary finite order. That is
+√
+n(φˆ − φ) → D N (0, σ2Σ−1). (9.24)
+n p
+9.2 Estimation for ARMA models
+Let us suppose that {X } satisfies the ARMA representation
+t
+p q
+(cid:88) (cid:88)
+X − φ X = ε + θ ε ,
+t i t−i t j t−j
+i=1 j=1
+306
+
+--- physical page 308 ---
+and θ = (θ , . . . , θ ), φ = (φ , . . . , φ ) and σ2 = var(ε ). We will suppose for now that p and
+1 q 1 p t
+q are known. The objective in this section is to consider various methods for estimating these
+parameters.
+9.2.1 The Gaussian maximum likelihood estimator
+We now derive the Gaussian maximum likelihood estimator (GMLE) to estimate the parameters θ
+and φ. Let X(cid:48) = (X , . . . , X ). The criterion (the GMLE) is constructed as if {X } were Gaussian,
+n 1 n t
+but this need not be the case. The likelihood is similar to the likelihood given in (9.5), but just as
+in the autoregressive case it can be not directly maximised, i.e.
+L (φ, θ, σ) = − log det(Σ (φ, θ, σ)) − X(cid:48) Σ (φ, θ, σ)−1X , (9.25)
+n n n n n
+where Σ (φ, θ, σ) the variance covariance matrix of X . However, the above can be written in a
+n n
+tractable way by using conditioning
+n−1
+(cid:88)
+L (ζ) = log f (X ; ζ) + log f(X |X , . . . , X ; ζ) (by repeated conditioning)
+n 1 t+1 t 1
+t=1
+where for simplicity we set ζ = (θ, φ, σ). Note that f (X |X , . . . , X , ζ) is the conditional den-
+t+1 1 t
+sity of X given X , . . . , X . Under the assumption the process is Gaussian, the conditional
+t+1 1 t
+distribution of X conditioned on the past is Gaussian where
+t+1
+X |X , . . . , X ∼ N (P (X , ζ), var[X |X , . . . , X , ζ]) .
+t+1 t 1 X1,...,Xt t+1 t+1 t 1
+and var[X |X , . . . , X , ζ] = E [X −P (X ; ζ)]2. We recall from Sections 7.5.1 and (7.8)
+t+1 t 1 ζ t+1 X1,...,Xt t+1
+and equation (7.5.1) that the coefficients of P (X ) are the best fitting AR(t) parameters
+X1,...,Xt t+1
+based on the autocovariance {c(r; ζ)} which implictly depends on the ARMA parameters ζ. Thus
+r
+t
+(cid:88)
+P (X ; ζ) = X = a (ζ)X
+X1,...,Xt t+1 t+1|t j,t t+1−j
+j=1
+and
+E [X − P (X ; ζ)]2 = r(t + 1; ζ) = c(0; ζ) − r (ζ)(cid:48)Σ (ζ)−1r (ζ).
+ζ t+1 X1,...,Xt t+1 t t t
+307
+
+--- physical page 309 ---
+The above looks cumbersome but it can be evaluated using the Levinson-Durbin algorithm. Further,
+if t > max(p, q), then by using equation (7.8)
+t p q
+(cid:88) (cid:88) (cid:88)
+X (ζ) = a (ζ)X = φ (ζ)X + θ (ζ)(X − X (ζ)).
+t+1|t j,t t+1−j j t+1−j t,i t+1−i t+1−i|t−i
+j=1 j=1 i=1
+Thus under Gaussianity
+(cid:32) (cid:33)
+1 (X t+1 − X t+1|t (ζ))2
+f(X |X , . . . , X ; ζ) = exp −
+t+1 t 1 (cid:112)
+2πr(t + 1; ζ) 2r(t + 1; ζ)
+and
+(X − X (ζ))2
+t+1 t+1|t
+log f(X |X , . . . , X ; ζ) ∝ − log r(t + 1; ζ) − .
+t+1 t 1
+r(t + 1; ζ)
+Substituting this into L (ζ) gives
+n
+L (ζ) = − (cid:88) n log r(t; ζ) − X 1 2 − n (cid:88) −1 (X t+1 − (cid:80)t j=1 φ t+1,j (ζ)X t+1−j )2 .
+n
+r(1; ζ) r(t + 1; ζ)
+t=1 t=1
+An alternative but equivalent derivation of the above is to use the Cholesky decomposition of Σ (ζ)
+n
+(see Section 7.5.3, equation (7.14)). For each set of parameters ζ and r(t+1; ζ) and X (ζ) can
+t+1−i|t−i
+be evaluated. Thus the maximum likelihood estimators are the parameters ζ(cid:98)n = arg max
+ζ
+L
+n
+(ζ).
+The above can be a little difficult to evaluate. We give describe some popular approximations
+below.
+9.2.2 The approximate Gaussian likelihood
+We obtain an approximation to the log-likelihood which simplifies the estimation scheme. We recall
+in Section 7.8 we approximated X
+t+1|t
+with X(cid:98)t+1|t . This motivates the approximation where we
+replace X
+t+1|t
+in L(cid:98)n (ζ) with Xˆ
+t+1|t
+, where Xˆ
+t+1|t
+is defined in (7.21)
+p q t max(p,q)
+(cid:88) (cid:88) (cid:88) (cid:88)
+X(cid:98)t+1|t = φ
+j
+X
+t+1−j
++ θ
+i
+(X
+t+1−i
+− X(cid:98)t−i (1)) = a
+j
+X
+t+1−s
++ b
+s
+X
+s
+.
+j=1 i=1 s=1 s=1
+308
+
+--- physical page 310 ---
+and r(t; ζ) with σ2. This gives the approximate Gaussian log-likelihood
+L(cid:98)n (ζ) = − (cid:88) n log σ2 − (cid:88) n [X t − X(cid:98)
+σ
+t
+2
+|t−1 (ζ)]2
+t=1 t=2
+= − (cid:88) n log σ2 − (cid:88) n [(θ(B)−1φ(B)) [t] X t ]2
+σ2
+t=1 t=2
+where (θ(B)−1φ(B)) denotes the approximation of the polynomial in B to the tth order. The
+[t]
+approximate likelihood greatly simplifies the estimation scheme because the derivatives (which is
+the main tool used in the maximising it) can be easily obtained. To do this we note that
+d φ(B) Biφ(B) φ(B)
+X = − X = − X (9.26)
+dθ θ(B) t θ(B)2 t θ(B)2 t−i
+i
+d φ(B) Bj 1
+X = − X = − X
+dφ θ(B) t θ(B)2 t θ(B)2 t−j
+j
+therefore
+d
+(cid:18)
+φ(B)
+(cid:19)2 (cid:18)
+φ(B)
+(cid:19) (cid:18)
+φ(B)
+(cid:19)
+d
+(cid:18)
+φ(B)
+(cid:19)2 (cid:18)
+φ(B)
+(cid:19) (cid:18)
+1
+(cid:19)
+X = −2 X X and X = −2 X X .
+dθ θ(B) t θ(B) t θ(B)2 t−i dφ θ(B) t θ(B) t θ(B)2 t−j
+i j
+(9.27)
+Substituting this into the approximate likelihood gives the derivatives
+n (cid:34) (cid:18) (cid:19) (cid:35)
+∂L(cid:98) = − 2 (cid:88) (cid:104) (cid:0) θ(B)−1φ(B) (cid:1) X (cid:105) φ(B) X
+∂θ σ2 [t] t θ(B)2 t−i
+i t=2 [t−i]
+n (cid:34) (cid:18) (cid:19) (cid:35)
+∂L(cid:98) = − 2 (cid:88) (cid:104) (cid:0) θ(B)−1φ(B) (cid:1) X (cid:105) 1 X
+∂φ σ2 [t] t θ(B) t−j
+j t=1 [t−j]
+n
+∂L(cid:98) = 1 − 1 (cid:88) (cid:104) (cid:0) θ(B)−1φ(B) (cid:1) X (cid:105)2 . (9.28)
+∂σ2 σ2 nσ4 [t] t
+t=1
+We then use the Newton-Raphson scheme to maximise the approximate likelihood.
+It should be mentioned that such approximations are very common in time series, though as
+with all approximation, they can be slightly different. Lu¨tkepohl (2005), Section 12.2 gives a very
+similar approximation, but uses the variance/covariance matrix of the time series X as the basis
+n
+of the approximation. By approximating the variance/covariance he finds an approximation of the
+likelihood.
+309
+
+--- physical page 311 ---
+9.2.3 Estimation using the Kalman filter
+We now state another approximation using the Kalman filter. We recall from Section 7.9 that the
+ARMA model satisfies the recursion
+       
+X(t + 1|t + 1) 0 1 0 . . . 0 0 X(t|t) 1
+       
+       
+ X(t + 2|t + 1)   0 0 1 . . . 0 0   X(t + 1|t)   ψ 1 
+       
+       
+ X(t + 3|t)   0 0 0 . . . 0 0   X(t + 2|t)   ψ 2 
+  =     + ε  
+  . . .     . . . . . . . . . . . . . . . . . .     . . .   t+1   . . .  
+       
+       
+ X(t + m − 1|t + 1)   0 0 0 . . . 0 1   X(t + m − 2|t)   ψ 
+       m−2 
+       
+X(t + m|t + 1) φ φ φ . . . φ φ X(t + m − 1|t) ψ
+m m−1 m−2 2 1 m−1
+Z = F Z + V
+t+1 t t+1
+for t ∈ Z. The observation model is the ARMA(p, q) process where
+X = (1, 0, . . . , 0)Z where t ∈ Z.
+t+1 t+1
+Q(ζ) = var(ε )ψ(cid:48) ψ , R = 0, H = (1, 0, . . . , 0)
+t
+m m
+The Kalman equations
+(1) Start with an initial value Z . This part is where the approximation comes into play because
+0|0
+Y is not observed. This part causes me quite a lot of trauma because it means the likelihood
+0
+based on the Kalman equations is also an approximation (though it rarely is stated that it
+is). Typically we set Z = (0, . . . , 0) and recommendations for P are given in Jones (1980)
+0|0 0|0
+and Akaiki (1978). Then for t > 0 iterate on steps (2) and (3) below.
+(2) Prediction step
+Z(cid:98)t+1|t (ζ) = F (ζ)Z(cid:98)t|t (ζ)
+and the corresponding mean squared error
+P (ζ) = F (ζ)P F (ζ)∗ + Q(ζ).
+t+1|t t|t
+310
+
+--- physical page 312 ---
+(3) Update step The conditional expectation
+(cid:16) (cid:17)
+Z(cid:98)t+1|t+1 (ζ) = Z(cid:98)t+1|t (ζ) + K
+t+1
+(ζ) X
+t+1
+− HZ(cid:98)t+1|t (ζ) .
+where
+P (ζ)H∗
+t+1|t
+K (ζ) =
+t+1 HP (ζ)H∗
+t+1|t
+and the corresponding mean squared error
+P (ζ) = P (ζ) − K (ζ)HP (ζ) = (I − K (ζ)H)P (ζ).
+t+1|t+1 t+1|t t t+1|t t t+1|t
+Thus Z(cid:98)t+1|t (ζ)
+(1)
+≈ X
+t+1|t
+(ζ) and P
+t+1|t
+(ζ) ≈ r(t + 1|ζ) thus an approximation of the Gaussian
+likeilhood is
+(cid:88) n (cid:88) n (X t − Z(cid:98)t|t−1 (ζ) (1) )2
+L(cid:98)n (ζ) = − log P
+t|t−1
+(ζ) −
+P (ζ)
+.
+t|t−1
+t=1 t=1
+In order to maximise the above (using the Newton Raphson scheme) the derivative of the above
+needs to be evaluated with respect to ζ. How exactly this is done is not so clear to me. Z(cid:98)t|t−1 (ζ)
+could be evaluated by defining a new set of state space equations for (Z (ζ), ∇ Z (ζ)) but I
+t+1 ζ t+1
+not so sure how this can be done for P (ζ). Nevertheless somehow it is done successfully used
+t|t−1
+to maximise the likelihood.
+9.2.4 Sampling properties of the ARMA maximum likelihood es-
+timator
+It can be shown that the approximate likelihood is close to the actual true likelihood and asymp-
+totically both methods are equivalent.
+Theorem 9.2.1 Let us suppose that X has a causal and invertible ARMA representation
+t
+p q
+(cid:88) (cid:88)
+X − φ X = ε + θ ε
+t j t−j t i t−i
+j=1 i=1
+where {ε } are iid random variables with mean zero and var[ε ] = σ2 (we do not assume Gaussian-
+t t
+311
+
+--- physical page 313 ---
+ity). Then the (quasi)-Gaussian
+ 
+√ φˆ − φ
+n  n  → D N (0, σ2Λ−1),
+θˆ − θ
+n
+with
+ 
+E(U U(cid:48) ) E(V U(cid:48) )
+t t t t
+Λ =  
+E(U V(cid:48) ) E(V V(cid:48) )
+t t t t
+and U = (U , . . . , U ) and V = (V , . . . , V ), where {U } and {V } are autoregressive
+t t t−p+1 t t t−q+1 t t
+processes which satisfy φ(B)U = ε and θ(B)V = ε .
+t t t t
+We do not give the proof in this section, however it is possible to understand where this result
+comes from. We recall that that the maximum likelihood and the approximate likelihood are
+asymptotically equivalent. They are both approximations of the unobserved likelihood
+L(cid:101)n (θ) = − (cid:88) n log σ2 − n (cid:88) −1 [X t+1 −
+σ
+X
+2
+t (1; θ)]2 = − (cid:88) n log σ2 − n (cid:88) −1 [θ(B)−1φ
+σ
+(
+2
+B)X t+1 ]2 ,
+t=1 t=2 t=1 t=2
+where θ = (φ, θ, σ2). This likelihood is infeasible in the sense that it cannot be maximised since
+the finite past X , X , . . . is unobserved, however is a very convenient tool for doing the asymptotic
+0 1
+analysis. Using Lemma 7.8.1 we can show that all three likelihoods L
+n
+, L(cid:98)n and L(cid:101)n are all asymp-
+totically equivalent. Therefore, to obtain the asymptotic sampling properties of L
+n
+or L(cid:98)n we can
+simply consider the unobserved likelihood L(cid:101)n .
+To show asymptotic normality (we assume here that the estimators are consistent) we need to
+consider the first and second derivative of L(cid:101)n (since the asymptotic properties are determined by
+Taylor expansions). In particular we need to consider the distribution of ∂L(cid:101)n at its true parameters
+∂θ
+and the expectation of
+∂2L(cid:101)n
+at it’s true parameters. We note that by using (9.27) we have
+∂θ2
+n (cid:20)(cid:18) (cid:19) (cid:21)
+∂L(cid:101) = − 2 (cid:88) (cid:2)(cid:0) θ(B)−1φ(B) (cid:1) X (cid:3) φ(B) X
+∂θ σ2 t θ(B)2 t−i
+i
+t=1
+n (cid:20)(cid:18) (cid:19) (cid:21)
+∂L(cid:101) = − 2 (cid:88) (cid:2)(cid:0) θ(B)−1φ(B) (cid:1) X (cid:3) 1 X (9.29)
+∂φ σ2 t θ(B) t−j
+j
+t=1
+Since we are considering the derivatives at the true parameters we observe that (cid:0) θ(B)−1φ(B) (cid:1) X =
+t
+312
+
+--- physical page 314 ---
+ε ,
+t
+φ(B) φ(B) θ(B) 1
+X = ε = ε = V
+θ(B)2 t−i θ(B)2 φ(B) t−i θ(B) t−i t−i
+and
+1 1 θ(B) 1
+X = ε = ε = U .
+t−j t−j t−j t−j
+θ(B) θ(B) φ(B) φ(B)
+Thus φ(B)U = ε and θ(B)V = ε are autoregressive processes (compare with theorem). This
+t t t t
+means that the derivative of the unobserved likelihood can be written as
+n n
+∂L(cid:101) 2 (cid:88) ∂L(cid:101) 2 (cid:88)
+= − ε U and = − ε V (9.30)
+∂θ σ2 t t−i ∂φ σ2 t t−j
+i j
+t=1 t=1
+Note that by causality ε , U and V are independent. Again like many of the other estimators we
+t t−i t−j
+have encountered this sum is ‘mean-like’ so can show normality of it by using a central limit theorem
+designed for dependent data. Indeed we can show asymptotically normality of { ∂L(cid:101) ; i = 1, . . . , q},
+∂θi
+{ ∂L(cid:101) ; j = 1, . . . , p} and their linear combinations using the Martingale central limit theorem, see
+∂φj
+Theorem 3.2 (and Corollary 3.1), Hall and Heyde (1980) - note that one can also use m-dependence.
+Moreover, it is relatively straightforward to show that n−1/2( ∂L(cid:101) , ∂L(cid:101) ) has the limit variance matrix
+∂θi ∂φj
+∆. Finally, by taking second derivative of the likelihood we can show that E[n−1 ∂2L(cid:98) ] = ∆. Thus
+∂θ2
+giving us the desired result.
+9.2.5 The Hannan-Rissanen AR(∞) expansion method
+The methods detailed above require good initial values in order to begin the maximisation (in order
+to prevent convergence to a local maximum).
+We now describe a simple method first propose in Hannan and Rissanen (1982) and An et al.
+(1982). It is worth bearing in mind that currently the ‘large p small n problem’ is a hot topic.
+These are generally regression problems where the sample size n is quite small but the number of
+regressors p is quite large (usually model selection is of importance in this context). The methods
+proposed by Hannan involves expanding the ARMA process (assuming invertibility) as an AR(∞)
+process and estimating the parameters of the AR(∞) process. In some sense this can be considered
+as a regression problem with an infinite number of regressors. Hence there are some parallels
+313
+
+--- physical page 315 ---
+between the estimation described below and the ‘large p, small n problem’.
+As we mentioned in Lemma 4.10.1, if an ARMA process is invertible it is can be represented as
+∞
+(cid:88)
+X = b X + ε . (9.31)
+t j t−j t
+j=1
+The idea behind Hannan’s method is to estimate the parameters {b }, then estimate the innovations
+j
+ε , and use the estimated innovations to construct a multiple linear regression estimator of the
+t
+ARMA paramters {θ } and {φ }. Of course in practice we cannot estimate all parameters {b } as
+i j j
+there are an infinite number of them. So instead we do a type of sieve estimation where we only
+estimate a finite number and let the number of parameters to be estimated grow as the sample size
+increases. We describe the estimation steps below:
+(i) Suppose we observe {X }n . Recalling (9.31), will estimate {b }pn parameters. We will
+t t=1 j j=1
+suppose that p → ∞ as n → ∞ and p << n (we will state the rate below).
+n n
+We use Yule-Walker to estimate {b }pn , where
+j j=1
+ˆb = Σˆ −1ˆr ,
+pn pn pn
+where
+n−|i−j| n−|j|
+1 (cid:88) 1 (cid:88)
+(Σˆ ) = (X − X¯ )(X − X¯ ) and (ˆr ) = (X − X¯ )(X − X¯ ).
+pn i,j n t t+|i−j| pn j n t t+|j|
+t=1 t=1
+(ii) Having estimated the first {b }pn coefficients we estimate the residuals with
+j j=1
+pn
+(cid:88)
+ε˜ = X − ˆb X .
+t t j,n t−j
+j=1
+(iii) Now use as estimates of φ and θ φ˜ , ˜θ where
+0 0 n n
+n p q
+(cid:88) (cid:88) (cid:88)
+φ˜ , ˜θ = arg min (X − φ X − θ ε˜ )2.
+n n t j t−j i t−i
+t=pn+1 j=1 i=1
+We note that the above can easily be minimised. In fact
+(φ(cid:101)
+n
+, (cid:101)θ
+n
+) = R(cid:101) −
+n
+1
+(cid:101)
+s
+n
+314
+
+--- physical page 316 ---
+where
+n n
+R˜
+n
+=
+n
+1 (cid:88) Y(cid:101)
+t
+Y(cid:101) (cid:48)
+t
+and
+(cid:101)
+s
+n
+=
+n
+1 (cid:88) Y(cid:101)
+t
+X
+t
+,
+t=max(p,q) t=max(p,q)
+(cid:48)
+Y(cid:101)
+t
+= (X
+t−1
+, . . . , X
+t−p
+, ε
+(cid:101)t−1
+, . . . , ε
+(cid:101)t−q
+).
+9.3 The quasi-maximum likelihood for ARCH processes
+In this section we consider an estimator of the parameters a = {a : j = 0, . . . , p} given the
+0 j
+observations {X : t = 1, . . . , N }, where {X } is a ARCH(p) process. We use the conditional log-
+t t
+likelihood to construct the estimator. We will assume throughout that E(Z2) = 1 and (cid:80)p α =
+t j=1 j
+ρ < 1.
+We now construct an estimator of the ARCH parameters based on Z ∼ N (0, 1). It is worth
+t
+mentioning that despite the criterion being constructed under this condition it is not necessary
+that the innovations Z are normally distributed. In fact in the case that the innovations are not
+t
+normally distributed but have a finite fourth moment the estimator is still good. This is why it
+is called the quasi-maximum likelihood , rather than the maximum likelihood (similar to the how
+the GMLE estimates the parameters of an ARMA model regardless of whether the innovations are
+Gaussian or not).
+(cid:113)
+Let us suppose that Z is Gaussian. Since Z = X / a + (cid:80)p a X2 , E(X |X , . . . , X ) =
+t t t 0 j=1 j t−j t t−1 t−p
+0 and var(X |X , . . . , X ) = a + (cid:80)p a X2 , then the log density of X given X , . . . , X
+t t−1 t−p 0 j=1 j t−j t t−1 t−p
+is
+(cid:88)
+p X2
+log(a + a X2 ) + t .
+0 j t−j a + (cid:80)p a X2
+j=1 0 j=1 j t−j
+Therefore the conditional log density of X , X , . . . , X given X , . . . , X is
+p+1 p+2 n 1 p
+(cid:88)
+n (cid:18)
+(cid:88)
+p X2 (cid:19)
+log(a + a X2 ) + t .
+0 j t−j a + (cid:80)p a X2
+t=p+1 j=1 0 j=1 j t−j
+This inspires the the conditional log-likelihood
+1 (cid:88) n (cid:18) (cid:88) p X2 (cid:19)
+L (α) = log(α + α X2 ) + t .
+n n − p 0 j t−j α + (cid:80)p α X2
+t=p+1 j=1 0 j=1 j t−j
+315
+
+--- physical page 317 ---
+To obtain the estimator we define the parameter space
+p
+(cid:88)
+Θ = {α = (α , . . . , α ) : α ≤ 1, 0 < c ≤ α ≤ c < ∞, c ≤ α }
+0 p j 1 0 2 1 j
+j=1
+and assume the true parameters lie in its interior a = (a , . . . , a ) ∈ Int(Θ). We let
+0 p
+aˆ = arg min L (α). (9.32)
+n n
+α∈Θ
+The method for estimation of GARCH parameters parallels the approximate likelihood ARMA
+estimator given in Section 9.2.1.
+Exercise 9.2 The objective of this question is to estimate the parameters of a random autoregres-
+sive process of order one
+X = (φ + ξ ) X + ε ,
+t t t−1 t
+where, |φ| < 1 and {ξ } and {ε } are zero mean iid random variables which are independent of
+t t t t
+each other, with σ2 = var[ξ ] and σ2 = var[ε ].
+ξ t ε t
+Suppose that {X }n is observed. We will assume for parts (a-d) that ξ and ε are Gaussian
+t t=1 t t
+random variables. In parts (b-c) the objective is to construct an initial value estimator which is
+easy to obtain but not optimal in (d) to obtain the maximum likelihood estimator.
+(a) What is the conditional expectation (best predictor) of X given the past?
+t
+(b) Suppose that {X }n is observed. Use your answer in part (a) to obtain an explicit expression
+t t=1
+for estimating φ.
+(c) Define residual as ξ X + ε . Use your estimator in (b) to estimate the residuals.
+t t−1 t
+Evaluate the variance of ξ X + ε conditioned on X . By using the estimated residuals
+t t−1 t t−1
+explain how the conditional variance can be used to obtain an explicit expression for estimating
+σ2 and σ2.
+ξ ε
+(d) By conditioning on X obtain the log-likelihood of X , . . . , X under the assumption of Guas-
+1 2 n
+sianity of ξ and ε . Explain the role that (b) and (c) plays in your maximisation algorithm.
+t t
+(e) Bonus question (only attempt if you really want to)
+316
+
+--- physical page 318 ---
+Show that the expectation of the conditional log-likelihood is maximised at the true parameters
+(φ , σ2 and σ2 ) even when ξ and ε are not Gaussian.
+0 0,ξ 0,ε t t
+Hint: You may want to use that the function g(x) = − log x + x is minimum at x = 1 where
+g(1) = 1 and let
+σ2 + σ2 X2
+0,ε 0,ξ t−1
+x = .
+σ2 + σ2X2
+ε ξ t−1
+317

@@ -1,0 +1,2123 @@
+--- physical page 88 ---
+Chapter 4
+Linear time series
+Prerequisites
+• Familarity with linear models in regression.
+• Find the polynomial equations. If the solution is complex writing complex solutions in polar
+form x + iy = reiθ, where θ is the phased and r the modulus or magnitude.
+Objectives
+• Understand what causal and invertible is.
+• Know what an AR, MA and ARMA time series model is.
+• Know how to find a solution of an ARMA time series, and understand why this is impor-
+tant (how the roots determine causality and why this is important to know - in terms of
+characteristics in the process and also simulations).
+• Understand how the roots of the AR can determine ‘features’ in the time series and covariance
+structure (such as pseudo periodicities).
+4.1 Motivation
+The objective of this chapter is to introduce the linear time series model. Linear time series models
+are designed to model the covariance structure in the time series. There are two popular sub-
+87
+
+--- physical page 89 ---
+groups of linear time models (a) the autoregressive and (a) the moving average models, which can
+be combined to make the autoregressive moving average models.
+We motivate the autoregressive from the perspective of classical linear regression. We recall one
+objective in linear regression is to predict the response variable given variables that are observed.
+To do this, typically linear dependence between response and variable is assumed and we model Y
+i
+as
+p
+(cid:88)
+Y = a X + ε ,
+i j ij i
+j=1
+where ε is such that E[ε |X ] = 0 and more commonly ε and X are independent. In linear
+i i ij i ij
+regression once the model has been defined, we can immediately find estimators of the parameters,
+do model selection etc.
+Returning to time series, one major objective is to predict/forecast the future given current and
+past observations (just as in linear regression our aim is to predict the response given the observed
+variables). At least formally, it seems reasonable to represent this as
+p
+(cid:88)
+X = φ X + ε , t ∈ Z (4.1)
+t j t−j t
+j=1
+where we assume that {ε } are independent, identically distributed, zero mean random variables.
+t
+Model (4.1) is called an autoregressive model of order p (AR(p) for short). Further, it would appear
+that
+p
+(cid:88)
+E(X |X , . . . , X ) = φ X . (4.2)
+t t−1 t−p j t−j
+j=1
+I.e. the expected value of X given that X , . . . , X have already been observed), thus the past
+t t−1 t−p
+values of X have a linear influence on the conditional mean of X . However (4.2) not necessarily
+t t
+true.
+Unlike the linear regression model, (4.1) is an infinite set of linear difference equations. This
+means, for this systems of equations to be well defined, it needs to have a solution which is mean-
+ingful. To understand why, recall that (4.1) is defined for all t ∈ Z, so let us start the equation at
+the beginning of time (t = −∞) and run it on. Without any constraint on the parameters {φ },
+j
+there is no reason to believe the solution is finite (contrast this with linear regression where these
+88
+
+--- physical page 90 ---
+issues are not relevant). Therefore, the first thing to understand is under what conditions will the
+AR model (4.1) have a well defined stationary solution and what features in a time series is the
+solution able to capture.
+Of course, one could ask why go through to the effort. One could simply use least squares to
+estimate the parameters. This is possible, but there are two related problems (a) without a proper
+analysis it is not clear whether model has a meaningful solution (for example in Section 6.4 we
+show that the least squares estimator can lead to misspecified models), it’s not even possible to
+make simulations of the process (b) it is possible that E(ε |X ) (cid:54)= 0, this means that least squares
+t t−p
+is not estimating φ and is instead estimating an entirely different set of parameters! Therefore,
+j
+there is a practical motivation behind our theoretical treatment.
+In this chapter we will be deriving conditions for a strictly stationary solution of (4.1). Under
+these moment conditions we obtain a strictly stationary solution of (4.1). In Chapter 6 we obtain
+conditions for (4.1) to have both a strictly stationary and second order stationary solution. It is
+worth mentioning that it is possible to obtain a strictly stationary solution to (4.1) under weaker
+conditions (see Theorem 13.0.1).
+How would you simulate from the following model? One simple method for understanding a model
+is to understand how you would simulate from it:
+X = φ X + φ X + ε t = . . . , −1, 0, 1, . . . .
+t 1 t−1 2 t−1 t
+4.2 Linear time series and moving average models
+4.2.1 Infinite sums of random variables
+Before defining a linear time series, we define the MA(q) model which is a subclass of linear time
+series. Let us supppose that {ε } are iid random variables with mean zero and finite variance. The
+t
+time series {X } is said to have a MA(q) representation if it satisfies
+t
+q
+(cid:88)
+X = ψ ε ,
+t j t−j
+j=0
+where E(ε ) = 0 and var(ε ) = 1. It is clear that X is a rolling finite weighted sum of {ε }, therefore
+t t t t
+{X } must be well defined. We extend this notion and consider infinite sums of random variables.
+t
+89
+
+--- physical page 91 ---
+Now, things become more complicated, since care must be always be taken with anything involving
+infinite sums. More precisely, for the sum
+∞
+(cid:88)
+X = ψ ε ,
+t j t−j
+j=−∞
+to be well defined (has a finite limit), the partial sums S =
+(cid:80)n
+ψ ε should be (almost
+n j=−n j t−j
+surely) finite and the sequence S should converge (ie. |S − S | → 0 as n , n → ∞). A random
+n n1 n2 1 2
+variable makes no sense if it is infinite. Therefore we must be sure that X is finite (this is what
+t
+we mean by being well defined).
+Below, we give conditions under which this is true.
+Lemma 4.2.1 Suppose
+(cid:80)∞
+|ψ | < ∞ and {X } is a strictly stationary time series with E|X | <
+j=−∞ j t t
+∞. Then {Y }, defined by
+t
+∞
+(cid:88)
+Y = ψ X ,
+t j t−j
+j=−∞
+is a strictly stationary time series. Furthermore, the partial sum converges almost surely, Y =
+n,t
+(cid:80)n
+ψ X → Y . If var(X ) < ∞, then {Y } is second order stationary and converges in mean
+j=−n j t−j t t t
+square (that is E(Y − Y )2 → 0).
+n,t t
+PROOF. See Brockwell and Davis (1998), Proposition 3.1.1 or Fuller (1995), Theorem 2.1.1 (page
+31) (also Shumway and Stoffer (2006), page 86). (cid:3)
+Example 4.2.1 Suppose {X } is a strictly stationary time series with var(X ) < ∞. Define {Y }
+t t t
+as the following infinite sum
+∞
+(cid:88)
+Y = jkρj|X |
+t t−j
+j=0
+where |ρ| < 1. Then {Y } is also a strictly stationary time series with a finite variance.
+t
+We will use this example later in the course.
+Having derived conditions under which infinite sums are well defined, we can now define the
+general class of linear and MA(∞) processes.
+Definition 4.2.1 (The linear process and moving average (MA)(∞)) Suppose that {ε } are
+t
+90
+
+--- physical page 92 ---
+iid random variables,
+(cid:80)∞
+|ψ | < ∞ and E(|ε |) < ∞.
+j=0 j t
+(i) A time series is said to be a linear time series if it can be represented as
+∞
+(cid:88)
+X = ψ ε ,
+t j t−j
+j=−∞
+where {ε } are iid random variables with finite variance. Note that since that as these sums
+t
+are well defined by equation (3.9) {X } is a strictly stationary (ergodic) time series.
+t
+This is a rather strong definition of a linear process. A more general definition is {X } has
+t
+the representation
+∞
+(cid:88)
+X = ψ ε ,
+t j t−j
+j=−∞
+where {ε } are uncorrelated random variables with mean zero and variance one (thus the
+t
+independence assumption has been dropped).
+(ii) The time series {X } has a MA(∞) representation if it satisfies
+t
+∞
+(cid:88)
+X = ψ ε . (4.3)
+t j t−j
+j=0
+1
+The difference between an MA(∞) process and a linear process is quite subtle. A linear process
+involves both past, present and future innovations {ε }, whereas the MA(∞) uses only past and
+t
+present innovations.
+A very interesting class of models which have MA(∞) representations are autoregressive and
+autoregressive moving average models. In the following sections we prove this.
+1Note that late on we show that all second order stationary time series {X } have the representation
+t
+∞
+(cid:88)
+X = ψ Z , (4.4)
+t j t−j
+j=1
+where {Z = X − P (X )} (where P (X ) is the best linear predictor of X given the
+t t Xt−1,Xt−2,... t Xt−1,Xt−2,... t t
+past, X , X , . . .). In this case {Z } are uncorrelated random variables. It is called Wold’s representation
+t−1 t−2 t
+theorem (see Section 7.12). The representation in (4.4) has many practical advantages. For example Krampe
+et al. (2016) recently used it to define the so called “MA bootstrap”.
+91
+
+--- physical page 93 ---
+4.3 The AR(p) model
+In this section we will examine under what conditions the AR(p) model has a stationary solution.
+4.3.1 Difference equations and back-shift operators
+The autoregressive model is defined in terms of inhomogenuous difference equations. Difference
+equations can often be represented in terms of backshift operators, so we start by defining them
+and see why this representation may be useful (and why it should work).
+The time series {X } is said to be an autoregressive (AR(p)) if it satisfies the equation
+t
+X − φ X − . . . − φ X = ε , t ∈ Z, (4.5)
+t 1 t−1 p t−p t
+where {ε } are zero mean, finite variance random variables. As we mentioned previously, the
+t
+autoregressive model is a system of difference equation (which can be treated as a infinite number
+of simultaneous equations). For this system to make any sense it must have a solution.
+Remark 4.3.1 (What is meant by a solution?) By solution, we mean a sequence of numbers
+{x }∞ which satisfy the equations in (7.31). It is tempting to treat (7.31) as a recursion, where
+t t=−∞
+we start with an intial value x some time far back in the past and use (7.31) to generate {x } (for
+I t
+a given sequence {ε } ). This is true for some equations but not all. To find out which, we need to
+t t
+obtain the solution to (7.31).
+Example Let us suppose the model is
+X = φX + ε for t ∈ Z,
+t t−1 t
+where ε are iid random variables and φ is a known parameter. Let ε = 0.5, ε = 3.1, ε = −1.2
+t 2 3 4
+etc. This gives the system of equations
+x = φx + 0.5, x = φx + 3.1, and x = φx − 1.2
+2 1 3 2 4 3
+and so forth. We see this is an equation in terms of unknown {x } . Does there exist a {x } which
+t t t t
+satisfy this system of equations? For linear systems, the answer can easily be found. But more
+complex systems the answer is not so clear. Our focus in this chapter is on linear systems.
+92
+
+--- physical page 94 ---
+To obtain a solution we write the autoregressive model in terms of backshift operators:
+X − φ BX − . . . − φ BpX = ε , ⇒ φ(B)X = ε
+t 1 t p t t t t
+where φ(B) = 1 − (cid:80)p φ Bj, B is the backshift operator and is defined such that BkX = X .
+j=1 j t t−k
+Simply rearranging φ(B)X = ε , gives the ‘solution’ of the autoregressive difference equation to
+t t
+be X = φ(B)−1ε , however this is just an algebraic manipulation, below we investigate whether it
+t t
+really has any meaning.
+In the subsections below we will show:
+• Let φ(z) = 1 − (cid:80)p φ zj be a pth order polynomial in z. Let z , . . . , z denote the p roots
+j=1 j 1 p
+of φ(z). A solution for (7.31) will always exist if none of the p roots of φ(z) lie on the unit
+circle i.e. |z | =(cid:54) 1 for 1 ≤ j ≤ p.
+j
+• If all the roots lie outside the unit circle i.e. |z | > 1 for 1 ≤ j ≤ p, then {x } can be generated
+j t
+by starting with an initial value far in the past x and treating (7.31) as a recursion
+I
+X = φ X + . . . + φ X + ε .
+t 1 t−1 p t−p t
+A time series that can be generated using the above recursion is called causal. It will have a
+very specific solution.
+• If all the roots lie inside the unit circle i.e. |z | < 1 for 1 ≤ j ≤ p, then we cannot directly
+j
+treat (7.31) as a recursion. Instead, we need to rearrange (7.31) such that X is written in
+t−p
+terms of {X }p and ε
+t−j j=1 t
+X = φ−1 [−φ X − . . . − φ X + X ] − φ−1ε . (4.4)
+t−p p p−1 t−p+1 1 t−1 t p t
+{x } can be generated by starting with an initial value far in the past x and treating (7.31)
+t I
+as a recursion.
+• If the roots lie both inside and outside the unit circle. No recursion will generate a solution.
+But we will show that a solution can be generated by adding recursions together.
+To do this, we start with an example.
+93
+
+--- physical page 95 ---
+4.3.2 Solution of two particular AR(1) models
+Below we consider two different AR(1) models and obtain their solutions.
+(i) Consider the AR(1) process
+X = 0.5X + ε , t ∈ Z. (4.5)
+t t−1 t
+Notice this is an equation (rather like 3x2 + 2x + 1 = 0, or an infinite number of simultaneous
+equations), which may or may not have a solution. To obtain the solution we note that
+X = 0.5X + ε and X = 0.5X + ε . Using this we get X = ε + 0.5(0.5X +
+t t−1 t t−1 t−2 t−1 t t t−2
+ε ) = ε + 0.5ε + 0.52X . Continuing this backward iteration we obtain at the kth
+t−1 t t−1 t−2
+iteration, X = (cid:80)k (0.5)jε + (0.5)k+1X . Because (0.5)k+1 → 0 as k → ∞ by taking
+t j=0 t−j t−k
+the limit we can show that X = (cid:80)∞ (0.5)jε is almost surely finite and a solution of
+t j=0 t−j
+(4.5). Of course like any other equation one may wonder whether it is the unique solution
+(recalling that 3x2 + 2x + 1 = 0 has two solutions). We show in Section 4.3.2 that this is the
+unique stationary solution of (4.5).
+Let us see whether we can obtain a solution using the difference equation representation. We
+recall, that by crudely taking inverses, the solution is X = (1 − 0.5B)−1ε . The obvious
+t t
+question is whether this has any meaning. Note that (1 − 0.5B)−1 = (cid:80)∞ (0.5B)j, for
+j=0
+|B| ≤ 2, hence substituting this power series expansion into X we have
+t
+∞
+(cid:88) (cid:88) (cid:88)
+X = (1 − 0.5B)−1ε = ( (0.5B)j)ε = ( (0.5jBj))ε = (0.5)jε ,
+t t t t t−j
+j=0 j=0 j=0
+which corresponds to the solution above. Hence the backshift operator in this example helps
+us to obtain a solution. Moreover, because the solution can be written in terms of past values
+of ε , it is causal.
+t
+(ii) Let us consider the AR model, which we will see has a very different solution:
+X = 2X + ε . (4.6)
+t t−1 t
+Doing what we did in (i) we find that after the kth back iteration we have X = (cid:80)k 2jε +
+t j=0 t−j
+2k+1X . However, unlike example (i) 2k does not converge as k → ∞. This suggest that if
+t−k
+94
+
+--- physical page 96 ---
+we continue the iteration X = (cid:80)∞ 2jε is not a quantity that is finite (when ε are iid).
+t j=0 t−j t
+Therefore X = (cid:80)∞ 2jε cannot be considered as a solution of (4.6). We need to write
+t j=0 t−j
+(4.6) in a slightly different way in order to obtain a meaningful solution.
+Rewriting (4.6) we have X = 0.5X − 0.5ε . Forward iterating this we get X =
+t−1 t t t−1
+−(0.5) (cid:80)k (0.5)jε − (0.5)k+1X . Since (0.5)k+1 → 0 as k → ∞ we have
+j=0 t+j t+k
+∞
+(cid:88)
+X = −(0.5) (0.5)jε
+t−1 t+j
+j=0
+as a solution of (4.6).
+Let us see whether the difference equation can also offer a solution. Since (1 − 2B)X = ε ,
+t t
+using the crude manipulation we have X = (1 − 2B)−1ε . Now we see that
+t t
+∞
+(cid:88)
+(1 − 2B)−1 = (2B)j for |B| < 1/2.
+j=0
+Using this expansion gives the solution X = (cid:80)∞ 2jBjX , but as pointed out above this
+t j=0 t
+sum is not well defined. What we find is that φ(B)−1ε only makes sense (is well defined) if
+t
+the series expansion of φ(B)−1 converges in a region that includes the unit circle |B| = 1.
+What we need is another series expansion of (1 − 2B)−1 which converges in a region which
+includes the unit circle |B| = 1 (as an aside, we note that a function does not necessarily
+have a unique series expansion, it can have difference series expansions which may converge
+in different regions). We now show that a convergent series expansion needs to be defined in
+terms of negative powers of B not positive powers. Writing (1 − 2B) = −(2B)(1 − (2B)−1),
+therefore
+∞
+(cid:88)
+(1 − 2B)−1 = −(2B)−1 (2B)−j,
+j=0
+which converges for |B| > 1/2. Using this expansion we have
+∞ ∞
+(cid:88) (cid:88)
+X = − (0.5)j+1B−j−1ε = − (0.5)j+1ε ,
+t t t+j+1
+j=0 j=0
+which we have shown above is a well defined solution of (4.6).
+95
+
+--- physical page 97 ---
+In summary (1 − 2B)−1 has two series expansions
+∞
+1 (cid:88)
+= (2B)−j
+(1 − 2B)
+j=0
+which converges for |B| < 1/2 and
+∞
+1 (cid:88)
+= −(2B)−1 (2B)−j,
+(1 − 2B)
+j=0
+which converges for |B| > 1/2. The one that is useful for us is the series which converges
+when |B| = 1.
+It is clear from the above examples how to obtain the solution of a general AR(1). This solution
+is unique and we show this below.
+Exercise 4.1 (i) Find the stationary solution of the AR(1) model
+X = 0.8X + ε
+t t−1 t
+where ε are iid random variables with mean zero and variance one.
+t
+(ii) Find the stationary solution of the AR(1) model
+5
+X = X + ε
+t t−1 t
+4
+where ε are iid random variables with mean zero and variance one.
+t
+(iii) [Optional] Obtain the autocovariance function of the stationary solution for both the models
+in (i) and (ii).
+Uniqueness of the stationary solution the AR(1) model (advanced)
+Consider the AR(1) process X = φX + ε , where |φ| < 1. Using the method outlined in (i), it
+t t−1 t
+is straightforward to show that X = (cid:80)∞ φjε is its stationary solution, we now show that this
+t j=0 t−j
+solution is unique. This may seem obvious, but recall that many equations have multiple solutions.
+The techniques used here generalize to nonlinear models too.
+96
+
+--- physical page 98 ---
+We first show that X = (cid:80)∞ φjε is well defined (that it is almost surely finite). We note
+t j=0 t−j
+that |X | ≤ (cid:80)∞ |φj| · |ε |. Thus we will show that (cid:80)∞ |φj| · |ε | is almost surely finite,
+t j=0 t−j j=0 t−j
+which will imply that X is almost surely finite. By montone convergence we can exchange sum
+t
+and expectation and we have E(|X |) ≤ E(lim (cid:80)n |φjε |) = lim (cid:80)n |φj|E|ε |) =
+t n→∞ j=0 t−j n→∞ j=0 t−j
+E(|ε |) (cid:80)∞ |φj| < ∞. Therefore since E|X | < ∞, (cid:80)∞ φjε is a well defined solution of
+0 j=0 t j=0 t−j
+X = φX + ε .
+t t−1 t
+To show that it is the unique, stationary, causal solution, let us suppose there is another (causal)
+solution, call it Y . Clearly, by recursively applying the difference equation to Y , for every s we
+t t
+have
+s
+(cid:88)
+Y = φjε + φsY .
+t t−j t−s−1
+j=0
+Evaluating the difference between the two solutions gives Y − X = A − B where A = φsY
+t t s s s t−s−1
+and B = (cid:80)∞ φjε for all s. To show that Y and X coincide almost surely we will show that
+s j=s+1 t−j t t
+for every (cid:15) > 0,
+(cid:80)∞
+P (|A − B | > ε) < ∞ (and then apply the Borel-Cantelli lemma). We note
+s=1 s s
+if |A − B | > ε), then either |A | > ε/2 or |B | > ε/2. Therefore P (|A − B | > ε) ≤ P (|A | >
+s s s s s s s
+ε/2)+P (|B | > ε/2). To bound these two terms we use Markov’s inequality. It is straightforward to
+s
+show that P (|B | > ε/2) ≤ Cφs/ε. To bound E|A |, we note that |Y | ≤ |φ| · |Y | + |ε |, since {Y }
+s s s s−1 s t
+is a stationary solution then E|Y |(1 − |φ|) ≤ E|ε |, thus E|Y | ≤ E|ε |/(1 − |φ|) < ∞. Altogether
+s s t t
+this gives P (|A − B | > ε) ≤ Cφs/ε (for some finite constant C). Hence (cid:80)∞ P (|A − B | > ε) <
+s s s=1 s s
+(cid:80)∞ Cφs/ε < ∞. Thus by the Borel-Cantelli lemma, this implies that the event {|A − B | > ε}
+s=1 s s
+happens only finitely often (almost surely). Since for every ε, {|A −B | > ε} occurs (almost surely)
+s s
+only finitely often for all ε, then Y = X almost surely. Hence X = (cid:80)∞ φjε is (almost surely)
+t t t j=0 t−j
+the unique causal solution.
+4.3.3 The solution of a general AR(p)
+Let us now summarise our observation for the general AR(1) process X = φX + ε . If |φ| < 1,
+t t−1 t
+then the solution is in terms of past values of {ε }, if on the other hand |φ| > 1 the solution is in
+t
+terms of future values of {ε }.
+t
+In this section we focus on general AR(p) model
+X − φ X − . . . − φ X = ε , t ∈ Z, (4.7)
+t 1 t−1 p t−p t
+97
+
+--- physical page 99 ---
+Generalising this argument to a general polynomial, if the roots of φ(B) are greater than one,
+then the power series of φ(B)−1 (which converges for |B| = 1) is in terms of positive powers (hence
+the solution φ(B)−1ε will be in past terms of {ε }). On the other hand, if the roots are both less
+t t
+than and greater than one (but do not lie on the unit circle), then the power series of φ(B)−1 will
+be in both negative and positive powers. Thus the solution X = φ(B)−1ε will be in terms of both
+t t
+past and future values of {ε }. We summarize this result in a lemma below.
+t
+Lemma 4.3.1 Suppose that the AR(p) process satisfies the representation φ(B)X = ε , where
+t t
+none of the roots of the characteristic polynomial lie on the unit circle and E|ε | < ∞. Then {X }
+t t
+has a stationary, almost surely unique, solution
+(cid:88)
+X = ψ ε
+t j t−j
+j∈Z
+where ψ(z) = (cid:80) ψ zj = φ(z)−1 (the Laurent series of φ(z)−1 which converges when |z| = 1).
+j∈Z j
+We see that where the roots of the characteristic polynomial φ(B) lie defines the solution of the
+AR process. We will show in Sections ?? and 6.1.2 that it not only defines the solution but also
+determines some of the characteristics of the time series.
+Exercise 4.2 Suppose {X } satisfies the AR(p) representation
+t
+p
+(cid:88)
+X = φ X + ε ,
+t j t−j t
+j=1
+where
+(cid:80)p
+|φ | < 1 and E|ε | < ∞. Show that {X } will always have a causal stationary solution
+j=1 j t t
+(i.e. the roots of the characteristic polynomial are outside the unit circle).
+4.3.4 Obtaining an explicit solution of an AR(2) model
+A worked out example
+Suppose {X } satisfies
+t
+X = 0.75X − 0.125X + ε ,
+t t−1 t−2 t
+where {ε } are iid random variables. We want to obtain a solution for the above equations.
+t
+98
+
+--- physical page 100 ---
+It is not easy to use the backward (or forward) iterating techique for AR processes beyond
+order one. This is where using the backshift operator becomes useful. We start by writing X =
+t
+0.75X − 0.125X + ε as φ(B)X = ε, where φ(B) = 1 − 0.75B + 0.125B2, which leads to what
+t−1 t−2 t t
+is commonly known as the characteristic polynomial φ(z) = 1 − 0.75z + 0.125z2. If we can find a
+power series expansion of φ(B)−1, which is valid for |B| = 1, then the solution is X = φ(B)−1ε .
+t t
+We first observe that φ(z) = 1 − 0.75z + 0.125z2 = (1 − 0.5z)(1 − 0.25z). Therefore by using
+partial fractions we have
+1 1 −1 2
+= = + .
+φ(z) (1 − 0.5z)(1 − 0.25z) (1 − 0.5z) (1 − 0.25z)
+We recall from geometric expansions that
+∞ ∞
+−1 (cid:88) 2 (cid:88)
+= − (0.5)jzj |z| ≤ 2, = 2 (0.25)jzj |z| ≤ 4.
+(1 − 0.5z) (1 − 0.25z)
+j=0 j=0
+Putting the above together gives
+∞
+1 (cid:88)
+= {−(0.5)j + 2(0.25)j}zj |z| < 2.
+(1 − 0.5z)(1 − 0.25z)
+j=0
+The above expansion is valid for |z| = 1, because (cid:80)∞ | − (0.5)j + 2(0.25)j| < ∞ (see Lemma
+j=0
+4.3.2). Hence
+∞ ∞
+X = {(1 − 0.5B)(1 − 0.25B)}−1ε = (cid:0) (cid:88) {−(0.5)j + 2(0.25)j}Bj(cid:1) ε = (cid:88) {−(0.5)j + 2(0.25)j}ε ,
+t t t t−j
+j=0 j=0
+which gives a stationary solution to the AR(2) process (see Lemma 4.2.1). Moreover since the roots
+lie outside the unit circle the solution is causal.
+The discussion above shows how the backshift operator can be applied and how it can be used
+to obtain solutions to AR(p) processes.
+The solution of a general AR(2) model
+We now generalise the above to general AR(2) models
+X = (a + b)X − abX + ε ,
+t t−1 t−2 t
+99
+
+--- physical page 101 ---
+the characteristic polynomial of the above is 1 − (a + b)z + abz2 = (1 − az)(1 − bz). This means
+the solution of X is
+t
+X = (1 − Ba)−1(1 − Bb)−1ε ,
+t t
+thus we need an expansion of (1 − Ba)−1(1 − Bb)−1. Assuming that a (cid:54)= b, and using partial
+fractions we have
+(cid:18) (cid:19)
+1 1 b a
+= −
+(1 − za)(1 − zb) b − a 1 − bz 1 − az
+Cases:
+(1) |a| < 1 and |b| < 1, this means the roots lie outside the unit circle. Thus the expansion is
+∞ ∞
+1 = 1 (cid:0) b (cid:88) bjzj − a (cid:88) ajzj(cid:1) ,
+(1 − za)(1 − zb) (b − a)
+j=0 j=0
+which leads to the causal solution
+(cid:18) ∞ (cid:19)
+X = 1 (cid:88) (cid:0) bj+1 − aj+1)ε . (4.8)
+t t−j
+b − a
+j=0
+(2) Case that |a| > 1 and |b| < 1, this means the roots lie inside and outside the unit circle and
+we have the expansion
+(cid:18) (cid:19)
+1 1 b a
+= −
+(1 − za)(1 − zb) b − a 1 − bz (az)((az)−1 − 1)
+(cid:18) ∞ ∞ (cid:19)
+1 (cid:88) (cid:88)
+= b bjzj + z−1 a−jz−j , (4.9)
+(b − a)
+j=0 j=0
+which leads to the non-causal solution
+∞ ∞
+X = 1 (cid:0) (cid:88) bj+1ε + (cid:88) a−jε (cid:1) . (4.10)
+t t−j t+1+j
+b − a
+j=0 j=0
+2
+2Later we show that the non-causal X , has the same correlation as an AR(2) model whose characteristic
+t
+polynomial has the roots a−1 and b, since both these roots lie out side the unit this model has a causal
+solution. Moreover, it is possible to rewrite this non-causal AR(2) as an MA infinite type process but where
+100
+
+--- physical page 102 ---
+Returning to (4.10), we see that this solution throws up additional interesting results. Let
+us return to the expansion in (4.9) and apply it to X
+t
+ 
+1 1  b 1 
+X = ε =  ε + ε 
+t (1 − Ba)(1 − Bb) t b − a  1 − bB t B(1 − a−1B−1) t
+ 
+(cid:124) (cid:123)(cid:122) (cid:125) (cid:124) (cid:123)(cid:122) (cid:125)
+causal AR(1) noncausal AR(1)
+1
+= (Y + Z )
+t t+1
+b − a
+where Y = bY + ε and Z = a−1Z + ε . In other words, the noncausal AR(2)
+t t−1 t t+1 t+2 t+1
+process is the sum of a causal and a‘future’ AR(1) process. This is true for all noncausal
+time series (except when there is multiplicity in the roots) and is discussed further in Section
+??.
+We mention that several authors argue that noncausal time series can model features in data
+which causal time series cannot.
+(iii) a = b < 1 (both roots are the same and lie outside the unit circle). The characteristic
+polynomial is (1 − az)2. To obtain the convergent expansion when |z| = 1 we note that
+(1 − az)−2 = (−1) d(1−az)−1 . Thus
+d(az)
+∞
+(−1) (cid:88)
+= (−1) j(az)j−1.
+(1 − az)2
+j=0
+This leads to the causal solution
+∞
+(cid:88)
+X = (−1) jaj−1ε .
+t t−j
+j=1
+In many respects this is analogous to Matern covariance defined over Rd (and used in spatial
+statistics). However, unlike autocovarianced defined over Rd the behaviour of the autocovari-
+the innovations are no independent but uncorrelated instead. I.e. we can write X as
+t
+(1 − a−1B)(1 − bB)X = ε ,
+t (cid:101)t
+where ε are uncorrelated (and are a linear sum of the iid varepsilon ), which as the solution
+(cid:98)t t
+(cid:18) ∞ (cid:19)
+X = 1 (cid:88) (cid:0) bj+1 − aj+1)ε . (4.11)
+t b − a (cid:101)t−j
+j=0
+101
+
+--- physical page 103 ---
+ance at zero is not an issue.
+Exercise 4.3 Show for the AR(2) model X = φ X + φ X + ε to have a causal stationary
+t 1 t−1 2 t−2 t
+solution the parameters φ , φ must lie in the region defined by the three conditions
+1 2
+φ + φ < 1, φ − φ < 1 |φ | < 1.
+2 1 2 1 2
+Exercise 4.4 (a) Consider the AR(2) process
+X = φ X + φ X + ε ,
+t 1 t−1 2 t−2 t
+where {ε } are iid random variables with mean zero and variance one. Suppose the absolute
+t
+of the roots of the characteristic polynomial 1 − φ z − φ z2 are greater than one. Show that
+1 2
+|φ | + |φ | < 4.
+1 2
+(b) Now consider a generalisation of this result. Consider the AR(p) process
+X = φ X + φ X + . . . φ X + ε .
+t 1 t−1 2 t−2 p t−p t
+Suppose the absolute of the roots of the characteristic polynomial 1 − φ z − . . . − φ zp are
+1 p
+greater than one. Show that |φ | + . . . + |φ | ≤ 2p.
+1 p
+4.3.5 History of the periodogram (Part II)
+We now return to the development of the periodogram and the role that the AR model played in
+understanding its behaviour.
+The general view until the 1920s is that most time series were a mix of periodic function with
+additive noise (where we treat Y as the yearly sunspot data)
+t
+P
+(cid:88)
+Y = [A cos(tΩ ) + B sin(tΩ )] + ε .
+t j j j j t
+j=1
+In the 1920’s, Udny Yule, a statistician, and Gilbert Walker, a Meterologist (working in Pune,
+India) believed an alternative model could be used to explain the features seen in the periodogram.
+Yule fitted an Autoregressive model of order two to the Sunspot data and obtained the AR(2)
+102
+
+--- physical page 104 ---
+model
+X = 1.381X − 0.6807X + ε .
+t t−1 t−2 t
+We simulate a Gaussian model with exactly this AR(2) structure. In Figure 4.2 plot of the sunspot
+data together realisation of the AR(2) process. In Figure 4.1 we plot the periodogram of the sunspot
+data and a realisation from the fitted AR(2) process. One can fit a model to any data set. What
+l l
+ll ll
+l l l l
+l l
+l l
+l l l l l l
+l lllll l lll l lll lllll l llllllll l ll llllllllllllll lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll llllllllllllll ll l llllllll l lllll lll l lll l lllll l
+0 1 2 3 4 5 6
+00002
+0
+frequency[−1]
+topsnus
+l l
+l l l l l l
+l l
+l l l ll ll l l l
+l l l l
+lll lll l ll l ll l ll ll l l lll ll l l llll ll l ll lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll ll l ll llll l l ll lll l l ll ll l ll l ll l lll lll
+0 1 2 3 4 5 6
+021
+08
+04
+0
+frequency[−1]
+)2(RA
+dettif
+Figure 4.1: The periodogram of the Sunspot data is the top plot and the periodogram of
+the fitted AR(2) model is the lower plot. They do not look exactly the same, but the AR(2)
+model is able to capture some of the periodicities.
+makes this model so interesting, is that the simple AR(2) models, model suprisingly well many of
+the prominent features seen in the sunspot data. From Figures 4.1 and 4.2 we see how well the
+AR(2) which is full stochastic can model a periodicities.
+To summarize, Schuster, and Yule and Walker fit two completely different models to the same
+103
+
+--- physical page 105 ---
+Time
+topsnus
+001
+05
+0
+0.00 32.55 75.95 119.35 162.75 206.15 249.55 292.95
+Time
+2ra
+6
+4
+2
+2−
+6−
+0.00 32.55 75.95 119.35 162.75 206.15 249.55 292.95
+Figure 4.2: Top: Sunspot, Lower: a realisation from the AR(2) process. Lines correspond
+to period of P = 2π/0.57 = 10.85 years.
+data set and both models are able to mimic the periodocities observed in the sunspot data. While
+it is obvious how a superimposition of sines and cosines can model periodicities it is not so clear
+how the AR(2) can achieve a similar effect.
+In the following section we study the coefficient of the AR(2) model and how it can mimic the
+periodicities seen in the data.
+4.3.6 Examples of “Pseudo” periodic AR(2) models
+We start by studying the AR(2) model that Yule and Walker fitted to the data. We recall that the
+fitted coefficients were
+X = 1.381X − 0.6807X + ε .
+t t−1 t−2 t
+104
+
+--- physical page 106 ---
+This corresponds to the characteristic function φ(z) = 1 − 1.381z + 0.68z2. The roots of this
+polynomial are λ = 0.77−1 exp(i0.57) and λ = 077−1 exp(−i0.57). Cross referencing with the
+1 2
+periodogram in Figure 4.1, we observe that the peak in the periodogram is at around 0.57 also.
+This suggests that the phase of the solution (in polar form) determines the periodicities. If the
+solution is real then the phase is either 0 or π and X has no (pseudo) periodicities or alternates
+t
+between signs.
+Observe that complex solutions of φ(z) must have conjugations in order to ensure φ(z) is real.
+Thus if a solution of the characteristic function corresponding to an AR(2) is λ = r exp(iθ), then
+1
+λ = r exp(−iθ). Based on this φ(z) can be written as
+2
+φ(z) = (1 − r exp(iθ)z)(1 − r exp(−iθ)) = 1 − 2r cos(θ)z + r2z2,
+this leads to the AR(2) model
+X = 2r cos(θ)X − r2X + ε
+t t−1 t−2 t
+where {ε } are iid random variables. To ensure it is causal we set |r| < 1. In the simulations below
+t
+we consider the models
+X = 2r cos(π/3)X − r2X + ε
+t t−1 t−2 t
+and
+X = 2r cos(0)X − r2X + ε
+t t−1 t−2 t
+for r = 0.5 and r = 0.9.The latter model has completely real coefficients and its characteristic
+function is φ(z) = (1 − rz)2.
+In Figures 4.3 and 4.4 we plot a typical realisation from these models with n = 200 and
+corresponding periodogram for the case θ = π/3. In Figures 4.5 and 4.6 we plot the a typical
+realisation and corresponding periodogram for the case θ = 0
+From the realisations and the periodogram we observe a periodicity centered about frequency
+π/3 or 0 (depending on the model). We also observe that the larger r is the more pronounced the
+period. For frequency 0, there is no period it is simply what looks like trend (very low frequency
+105
+
+--- physical page 107 ---
+0 50 100 150 200
+4
+2
+0
+2−
+4−
+time
+5.0=r
+0 50 100 150 200
+4
+2
+0
+2−
+4−
+time
+9.0=r
+Figure 4.3: Realisation for X = 2r cos(π/3)X − r2X + ε . Blue = r = 0.5 and red =
+t t−1 t−2 t
+r = 0.9.
+0.0 0.5 1.0 1.5 2.0 2.5 3.0
+8
+6
+4
+2
+0
+freq
+5.0
+= r margodoireP
+0.0 0.5 1.0 1.5 2.0 2.5 3.0
+041
+021
+001
+08
+06
+04
+02
+0
+freq
+9.0
+= r margodoireP
+Figure 4.4: Periodogram for realisation from X = 2r cos(π/3)X − r2X + ε . Blue =
+t t−1 t−2 t
+r = 0.5 and red = r = 0.9.
+behaviour). But the AR(2) is a completely stochastic system (random), it is strange that exhibits
+behaviour close to period. We explain why in the following section.
+We conclude this section by showing what shape the periodogram is trying to mimic (but not
+so well!). In will be shown later on that the expectation of the peridodogram is roughly equal to
+the spectral density function of the AR(2) process which is
+1 1
+f (ω) = = .
+|1 − φ eiω − φ ei2ω|2 |1 − 2r cos θeiω + r2e2iω|2
+1 2
+Plots of the spectral density for θ = π/3, θ = 0 and r = 0.5 and 0.9 are given in Figures 4.7 and
+4.8. Observe that the shapes in Figures 4.4 and 4.6 match those in Figures 4.7 and 4.8. But the
+106
+
+--- physical page 108 ---
+0 50 100 150 200
+02
+01
+0
+01−
+02−
+time
+5.0=r
+0 50 100 150 200
+02
+01
+0
+01−
+02−
+time
+9.0=r
+Figure 4.5: Realisation for X = 2rX − r2X + ε . Blue = r = 0.5 and red = r = 0.9.
+t t−1 t−2 t
+0.0 0.5 1.0 1.5 2.0 2.5 3.0
+04
+03
+02
+01
+0
+freq
+5.0
+= r margodoireP
+0.0 0.5 1.0 1.5 2.0 2.5 3.0
+0005
+0004
+0003
+0002
+0001
+0
+freq
+9.0
+= r margodoireP
+Figure 4.6: Periodogram for realisation from X = 2rX − r2X + ε . Blue = r = 0.5
+t t−1 t−2 t
+and red = r = 0.9.
+periodogram is very rough whereas the spectral density is smooth. This is because the periodogram
+is simply a mirror of all the frequencies in the observed time series, and the actual time series do
+not contain any pure frequencies. It is a mismatch of cosines and sines, thus the messiness of the
+periodogram.
+107
+
+--- physical page 109 ---
+0.0 0.5 1.0 1.5 2.0 2.5 3.0
+0.2
+5.1
+0.1
+5.0
+spectrum, theta=pi/3, r = 0.5
+freq
+1tset
+0.0 0.5 1.0 1.5 2.0 2.5 3.0
+03
+02
+01
+0
+spectrum, theta = pi/3, r = 0.9
+freq
+2tset
+Figure 4.7: Spectral density for X = 2rcos(π/3)X − r2X + ε . Blue = r = 0.5 and red
+t t−1 t−2 t
+= r = 0.9.
+0.0 0.5 1.0 1.5 2.0 2.5 3.0
+51
+01
+5
+0
+spectrum, theta=0, r = 0.5
+freq
+1tset
+0.0 0.5 1.0 1.5 2.0 2.5 3.0
+00001
+0008
+0006
+0004
+0002
+0
+spectrum, theta = 0, r = 0.9
+freq
+2tset
+Figure 4.8: Spectral density for X = 2rX − r2X + ε . Blue = r = 0.5 and red =
+t t−1 t−2 t
+r = 0.9.
+4.3.7 Derivation of “Pseudo” periodicity functions in an AR(2)
+We now explain why the AR(2) (and higher orders) can characterise some very interesting behaviour
+(over the rather dull AR(1)). For now we assume that X is a causal time series which satisfies the
+t
+AR(2) representation
+X = φ X + φ X + ε
+t 1 t−1 2 t−2 t
+where {ε } are iid with mean zero and finite variance. We focus on the case that the characteristic
+t
+polynomial is complex with roots λ = r exp(iθ) and λ = r exp(−iθ). Thus our focus is on the
+1 2
+108
+
+--- physical page 110 ---
+AR(2) model
+X = 2r cos(θ)X − r2X + ε |r| < 1.
+t t−1 t−2 t
+By using equation (4.8) with a = λ and b = λ
+∞
+1 (cid:88) (cid:16) (cid:17)
+X = λj+1 − λj+1 ε .
+t t−j
+λ − λ
+j=0
+We reparameterize λ = reiθ (noting that |r| < 1). Then
+∞
+1 (cid:88)
+X = 2rj+1 sin ((j + 1)θ) ε . (4.12)
+t t−j
+2r sin θ
+j=0
+We can see that X is effectively the sum of cosines/sines with frequency θ that have been modulated
+t
+by the iid errors and exponentially damped. This is why for realisations of autoregressive processes
+you will often see periodicities (depending on the roots of the characteristic). Thus to include
+periodicities in a time series in an These arguments can be generalised to higher order autoregressive
+models.
+Exercise 4.5 (a) Obtain the stationary solution of the AR(2) process
+7 2
+X = X − X + ε ,
+t t−1 t−2 t
+3 3
+where {ε } are iid random variables with mean zero and variance σ2.
+t
+Does the solution have an MA(∞) representation?
+(b) Obtain the stationary solution of the AR(2) process
+√
+4 × 3 42
+X = X − X + ε ,
+t 5 t−1 52 t−2 t
+where {ε } are iid random variables with mean zero and variance σ2.
+t
+Does the solution have an MA(∞) representation?
+(c) Obtain the stationary solution of the AR(2) process
+X = X − 4X + ε ,
+t t−1 t−2 t
+109
+
+--- physical page 111 ---
+where {ε } are iid random variables with mean zero and variance σ2.
+t
+Does the solution have an MA(∞) representation?
+Exercise 4.6 Construct a causal stationary AR(2) process with pseudo-period 17. Using the R
+function arima.sim simulate a realisation from this process (of length 200) and make a plot of the
+periodogram. What do you observe about the peak in this plot?
+4.3.8 Seasonal Autoregressive models
+A popular autoregessive model that is often used for modelling seasonality, is the seasonal autore-
+gressive model (SAR). To motivate the model consider the monthly average temperatures in College
+Station. Let {X } denote the monthly temperatures. Now if you have had any experience with
+t
+temperatures in College Station using the average temperature in October (still hot) to predict the
+average temperature in November (starts to cool) may not seem reasonable. It may seem more
+reasonable to use the temperature last November. We can do this using the following model
+X = φX + ε ,
+t t−12 t
+where |φ| < 1. This is an AR(12) model in disguise, The characteristic function φ(z) = 1 − φz12
+has roots λ = φ−1/12 exp(i2πj/12) for j = 0, 1, . . . , 11. As there are 5 complex pairs and two real
+j
+terms. We would expect to see 7 peaks in the periodogram and spectral density. The spectral
+density is
+1
+f (ω) = .
+|1 − φei12ω|2
+A realisation from the above model with φ = 0.8 and n = 200 is given in Figure 4.9. The
+corresponding periodogram and spectral density is given in Figure 4.10. We observe that the
+periodogram captures the general peaks in the spectral density, but is a lot messier.
+4.3.9 Solution of the general AR(∞) model (advanced)
+The AR(∞) model generalizes the AR(p)
+∞
+(cid:88)
+X = φ X + ε
+t j t−j t
+j=1
+110
+
+--- physical page 112 ---
+0 50 100 150 200
+4
+2
+0
+2−
+4−
+time
+pmet
+Figure 4.9: Realisation from SAR(12) with φ = 0.8.
+0.0 0.5 1.0 1.5 2.0 2.5 3.0
+04
+03
+02
+01
+0
+freq
+margodoireP
+0.0 0.5 1.0 1.5 2.0 2.5 3.0
+52
+02
+51
+01
+5
+0
+freq
+murtceps
+Figure 4.10: Left: Periodogram of realisation. Right Spectral density of model.
+where {ε } are iid random variables. AR(∞) models are more general than the AR(p) model and
+t
+are able to model more complex behaviour, such as slower decay of the covariance structure.
+In order to obtain the stationary solution of an AR(∞), we need to define an analytic function
+and its inverse.
+Definition 4.3.1 (Analytic functions in the region Ω) Suppose that z ∈ C. φ(z) is an ana-
+lytic complex function in the region Ω, if it has a power series expansion which converges in Ω, that
+is φ(z) = (cid:80)∞ φ zj.
+j=−∞ j
+If there exists a function φ˜(z) = (cid:80)∞ φ˜ zj such that φ˜(z)φ(z) = 1 for all z ∈ Ω, then φ˜(z)
+j=−∞ j
+is the inverse of φ(z) in the region Ω.
+Example 4.3.1 (Analytic functions) (i) Clearly a(z) = 1 − 0.5z is analytic for all z ∈ C,
+111
+
+--- physical page 113 ---
+and has no zeros for |z| < 2. The inverse is 1 = (cid:80)∞ (0.5z)j is well defined in the region
+a(z) j=0
+|z| < 2.
+(ii) Clearly a(z) = 1 − 2z is analytic for all z ∈ C, and has no zeros for |z| > 1/2. The inverse is
+1 = (−2z)−1(1 − (1/2z)) = (−2z)−1( (cid:80)∞ (1/(2z))j) well defined in the region |z| > 1/2.
+a(z) j=0
+(iii) The function a(z) = 1 is analytic in the region 0.5 < z < 2.
+(1−0.5z)(1−2z)
+(iv) a(z) = 1 − z, is analytic for all z ∈ C, but is zero for z = 1. Hence its inverse is not well
+defined for regions which involve |z| = 1 (see Example 4.7).
+(v) Finite order polynomials such as φ(z) = (cid:80)p φ zj for Ω = C.
+j=0 j
+(vi) The expansion (1 − 0.5z)−1 = (cid:80)∞ (0.5z)j for Ω = {z; |z| ≤ 2}.
+j=0
+We observe that for AR processes we can represent the equation as φ(B)X = ε , which formally
+t t
+gives the solution X = φ(B)−1ε . This raises the question, under what conditions on φ(B)−1 is
+t t
+φ(B)−1ε a valid solution. For φ(B)−1ε to make sense φ(B)−1 should be represented as a power
+t t
+series expansion. Below, we state a technical lemma on φ(z) which we use to obtain a stationary
+solution.
+Lemma 4.3.2 (Technical lemma) Suppose that ψ(z) = (cid:80)∞ ψ zj is finite on a region that
+j=−∞ j
+includes |z| = 1 (we say it is analytic in the region |z| = 1). Then
+(cid:80)∞
+|ψ | < ∞.
+j=−∞ j
+An immediate consequence of the lemma above is that if ψ(z) = (cid:80)∞ ψ zj is analytic in
+j=−∞ j
+the region and {X } is a strictly stationary time series, where E|X | we define the time series
+t t
+Y = ψ(B)X =
+(cid:80)∞
+ψ X . Then by the lemma above and Lemma 4.2.1, {Y } is almost
+t t j=−∞ j t−j t
+surely finite and strictly stationary time series. We use this result to obtain a solution of an
+AR(∞) (which includes an AR(p) as a special case).
+Lemma 4.3.3 Suppose φ(z) = 1 + (cid:80)∞ φ and ψ(z) = (cid:80)∞ ψ zj are analytic functions in a
+j=1 j j=−∞ j
+region which contains |z| = 1 and φ(z)ψ(z)−1 = 1 for all |z| = 1. Then the AR(∞) process
+∞
+(cid:88)
+X = φ X + ε .
+t j t−j t
+j=1
+112
+
+--- physical page 114 ---
+has the unique solution
+∞
+(cid:88)
+X = ψ ε .
+t j t−j
+j=−∞
+We can immediately apply the lemma to find conditions under which the AR(p) process will admit
+a stationary solution. Note that this is generalisation of Lemma 4.3.1.
+Rules of the back shift operator:
+(i) If a(z) is analytic in a region Ω which includes the unit circle |z| = 1 in its interior and {Y } is
+t
+a well defined time series, then X defined by Y = a(B)X is a well defined random variable.
+t t t
+(ii) The operator is commutative and associative, that is [a(B)b(B)]X = a(B)[b(B)X ] =
+t t
+[b(B)a(B)]X (the square brackets are used to indicate which parts to multiply first). This
+t
+may seem obvious, but remember matrices are not commutative!
+(iii) Suppose that a(z) and its inverse 1 are both have solutions in the region Ω which includes
+a(z)
+the unit circle |z| = 1 in its interior. If a(B)X = Z , then X = 1 Z .
+t t t a(B) t
+The magic backshift operator
+A precise proof of Lemma 4.3.3 and the rules of the back shift operator described above is beyond
+these notes. But we briefly describe the idea, so the backshift operator feels less like a magic trick.
+Equation (4.7) is an infinite dimension matrix operation that maps ((cid:96) -sequences to (cid:96) -sequences)
+2 2
+where Γ : (cid:96) → (cid:96) and Γ(x) = ε with x = (. . . , x , x , x , . . .). Thus x = Γ−1ε. The objectives is to
+2 2 −1 0 1
+find the coefficients in the operator Γ−1. It is easier to do this by transforming the operator to the
+Fourier domain with the Fourier operator F : (cid:96) → L [0, 2π] and F ∗ : L [0, 2π] → (cid:96) . Thus F ΓF ∗
+2 2 2 2
+is an integral operator with kernel K(λ, ω) = φ(eiω)δ . It can be shown that the inverse operator
+ω=λ
+(F Γ−1F ∗) has kernel K−1(λ, ω) = φ(eiω)−1δ . One can then deduce that the coefficients of Γ−1
+ω=λ
+are the Fourier coefficients (cid:82) 2π φ(eiω)−1e−ijωdω, which correspond to the expansion of φ(z)−1 that
+0
+converges in the region that include |z| = 1 (the Laurent series in this region).
+AR(∞) representation of stationary time series (Advanced)
+If a time series is second order stationary and its spectral density function f (ω) = (2π)−1 (cid:80) c(r)eirω
+r∈Z
+is bounded away from zero (is not zero) and is finite on [0, π]. Then it will have form of AR(∞)
+113
+
+--- physical page 115 ---
+representation
+∞
+(cid:88)
+X = a X + ε ,
+t j t−j t
+j=1
+the difference is that {ε } are uncorrelated random variables and may not be iid random
+t
+variables. This result is useful when finding the best linear predictors of X given the past.
+t
+4.4 Simulating from an Autoregressive process
+Simulating from a Gaussian AR process
+We start with the case that the innovations, {ε }, are Gaussian. In this case, by using Lemma
+t
+4.5.1(ii) we observe that all AR processes can be written as the infinite sum of the innovations. As
+sums of iid Gaussian random variables are Gaussian, then the resulting time series is also Gaussian.
+We show in Chapter 6 that given any causal AR equation, the covariance structure of the time
+series can be deduced. Since normal random variables are fully determined by their mean and
+variance matrix, using the function mvnorm and var[X ] = Σ , we can simulate the first p elements
+p p
+in the time series X = (X , . . . , X ). Then by simulating (n − p) iid random variables we can
+p 1 p
+generate X using the causal recursion
+t
+p
+(cid:88)
+X = φ X + ε .
+t j t−j t
+j=1
+Remark 4.4.1 Any non-causal system of difference equations with Gaussian innovations can al-
+ways be rewritten as a causal system. This property is unique for Gaussian processes.
+A worked example
+We illustrate the details with with an AR(1) process. Suppose X = φ X + ε where {ε } are iid
+t 1 t−1 t t
+standard normal random variables (note that for Gaussian processes it is impossible to discriminate
+between causal and non-causal processes - see Section 6.4, therefore we will assume |φ | < 1). We
+1
+will show in Section 6.1, equation (6.1) that the autocovariance of an AR(1) is
+c(r) = φr (cid:88)
+∞
+φ2j =
+φr
+1 .
+1 1 1 − φ2
+j=0 1
+114
+
+--- physical page 116 ---
+Therefore, the marginal distribution of X is Gaussian with variance (1 − φ2)−1. Therefore, to
+t 1
+simulate an AR(1) Gaussian time series, we draw from a Gaussian time series with mean zero and
+variance (1 − φ2)−1, calling this X . We then iterate for 2 ≤ t, X = φ X + ε . This will give us
+1 1 t 1 t−1 t
+a stationary realization from an AR(1) Gaussian time series.
+Note the function arima.sim is a routine in R which does the above. See below for details.
+Simulating from a non-Gaussian causal AR model
+Unlike the Gaussian AR process it is difficult to simulate an exact non-Gaussian model, but we
+can obtain a very close approximation. This is because if the innovations are non-Gaussian the
+distribution of X is not simple. Here we describe how to obtain a close approximation in the case
+t
+that the AR process is causal.
+A worked example We describe a method for simulating an AR(1). Let {X } be an AR(1) process,
+t
+X = φ X + ε , which has stationary, causal solution
+t 1 t−1 t
+∞
+X = (cid:88) φj ε .
+t 1 t−j
+j=0
+To simulate from the above model, we set X˜ = 0. Then obtain the iteration X˜ = φ X˜ + ε for
+1 t 1 t−1 t
+t ≥ 2. We note that the solution of this equation is
+t
+X˜ = (cid:88) φj ε .
+t 1 t−j
+j=0
+We recall from Lemma 4.5.1 that |X − X˜ | ≤ |φ |t (cid:80)∞ |φj ε |, which converges geometrically fast
+t t 1 j=0 1 −j
+to zero. Thus if we choose a large n to allow ‘burn in’ and use {X˜ ; t ≥ n} in the simulations we
+t
+have a simulation which is close to a stationary solution from an AR(1) process. Using the same
+method one can simulate causal AR(p) models too.
+Building AR(p) models One problem with the above approach is the AR(p) coefficients {φ } should
+j
+be chosen such that it corresponds to a causal solution. This is not so simple. It is easier to build
+a causal AR(p) model from its factorisation:
+p
+(cid:89)
+φ(B) = (1 − λ B).
+j
+j=1
+115
+
+--- physical page 117 ---
+Thus φ(B)X = ε can be written as
+t t
+φ(B)X = (1 − λ B)(1 − λ B) . . . (1 − λ B)X = ε .
+t p p−1 1 t t
+Using the above representation X can be simulated using a recursion. For simplicity we assume
+t
+p = 2 and φ(B)X = (1 − λ B)(1 − λ B)X = ε . First define the AR(1) model
+t 2 1 t t
+(1 − λ B)Y = ε ⇒ Y = (1 − λ B)−1ε .
+1 1,t t 1,t 1 t
+This gives
+(1 − λ B)X = (1 − λ B)−1ε = Y .
+2 t 1 t 1,t
+Thus we first simulate {Y } using the above AR(1) method described above. We treat {Y } as
+1,t t 1,t t
+the i nnovations, and then simulate
+(1 − λ B)X = Y ,
+2 t 1,t
+using the AR(1) method described above, but treating {Y } as the innovations. This method can
+1,t t
+easily be generalized for any AR(p) model (with real roots). Below we describe how to do the same
+but when the roots are complex
+Simulating an AR(2) with complex roots Suppose that X has a causal AR(2) representation. The
+t
+roots can be complex, but since X is real, the roots must be conjugates (λ = r exp(iθ) and
+t 1
+λ = r exp(−iθ)). This means X satisfies the representation
+2 t
+(1 − 2r cos(θ)B + r2B2)X = ε
+t t
+where |r| < 1. Now by using the same method described for simulating an AR(1), we can simulate
+an AR(2) model with complex roots.
+In summary, by using the method for simulating AR(1) and AR(2) models we can simulate any
+AR(p) model with both real and complex roots.
+116
+
+--- physical page 118 ---
+Simulating from a fully non-causal AR model
+Suppose that {X } is an AR(p) model with characteristic function φ(B), whose roots lie inside the
+t
+unit circle (fully non-causal). Then we can simulate X using the backward recursion
+t
+X = φ−1 [−φ X − . . . − φ X + X ] − φ−1ε . (4.13)
+t−p p p−1 t−p+1 1 t−1 t p t
+Simulating from a non-Gaussian non-causal AR model
+We now describe a method for simulating AR(p) models whose roots are both inside and outside the
+unit circle. The innovations should be non-Gaussian, as it makes no sense to simulate a non-causal
+Gaussian model and it is impossible to distinguish it from a corresponding causal Gaussian model.
+The method described below was suggested by former TAMU PhD student Furlong Li.
+Worked example To simplify the description consider the AR(2) model where φ(B) = (1−λ B)(1−
+1
+µ B) with |λ | < 1 (outside unit circle) and |µ | > 1 (inside the unit circle). Then
+1 1 1
+(1 − λ B)(1 − µ B)X = ε .
+1 1 t t
+Define the non-causal AR(1) model
+(1 − µ B)Y = ε .
+1 1,t t
+And simulate {Y } using a backward recursion. Then treat {Y } as the innovations and simulate
+1,t 1,t
+the causal AR(1)
+(1 − µ B)X = Y
+1 t 1,t
+using a forward recursion. This gives an AR(2) model whose roots lie inside and outside the unit
+circle. The same method can be generalized to any non-causal AR(p) model.
+Exercise 4.7 In the following simulations, use non-Gaussian innovations.
+(i) Simulate a stationary AR(4) process with characteristic function
+(cid:20) (cid:21) (cid:20) (cid:21) (cid:20) (cid:21) (cid:20) (cid:21)
+2π 2π 2π 2π
+φ(z) = 1 − 0.8 exp(i )z 1 − 0.8 exp(−i )z 1 − 1.5 exp(i )z 1 − 1.5 exp(−i )z .
+13 13 5 5
+117
+
+--- physical page 119 ---
+(ii) Simulate a stationary AR(4) process with characteristic function
+(cid:20) (cid:21) (cid:20) (cid:21) (cid:20) (cid:21) (cid:20) (cid:21)
+2π 2π 2 2π 2 2π
+φ(z) = 1 − 0.8 exp(i )z 1 − 0.8 exp(−i )z 1 − exp(i )z 1 − exp(−i )z .
+13 13 3 5 3 5
+Do you observe any differences between these realisations?
+R functions
+Shumway and Stoffer (2006) and David Stoffer’s website gives a comprehensive introduction to time
+series R-functions.
+The function arima.sim simulates from a Gaussian ARIMA process. For example,
+arima.sim(list(order=c(2,0,0), ar = c(1.5, -0.75)), n=150) simulates from the AR(2) model
+X = 1.5X − 0.75X + ε , where the innovations are Gaussian.
+t t−1 t−2 t
+4.5 The ARMA model
+Up to now, we have focussed on the autoregressive model. The MA(q) in many respects is a much
+simpler model to understand. In this case the time series is a weighted sum of independent latent
+variables
+q
+(cid:88)
+X = ε + θ ε + . . . + θ θ = ε + θ ε . (4.14)
+t t 1 t−1 q t−q t j t−j
+j=1
+We observe that X is independent of any X where |j| ≥ q + 1. On the contrast, for an AR(p)
+t t−j
+model, there is dependence between X and all the time series at all other time points (we have
+t
+shown above that if the AR(p) is causal, then it can be written as an MA(∞) thus the dependency at
+all lags). There are advantages and disadvantages of using either model. The MA(q) is independent
+after q lags (which may be not be viewed as realistic). But for many data sets simply fitting an
+AR(p) model to the data and using a model selection criterion (such as AIC), may lead to the
+selection of a large order p. This means the estimation of many parameters for a relatively small
+data sets. The AR(p) may not be parsimonious. The large order is usually chosen when the
+correlations tend to decay slowly and/or the autcorrelations structure is quite complex (not just
+monotonically decaying). However, a model involving 10-15 unknown parameters is not particularly
+parsimonious and more parsimonious models which can model the same behaviour would be useful.
+118
+
+--- physical page 120 ---
+A very useful generalisation which can be more flexible (and parsimonious) is the ARMA(p, q)
+model, in this case X has the representation
+t
+p q
+(cid:88) (cid:88)
+X − φ X = ε + θ ε .
+t i t−i t j t−j
+i=1 j=1
+Definition 4.5.1 (Summary of AR, ARMA and MA models) (i) The autoregressive AR(p)
+model: {X } satisfies
+t
+p
+(cid:88)
+X = φ X + ε . (4.15)
+t i t−i t
+i=1
+Observe we can write it as φ(B)X = ε
+t t
+(ii) The moving average M A(q) model: {X } satisfies
+t
+q
+(cid:88)
+X = ε + θ ε . (4.16)
+t t j t−j
+j=1
+Observe we can write X = θ(B)ε
+t t
+(iii) The autoregressive moving average ARM A(p, q) model: {X } satisfies
+t
+p q
+(cid:88) (cid:88)
+X − φ X = ε + θ ε . (4.17)
+t i t−i t j t−j
+i=1 j=1
+We observe that we can write X as φ(B)X = θ(B)ε .
+t t t
+We now state some useful definitions.
+Definition 4.5.2 (Causal and invertible) Consider the ARMA(p, q) model defined by
+p q
+(cid:88) (cid:88)
+X + ψ X = θ ε ,
+t j t−j i t
+j=1 i=1
+where {ε } are iid random variables with mean zero and constant variance.
+t
+(i) An ARMA process is said to be causal if it has the representation
+∞
+(cid:88)
+X = b ε .
+t j t−j
+j=0
+119
+
+--- physical page 121 ---
+(ii) An ARMA(p, q) process X +
+(cid:80)p
+ψ X =
+(cid:80)q
+θ ε (where {ε } are uncorrelated ran-
+t j=1 j t−j i=1 i t t
+dom variables with mean zero and constant variance) is said to be invertible if it has the
+representation
+∞
+(cid:88)
+X = a X + ε .
+t j t−j t
+j=1
+We have already given conditions underwhich an AR(p) model (and consequently) and ARMA(p, q)
+model is causal. We now look at when an MA(q) model is invertible (this allows us to write it as
+an AR(∞) process).
+A worked example Consider the MA(1) process
+X = ε + θε ,
+t t t−1
+where {ε } are iid random variables. Our aim is understand when X can have an AR(∞) repre-
+t t
+sentation. We do this using the backshift notation. Recall Bε = ε substituting this into the
+t t−1
+MA(1) model above gives
+X = (1 + θB)ε .
+t t
+Thus at least formally
+ε = (1 + θB)−1 X .
+t t
+We recall that the following equality holds
+∞
+(cid:88)
+(1 + θB)−1 = (−θ)jBj,
+j=0
+when |θB| < 1. Therefore if |θ| < 1, then
+∞ ∞
+(cid:88) (cid:88)
+ε = (1 + Bθ)−1 X = (−θ)jBjX = (−θ)jX .
+t t t t−j
+j=0 j=0
+120
+
+--- physical page 122 ---
+Rearranging the above gives the AR(∞) representation
+∞
+(cid:88)
+X = (−θ)jX + ε ,
+t t−j t
+j=1
+but observe this representation only holds if |θ| < 1.
+Conditions for invertibility of an MA(q) The MA(q) process can be written as
+q
+(cid:88)
+X = θ ε + ε .
+t j t−j t
+j=1
+It will have an AR(∞) representation if the roots of the polynomial θ(z) = 1 + (cid:80)q θ zj lie outside
+j=1 j
+the unit circle. Then we can write (1 + (cid:80)q θ z)−1 = (cid:80)∞ φ zj (i.e. all the roots are greater
+j=1 j j=0 j
+than one in absolute) and we have
+∞
+(cid:88)
+X = a X + ε .
+t j t−j t
+j=1
+Causal and invertible solutions are useful in both estimation and forecasting (predicting the
+future based on the current and past).
+Below we give conditions for the ARMA to have a causal solution and also be invertible. We
+also show that the coefficients of the MA(∞) representation of X will decay exponentially.
+t
+Lemma 4.5.1 Let us suppose X is an ARMA(p, q) process with representation given in Definition
+t
+4.5.1.
+(i) If the roots of the polynomial φ(z) lie outside the unit circle, and are greater than (1 + δ) (for
+some δ > 0), then X almost surely has the solution
+t
+∞
+(cid:88)
+X = b ε , (4.18)
+t j t−j
+j=0
+(cid:80)
+where |b | < ∞ (we note that really b = b (φ, θ) since its a function of {φ } and {θ }).
+j j j j i i
+Moreover for all j,
+|b | ≤ Kρj (4.19)
+j
+121
+
+--- physical page 123 ---
+for some finite constant K and 1/(1 + δ) < ρ < 1.
+(ii) If the roots of φ(z) lie both inside or outside the unit circle and are larger than (1 + δ) or less
+than (1 + δ)−1 for some δ > 0, then we have
+∞
+(cid:88)
+X = b ε , (4.20)
+t j t−j
+j=−∞
+(a vector AR(1) is not possible), where
+|a | ≤ Kρ|j| (4.21)
+j
+for some finite constant K and 1/(1 + δ) < ρ < 1.
+(iii) If the absolute value of the roots of θ(z) = 1 + (cid:80)q θ zj are greater than (1 + δ), then (4.17)
+j=1 j
+can be written as
+∞
+(cid:88)
+X = a X + ε . (4.22)
+t j t−j t
+j=1
+where
+|a | ≤ Kρj (4.23)
+j
+for some finite constant K and 1/(1 + δ) < ρ < 1.
+To compare the behaviour or an AR and ARMA models we simulate from and AR(3) and and
+ARMA(3, 2) where both models have the same autoregressive parameters. We simulate from the
+AR(3) model (two complex roots, one real root)
+(1 − 2 · 0.8 cos(π/3)B + 0.82B2)(1 − 0.6B)X = ε
+t t
+and the ARMA(3, 2) model
+(1 − 2 · 0.8 cos(π/3)B + 0.82B2)(1 − 0.6B)X = (1 + 0.5B − 0.5B2)ε
+t t
+The realisations and corresponding periodogram are given in Figures 4.11 and 4.12. Observe that
+the AR(3) model has one real root λ = 0.6, this gives rise to the perceived curve in Figure 4.11
+122
+
+--- physical page 124 ---
+0 50 100 150 200
+2
+0
+2−
+4−
+time
+3RAtset
+0 50 100 150 200
+5
+0
+5−
+time
+23AMRAtset
+Figure 4.11: Realisation from Left: AR(3) and Right: ARMA(3, 2)
+0.0 0.5 1.0 1.5 2.0 2.5 3.0
+02
+51
+01
+5
+0
+Periodogram AR(3)
+freq
+3RAtsetP
+0.0 0.5 1.0 1.5 2.0 2.5 3.0
+07
+06
+05
+04
+03
+02
+01
+0
+Periodogram ARMA(3)
+freq
+23AMRAtsetP
+Figure 4.12: Periodogram from realisation from Left: AR(3) and Right: ARMA(3, 2)
+0.0 0.5 1.0 1.5 2.0 2.5 3.0
+41
+21
+01
+8
+6
+4
+2
+0
+Spectral Density AR(3)
+freq
+3RAceps
+0.0 0.5 1.0 1.5 2.0 2.5 3.0
+03
+52
+02
+51
+01
+5
+0
+Spectral Density ARMA(3,2)
+freq
+23AMRAceps
+Figure 4.13: Spectral density from Left: AR(3) and Right: ARMA(3, 2)
+123
+
+--- physical page 125 ---
+and relatively amplitudes at low frequencies in the corresponding periodogram (in Figure 4.12). In
+contrast, the ARMA model has exactly the same AR part as the AR(3) model, but the MA part
+of this model appears to cancel out some of the low frequency information! The corresponding
+spectral density of the AR(3) and ARMA(3, 2) model are
+1
+f (ω) =
+AR |1 − 1.6 cos θeiω + 0.82e2iω|2|1 − 0.6eiω|2
+and
+|1 + 0.5eiω − 0.5e2iω|2
+f (ω) =
+ARMA |1 − 1.6 cos θeiω + 0.82e2iω|2|1 − 0.6eiω|2
+respectively. A plot of these spectral densities is given in Figure 4.13. We observe that the peri-
+odogram maps the rough character of the spectral density. This the spectral density conveys more
+information than then simply being a positive function. It informs on where periodicities in the
+time series are most likely to lie. Studying 4.13 we observe that MA part of the ARMA spectral
+density appears to be dampening the low frequencies. Code for all these models is given on the
+course website. Simulate different models and study their behaviour.
+4.6 ARFIMA models
+We have shown in Lemma 4.5.1 that the coefficients of an ARMA processes which admit a stationary
+solution decay geometrically. This means that they are unable to model “persistant” behaviour
+between random variables which are separately relatively far in time. However, the ARIMA offers a
+solution on how this could be done. We recall that (1−B)X = ε is a process which is nonstationary.
+t t
+However we can no replace (1 − B)d (where d is a fraction) and see if one can obtain a compromise
+between persistance (long memory) and nonstatonary (in the sense of differencing). Suppose
+(1 − B)d X = ε .
+t t
+If 0 ≤ d ≤ 1/2 we have the expansions
+∞ ∞
+(cid:88) (cid:88)
+(1 − B)d = ψ Bj (1 − B)−d = φ Bj
+j j
+j=0 j=0
+124
+
+--- physical page 126 ---
+where
+Γ(j − d) Γ(j + d)
+φ = ψ =
+j j
+Γ(j + 1)Γ(−d) Γ(j + 1)Γ(d)
+and Γ(1 + k) = kΓ(k) is the Gamma function. Note that (cid:80)∞ ψ2 < ∞ but (cid:80)∞ ψ = ∞. This
+j=0 j j=0 j
+means that X has the stationary solution
+t
+∞
+(cid:88)
+X = ψ ε .
+t j t−j
+j=0
+Noting to show that the above is true requires weaker conditions than those given in Lemma 4.2.1.
+It above process does not decay geometrically fast, and it can be shown that the sample covariance
+is such that c(r) ∼ |r|2d−1 (hence is not absolutely summable).
+4.7 Unit roots, integrated and non-invertible processes
+4.7.1 Unit roots
+If the difference equation has a root which is one, then an (almost sure) stationary solution of
+the AR model does not exist. The simplest example is the ‘random walk’ X = X + ε (φ(z) =
+t t−1 t
+(1 − z)). This is an example of an Autoregressive Integrated Moving Average ARIMA(0, 1, 0) model
+(1 − B)X = ε .
+t t
+To see that it does not have a stationary solution, we iterate the equation n steps backwards;
+X =
+(cid:80)n
+ε + X . S =
+(cid:80)n
+ε is the partial sum, but it is clear that the partial sum
+t j=0 t−j t−n t,n j=0 t−j
+S does not have a limit, since it is not a Cauchy sequence, ie. |S − S | does not have a limit.
+t,n t,n t,m
+However, given some initial value X , for t > 0 the so called “unit process” X = X + ε is well
+0 t t−1 t
+defined. Notice that the nonstationary solution of this sequence is X = X +
+(cid:80)t
+ε which has
+t 0 j=1 t−j
+variance var(X ) = var(X ) + t (assuming that {ε } are iid random variables with variance one and
+t 0 t
+independent of X ).
+0
+We observe that we can ‘stationarize’ the process by taking first differences, i.e. defining
+Y = X − X = ε .
+t t t−1 t
+Unit roots for higher order differences The unit process described above can be generalised to tak-
+ing d differences (often denoted as an ARIMA(0, d, 0)) where (1−B)dX = ε (by taking d-differences
+t t
+we can remove d-order polynomial trends). We elaborate on this below.
+125
+
+--- physical page 127 ---
+To stationarize the sequence we take d differences, i.e. let Y = X and for 1 ≤ i ≤ d define
+t,0 t
+the iteration
+Y = Y − Y
+t,i t,i−1 t−1,i−1
+and Y = Y will be a stationary sequence. Note that this is equivalent to
+t t,d
+d
+(cid:88) d!
+Y = (−1)jX .
+t t−j
+j!(d − j)!
+j=0
+The ARIMA(p, d, q) model The general ARIMA(p, d, q) is defined as (1 − B)dφ(B)X = θ(B)ε ,
+t t
+where φ(B) and θ(B) are p and q order polynomials respectively and the roots of φ(B) lie outside
+the unit circle.
+Another way of describing the above model is that after taking d differences (as detailed in
+(ii)) the resulting process is an ARMA(p, q) process (see Section 4.5 for the definition of an ARMA
+model).
+To illustrate the difference between stationary ARMA and ARIMA processes, in Figure 4.14
+Suppose (1 − B)φ(B)X
+t
+= ε
+t
+and let φ(cid:101)(B) = (1 − B)φ(B). Then we observe that φ(cid:101)(1) = 0.
+This property is useful when checking for unit root behaviour (see Section 4.9).
+More exotic unit roots
+The unit root process need not be restricted to the case that the characteristic polynomial
+associated the AR model is one. If the absolute of the root is equal to one, then a stationary
+solution cannot exist. Consider the AR(2) model
+X = 2 cos θX − X + ε .
+t t−1 t−2 t
+The associated characteristic polynomial is φ(B) = 1 − 2 cos(θ)B + B2 = (1 − eiθB)(1 − e−iθB).
+Thus the roots are eiθ and e−iθ both of which lie on the unit circle. Simulate this process.
+4.7.2 Non-invertible processes
+In the examples above a stationary solution does not exist. We now consider an example where
+the process is stationary but an autoregressive representation does not exist (this matters when we
+want to forecast).
+126
+
+--- physical page 128 ---
+Consider the MA(1) model X = ε − ε . We recall that this can be written as X = φ(B)ε
+t t t−1 t t
+where φ(B) = 1 − B. From Example 4.3.1(iv) we know that φ(z)−1 does not exist, therefore it does
+not have an AR(∞) representation since (1 − B)−1X = ε is not well defined.
+t t
+Time
+2ra
+0 100 200 300 400
+5
+0
+5−
+Time
+(a) X = 1.5X − 0.75X + ε
+t t−1 t−2 t
+I2ra
+0 100 200 300 400
+08
+06
+04
+02
+0
+02−
+04−
+06−
+(b) (1 − B)Y = X , where X is defined in (a)
+t t t
+Figure 4.14: Realisations from an AR process and its corresponding integrated process, using
+N (0, 1) innovations (generated using the same seed).
+4.8 Simulating from models
+4.9 Some diagnostics
+Here we discuss some guidelines which allows us to discriminate between a pure autoregressive
+process and a pure moving average process; both with low orders. And also briefly discuss how to
+identify a “unit root” in the time series and whether the data has been over differenced.
+4.9.1 ACF and PACF plots for checking for MA and AR be-
+haviour
+The ACF and PACF plots are the autocorrelations and partial autocorrelations estimated from the
+time series data (estimated assuming the time series is second order stationary). The ACF we came
+across is Chapter 1, the PACF we define in Chapter 6, however roughly it is the correlation between
+two time points after removing the linear dependence involving the observations inbetween. In R
+127
+
+--- physical page 129 ---
+the functions are acf and pacf. Note that the PACF at lag zero is not given (as it does not make
+any sense).
+The ACF and PACF of an AR(1), AR(2), MA(1) and MA(2) are given in Figures 4.15-4.18.
+We observe from Figure 4.15 and 4.16 (which give the ACF of and AR(1) and AR(2) process)
+that there is correlation at all lags (though it reduces for large lags). However, we see from the
+PACF for the AR(1) has only one large coefficient at lag one and the PACF plot of the AR(2) has
+two large coefficients at lag one and two. This suggests that the ACF and PACF plot can be used
+to diagnose autoregressive behaviour and its order.
+Similarly, we observe from Figures 4.17 and 4.18 (which give the ACF of and MA(1) and MA(2)
+process) that there is no real correlation in the ACF plots after lag one and two respectively, but
+the PACF plots are more ambigious (there seems to be correlations at several lags).
+0 5 10 15 20 25
+0.1
+8.0
+6.0
+4.0
+2.0
+0.0
+2.0−
+Lag
+FCA
+Series ar1
+0 5 10 15 20 25
+8.0
+6.0
+4.0
+2.0
+0.0
+Lag
+FCA
+laitraP
+Series ar1
+Figure 4.15: ACF and PACF plot of an AR(1), X = 0.5X + ε , n = 400
+t t−1 t
+4.9.2 Checking for unit roots
+We recall that for an AR(1) process, the unit root corresponds to X = X + ε i.e. φ = 1. Thus
+t t−1 t
+to check for unit root type behaviour we estimate φ and see how close φ is to one. We can formally
+turn this into a statistical test H : φ = 1 vs. H : |φ| < 1 and there several tests for this, the most
+0 A
+famous is the Dickey-Fuller test. Rather intriguingly, the distribution of φ(cid:98) (using the least squares
+√
+estimator) does not follow a normal distribution with a n-rate!
+Extending the the unit root to the AR(p) process, the unit root corresponds to (1−B)φ(B)X =
+t
+ε where φ(B) is an order (p − 1)-polynomial (this is the same as saying X − X is a stationary
+t t t−1
+AR(p − 1) process). Checking for unit root is the same as checking that the sum of all the AR
+128
+
+--- physical page 130 ---
+0 5 10 15 20 25
+0.1
+8.0
+6.0
+4.0
+2.0
+0.0
+2.0−
+4.0−
+Lag
+FCA
+Series ar2
+0 5 10 15 20 25
+5.0
+0.0
+5.0−
+Lag
+FCA
+laitraP
+Series ar2
+Figure 4.16: ACF and PACF plot of an AR(2), n = 400
+0 5 10 15 20 25
+0.1
+8.0
+6.0
+4.0
+2.0
+0.0
+Lag
+FCA
+Series ma1
+0 5 10 15 20 25
+4.0
+2.0
+0.0
+2.0−
+Lag
+FCA
+laitraP
+Series ma1
+Figure 4.17: ACF and PACF plot of an MA(1), X = ε + 0.8ε , n = 400
+t t t−1
+coefficients is equal to one. This is easily seen by noting that φ(cid:101)(1) = 0 where φ(cid:101)(B) = (1 − B)φ(B)
+or
+(1 − B)φ(B)X = X − (φ − 1)X − (φ − φ )X − (φ − φ )X + φ X = ε .
+t t 1 t−1 2 1 t−2 p−1 p−2 t−p+1 p−1 t−p t
+Thus we see that the sum of the AR coefficients is equal to one. Therefore to check for unit root
+behaviour in AR(p) processes one can see how close the sum of the estimate AR coefficients
+(cid:80)p
+j=1
+φ(cid:98)j
+is to one. Again this can be turned into a formal test.
+In order to remove stochastic or deterministic trend one may difference the data. But if the
+data is over differenced one can induce spurious dependence in the data which is best avoided
+(estimation is terrible and prediction becomes a nightmare). One indicator of over differencing is
+129
+
+--- physical page 131 ---
+0 5 10 15 20 25
+0.1
+8.0
+6.0
+4.0
+2.0
+0.0
+2.0−
+Lag
+FCA
+Series ma2
+0 5 10 15 20 25
+01.0
+50.0
+00.0
+50.0−
+01.0−
+51.0−
+Lag
+FCA
+laitraP
+Series ma2
+Figure 4.18: ACF and PACF plot of an MA(2), n = 400
+0 5 10 15 20
+0.1
+5.0
+0.0
+5.0−
+Lag
+FCA
+Series test2
+0 5 10 15 20
+0.1
+8.0
+6.0
+4.0
+2.0
+0.0
+2.0−
+Lag
+FCA
+Series test2
+Figure 4.19: ACF of differenced data Y = X − X . Left X = ε , Right X = 1.5X −
+t t t−1 t t t t−1
+0.75X + ε .
+t−2 t
+the appearance of negative correlation at lag one in the data. This is illustrated in Figure 4.19,
+where for both data sets (difference of iid noise and differenced of an AR(2) process) we observe a
+large negative correlation at lag one.
+4.10 Appendix
+Representing an AR(p) model as a VAR(1) Let us suppose X is an AR(p) process, with the rep-
+t
+resentation
+p
+(cid:88)
+X = φ X + ε .
+t j t−j t
+j=1
+130
+
+--- physical page 132 ---
+For the rest of this section we will assume that the roots of the characteristic function, φ(z), lie
+outside the unit circle, thus the solution causal. We can rewrite the above as a Vector Autoregressive
+(VAR(1)) process
+X = AX + ε (4.24)
+t t−1 t
+where
+ 
+φ φ . . . φ φ
+1 2 p−1 p
+ 
+ 1 0 . . . 0 0 
+ 
+  , (4.25)
+ 
+0 1 . . . 0 0
+ 
+ 
+0 0 . . . 1 0
+X(cid:48) = (X , . . . , X ) and ε(cid:48) = (ε , 0, . . . , 0). It is straightforward to show that the eigenvalues of
+t t t−p+1 t t
+A are the inverse of the roots of φ(z) (since
+p p
+(cid:88) (cid:88)
+det(A − zI) = zp − φ zp−i = zp (1 − φ z−i)),
+i i
+i=1 i=1
+(cid:124) (cid:123)(cid:122) (cid:125)
+=zpφ(z−1)
+thus the eigenvalues of A lie inside the unit circle. It can be shown that for any |λ (A)| < δ < 1,
+max
+there exists a constant C such that |(cid:107)Aj(cid:107) ≤ C δj (see Appendix A). Note that result is
+δ spec δ
+extremely obvious if the eigenvalues are distinct (in which case the spectral decomposition can be
+used), in which case |(cid:107)Aj(cid:107) ≤ C |λ (A)|j (note that (cid:107)A(cid:107) is the spectral norm of A, which
+spec δ max spec
+is the largest eigenvalue of the symmetric matrix AA(cid:48)).
+We can apply the same back iterating that we did for the AR(1) to the vector AR(1). Iterating
+(13.4) backwards k times gives
+k−1
+(cid:88)
+X = Ajε + AkX .
+t t−j t−k
+j=0
+Since (cid:107)AkX (cid:107) ≤ (cid:107)Ak(cid:107) (cid:107)X (cid:107) → P 0 we have
+t−k 2 spec t−k
+∞
+(cid:88)
+X = Ajε .
+t t−j
+j=0
+131
+
+--- physical page 133 ---
+We use the above representation to prove Lemma 4.5.1.
+PROOF of Lemma 4.5.1 We first prove (i) There are several way to prove the result. The proof
+we consider here, uses the VAR expansion given in Section ??; thus we avoid using the Backshift
+operator (however the same result can easily proved using the backshift). We write the ARMA
+process as a vector difference equation
+X = AX + ε (4.26)
+t t−1 t
+where X(cid:48) = (X , . . . , X ), ε(cid:48) = (ε + (cid:80)q θ ε , 0, . . . , 0). Now iterating (4.26), we have
+t t t−p+1 t t j=1 j t−j
+∞
+(cid:88)
+X = Ajε , (4.27)
+t t−j
+j=0
+concentrating on the first element of the vector X we see that
+t
+∞ q
+(cid:88) (cid:88)
+X = [Ai] (ε + θ ε ).
+t 1,1 t−i j t−i−j
+i=0 j=1
+Comparing (4.18) with the above it is clear that for j > q, a = [Aj] + (cid:80)q θ [Aj−i] . Observe
+j 1,1 i=1 i 1,1
+that the above representation is very similar to the AR(1). Indeed as we will show below the Aj
+behaves in much the same way as the φj in AR(1) example. As with φj, we will show that Aj
+converges to zero as j → ∞ (because the eigenvalues of A are less than one). We now show that
+|X | ≤ K (cid:80)∞ ρj|ε | for some 0 < ρ < 1, this will mean that |a | ≤ Kρj. To bound |X | we use
+t j=1 t−j j t
+(4.27)
+∞
+(cid:88)
+|X | ≤ (cid:107)X (cid:107) ≤ (cid:107)Aj(cid:107) (cid:107)ε (cid:107) .
+t t 2 spec t−j 2
+j=0
+Hence, by using Gelfand’s formula (see Appendix A) we have |(cid:107)Aj(cid:107) ≤ C ρj (for any |λ (A)| <
+spec ρ max
+ρ < 1, where λ (A) denotes the largest maximum eigenvalue of the matrix A), which gives the
+max
+corresponding bound for |a |.
+j
+θ(z)
+To prove (ii) we use the backshift operator. This requires the power series expansion of .
+φ(z)
+If the roots of φ(z) are distinct, then it is straightforward to write φ(z)−1 in terms of partial
+fractions which uses a convergent power series for |z| = 1. This expansion immediately gives the
+the linear coefficients a and show that |a | ≤ C(1 + δ)−|j| for some finite constant C. On the other
+j j
+132
+
+--- physical page 134 ---
+hand, if there are multiple roots, say the roots of φ(z) are λ , . . . , λ with multiplicity m , . . . , m
+1 s 1 s
+(where
+(cid:80)s
+m = p) then we need to adjust the partial fraction expansion. It can be shown that
+j=1 s
+|a
+j
+| ≤ C|j|maxs |ms|(1 + δ)−|j|. We note that for every (1 + δ)−1 < ρ < 1, there exists a constant
+such that |j|maxs |ms|(1 + δ)−|j| ≤ Cρ|j|, thus we obtain the desired result.
+To show (iii) we use a similar proof to (i), and omit the details. (cid:3)
+Corollary 4.10.1 An ARMA process is invertible if the roots of θ(B) (the MA coefficients) lie
+outside the unit circle and causal if the roots of φ(B) (the AR coefficients) lie outside the unit
+circle.
+An AR(p) process and an MA(q) process is identifiable (meaning there is only one model associ-
+ated to one solution). However, the ARMA is not necessarily identifiable. The problem arises when
+the characteristic polynomial of the AR and MA part of the model share common roots. A simple
+example is X = ε , this also satisfies the representation X − φX = ε − φε etc. Therefore it
+t t t t−1 t t−1
+is not possible to identify common factors in the polynomials.
+One of the main advantages of the invertibility property is in prediction and estimation. We will
+consider this in detail below. It is worth noting that even if an ARMA process is not invertible, one
+can generate a time series which has identical correlation structure but is invertible (see Section
+6.4).
+133

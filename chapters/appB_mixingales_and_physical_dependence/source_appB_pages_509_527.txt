@@ -1,0 +1,942 @@
+--- physical page 509 ---
+Appendix B
+Mixingales and physical depedendence
+In this section we prove some of the results stated in the previous sections using mixingales.
+We first define a mixingale, noting that the definition we give is not the most general definition.
+Definition B.0.1 (Mixingale) Let F = σ(X , X , . . .), {X } is called a mixingale if it satisfies
+t t t−1 t
+(cid:26) (cid:18) (cid:19)2(cid:27)1/2
+ρ = E E(X |F ) − E(X ) ,
+t,k t t−k t
+where ρ → 0 as k → ∞. We note if {X } is a stationary process then ρ = ρ .
+t,k t t,k k
+Lemma B.0.1 Suppose {X } is a mixingale. Then {X } almost surely satisfies the decomposition
+t t
+∞ (cid:26) (cid:27)
+(cid:88)
+X = E(X |F ) − E(X |F ) . (B.1)
+t t t−j−1 t t−j−1
+j=0
+PROOF. We first note that by using a telescoping argument that
+m
+(cid:88) (cid:8) (cid:9) (cid:8) (cid:9)
+X − E(X ) = E(X |F ) − E(X |F ) + E(X |F ) − E(X ) .
+t t t t−k t t−k−1 t t−m−1 t
+k=0
+(cid:0) (cid:1)2
+By definition of a martingale E E(X |F ) − E(X ) → 0 as k → ∞, hence the remainder term
+t t−m−1 t
+in the above expansion becomes negligable as m → ∞ and we have almost surely
+X − E(X )
+t t
+∞
+(cid:88) (cid:8) (cid:9)
+= E(X |F ) − E(X |F ) .
+t t−k t t−k−1
+k=0
+508
+
+--- physical page 510 ---
+Thus giving the required result. (cid:3)
+We observe that (B.1) resembles the Wold decomposition. The difference is that the Wolds
+decomposition decomposes a stationary process into elements which are the errors in the best linear
+predictors. Whereas the result above decomposes a process into sums of martingale differences.
+It can be shown that functions of several ARCH-type processes are mixingales (where ρ ≤ Kρk
+t,k
+(rho < 1)), and Subba Rao (2006) and Dahlhaus and Subba Rao (2007) used these properties to
+obtain the rate of convergence for various types of ARCH parameter estimators. In a series of
+papers, Wei Biao Wu considered properties of a general class of stationary processes which satisfied
+Definition B.0.1, where
+(cid:80)∞
+ρ < ∞.
+k=1 k
+In Section B.2 we use the mixingale property to prove Theorem 14.7.3. This is a simple illus-
+tration of how useful mixingales can be. In the following section we give a result on the rate of
+convergence of some random variables.
+B.1 Obtaining almost sure rates of convergence for
+some sums
+The following lemma is a simple variant on a result proved in M´oricz (1976), Theorem 6.
+Lemma B.1.1 Let {S } be a random sequence where E(sup |S |2) ≤ φ(T ) and {phi(t)} is a
+T 1≤t≤T t
+monotonically increasing sequence where φ(2j)/φ(2j−1) ≤ K < ∞ for all j. Then we have almost
+surely
+(cid:112)
+1 (cid:0) φ(T )(log T )(log log T )1+δ (cid:1)
+S = O .
+T
+T T
+PROOF. The idea behind the proof is to that we find a subsequence of the natural numbers and
+define a random variables on this subsequence. This random variable, should ‘dominate’ (in some
+sense) S . We then obtain a rate of convergence for the subsequence (you will see that for the
+T
+subsequence its quite easy by using the Borel-Cantelli lemma), which, due to the dominance, can
+be transfered over to S . We make this argument precise below.
+T
+Define the sequence V = sup |S |. Using Chebyshev’s inequality we have
+j t≤2j t
+φ(2j)
+P (V > ε) ≤ .
+j
+ε
+509
+
+--- physical page 511 ---
+(cid:112)
+Let ε(t) = φ(t)(log log t)1+δ log t. It is clear that
+(cid:88)
+∞
+(cid:88)
+∞ Cφ(2j)
+P (V > ε(2j)) ≤ < ∞,
+j φ(2j)(log j)1+δj
+j=1 j=1
+where C is a finite constant. Now by Borel Cantelli, this means that almost surely V ≤ ε(2j). Let
+j
+us now return to the orginal sequence S . Suppose 2j−1 ≤ T ≤ 2j, then by definition of V we have
+T j
+S V a.s ε(2j)
+T j
+≤ ≤ < ∞
+ε(T ) ε(2j−1) ε(2j−1)
+under the stated assumptions. Therefore almost surely we have S = O(ε(T )), which gives us the
+T
+required result. (cid:3)
+We observe that the above result resembles the law of iterated logarithms. The above result
+is very simple and nice way of obtaining an almost sure rate of convergence. The main problem
+is obtaining bounds for E(sup |S |2). There is on exception to this, when S is the sum
+1≤t≤T t t
+of martingale differences then one can simply apply Doob’s inequality, where E(sup |S |2) ≤
+1≤t≤T t
+E(|S |2). In the case that S is not the sum of martingale differences then its not so straightforward.
+T T
+However if we can show that S is the sum of mixingales then with some modifications a bound
+T
+for E(sup |S |2) can be obtained. We will use this result in the section below.
+1≤t≤T t
+B.2 Proof of Theorem 14.7.3
+We summarise Theorem 14.7.3 below.
+Theorem 1 Let us suppose that {X } has an ARMA representation where the roots of the char-
+t
+acteristic polynomials φ(z) and θ(z) lie are greater than 1 + δ. Then
+(i)
+n (cid:114)
+1 (cid:88) (log log n)1+γ log n
+ε X = O( ) (B.2)
+t t−r
+n n
+t=r+1
+(ii)
+n (cid:114)
+1 (cid:88) (log log n)1+γ log n
+X X = O( ). (B.3)
+t−i t−j
+n n
+t=max(i,j)
+510
+
+--- physical page 512 ---
+for any γ > 0.
+By using Lemma ??, and that
+(cid:80)n
+ε X is the sum of martingale differences, we prove
+t=r+1 t t−r
+Theorem 14.7.3(i) below.
+PROOF of Theorem 14.7.3. We first observe that {ε X } are martingale differences,
+t t−r
+hence we can use Doob’s inequality to give E(sup ( (cid:80)s ε X )2) ≤ (T − r)E(ε2)E(X2).
+r+1≤s≤T t=r+1 t t−r t t
+Now we can apply Lemma ?? to obtain the result. (cid:3)
+We now show that
+T (cid:114)
+1 (cid:88) (log log T )1+δ log T
+X X = O( ).
+t−i t−j
+T T
+t=max(i,j)
+However the proof is more complex, since {X X } are not martingale differences and we cannot
+t−i t−j
+directly use Doob’s inequality. However by showing that {X X } is a mixingale we can still
+t−i t−j
+show the result.
+To prove the result let F = σ(X , X , . . .) and G = σ(X X , X X , . . .). We
+t t t−1 t t−i t−j t−1−i t−j−i
+observe that if i > j, then G ⊂ F .
+t t−i
+Lemma B.2.1 Let F = σ(X , X , . . .) and suppose X comes from an ARMA process, where
+t t t−1 t
+the roots are greater than 1 + δ. Then if E(ε4) < ∞ we have
+t
+E (cid:0) E(X X |F ) − E(X X ) (cid:1)2 ≤ Cρk.
+t−i t−j t−min(i,j)−k t−i t−j
+PROOF. By expanding X as an MA(∞) process we have
+t
+E(X X |F ) − E(X X )
+t−i t−j t−min(i,j)−k t−i t−j
+∞
+(cid:88) (cid:8) (cid:9)
+= a a E(ε ε |F ) − E(ε ε ) .
+j1 j2 t−i−j1 t−j−j2 t−k−min(i,j) t−i−j1 t−j−j2
+j1,j2=0
+Now in the case that t−i−j > t−k−min(i, j) and t−j−j > t−k−min(i, j), E(ε ε |F ) =
+1 2 t−i−j1 t−j−j2 t−k−min(i,j)
+E(ε ε ). Now by considering when t−i−j ≤ t−k−min(i, j) or t−j −j ≤ t−k−min(i, j)
+t−i−j1 t−j−j2 1 2
+we have have the result. (cid:3)
+Lemma B.2.2 Suppose {X } comes from an ARMA process. Then
+t
+511
+
+--- physical page 513 ---
+(i) The sequence {X X } satisfies the mixingale property
+t−i t−j t
+E (cid:0) E(X X |F ) − E(X X |F ) (cid:1)2 ≤ Kρk, (B.4)
+t−i t−j t−min(i,j)−k t−i t−j t−k−1
+and almost surely we can write X X as
+t−i t−j
+∞ n
+(cid:88) (cid:88)
+X X − E(X X ) = V (B.5)
+t−i t−j t−i t−j t,k
+k=0 t=min(i,j)
+where V = E(X X |F ) − E(X X |F ), are martingale differ-
+t,k t−i t−j t−k−min(i,j) t−i t−j t−k−min(i,j)−1
+ences.
+(ii) Furthermore E(V 2 ) ≤ Kρk and
+t,k
+s
+E
+(cid:8)
+sup
+(cid:0) (cid:88)
+{X X − E(X X
+)})2(cid:9)
+≤ Kn, (B.6)
+t−i t−j t−i t−j
+min(i,j)≤s≤n
+t=min(i,j)
+where K is some finite constant.
+PROOF. To prove (i) we note that by using Lemma B.2.1 we have (B.4). To prove (B.5) we use
+the same telescoping argument used to prove Lemma B.0.1.
+To prove (ii) we use the above expansion to give
+s
+E
+(cid:8)
+sup
+(cid:0) (cid:88)
+{X X − E(X X
+)})2(cid:9)
+(B.7)
+t−i t−j t−i t−j
+min(i,j)≤s≤n
+t=min(i,j)
+∞ s
+(cid:8) (cid:0) (cid:88) (cid:88) (cid:1)2(cid:9)
+= E sup V
+t,k
+min(i,j)≤s≤n
+k=0 t=min(i,j)
+∞ ∞ s s
+(cid:8) (cid:88) (cid:88) (cid:12) (cid:88) (cid:12) (cid:12) (cid:88) (cid:12)(cid:9)
+= E sup (cid:12) V t,k1 (cid:12) × (cid:12) V t,k2 (cid:12)
+min(i,j)≤s≤n
+k1=0 k2=0 t=min(i,j) t=min(i,j)
+(cid:18) ∞ (cid:26) (cid:18) s (cid:19)(cid:27)1/2(cid:19)2
+(cid:88) (cid:12) (cid:88) (cid:12)2
+= E sup (cid:12) V t,k1 (cid:12)
+min(i,j)≤s≤n
+k=0 t=min(i,j)
+Now we see that {V } = {E(X X |F ) − E(X X |F )} , therefore
+t,k t t−i t−j t−k−min(i,j) t−i t−j t−k−min(i,j)−1 t
+{V } are also martingale differences. Hence we can apply Doob’s inequality to E
+(cid:8)
+sup
+(cid:0) (cid:80)s
+V
+(cid:1)2(cid:9)
+t,k t min(i,j)≤s≤n t=min(i,j) t,k
+512
+
+--- physical page 514 ---
+and by using (B.4) we have
+s n n
+E (cid:8) sup (cid:0) (cid:88) V (cid:1)2(cid:9) ≤ E (cid:0) (cid:88) V (cid:1)2 = (cid:88) E(V 2 ) ≤ K · nρk.
+t,k t,k t,k
+min(i,j)≤s≤n
+t=min(i,j) t=min(i,j) t=min(i,j)
+Therefore now by using (B.7) we have
+s
+E
+(cid:8)
+sup
+(cid:0) (cid:88)
+{X X − E(X X
+)})2(cid:9)
+≤ Kn.
+t−i t−j t−i t−j
+min(i,j)≤s≤n
+t=min(i,j)
+Thus giving (B.6). (cid:3)
+We now use the above to prove Theorem 14.7.3(ii).
+PROOF of Theorem 14.7.3(ii). To prove the result we use (B.6) and Lemma B.1.1. (cid:3)
+B.3 Basic properties of physical dependence
+Classical results, any L time series {X } almost surely has the telescoping representation
+2 t
+∞
+(cid:88)
+X = (E[X |X , X . . .] − E[X |X , X , . . .]) .
+t t t−j t−j−1 t t−j−1 t−j−2
+j=0
+This is an extremely useful representation (a) because the sum is a martingale (b) (cid:107)E[X |X , X . . .]−
+t t−j t−j−1
+E[X |X , X , . . .](cid:107) has the mixing rate (see Chapter 16, Davidson).
+t t−j−1 t−j−2 p
+Physical dependence is a notion developed in a series of papers by Wei Bao Wu (from 2005
+onward; https://www.stat.uchicago.edu/~wbwu/). In the physical dependence realm the condi-
+tioning set is in general not X , X but the actual independent innovations ε , ε , . . .. This will
+t t−1 t t−1
+lead to some subtle differences that we describe below. It will also lead to an alternative telescoping
+representation that can be used to bound m-dependent approximations.
+We assume the time series {X } has the causal representation:
+k k
+X = G (ε , ε , . . .)
+k k k k−1
+where {ε } are independent, identically distributed (iid, this is an important condition) random
+k
+513
+
+--- physical page 515 ---
+variables. Using the above representation we define the following quantities
+m-dependent X(cid:101)k = E[G
+k
+(ε
+k
+, ε
+k−1
+, . . .)|ε
+k
+, . . . , ε
+k−m
+]
+coupled X = G (ε , ε , . . . , ε , ε , ε , . . .)
+k|{k−j} k k k−1 k−j+1 (cid:101)k−j k−j−1
+m-dependent, coupled X(cid:101)k|{k−j} = E[G
+k
+(ε
+k
+, ε
+k−1
+, . . .)|ε
+k
+, . . . , ε
+(cid:101)k−j
+, . . . , ε
+t−m
+],
+where {ε , ε } are all iid random variables. The latter two definitions are the coupled versions of
+k (cid:101)k k
+X
+k
+and X(cid:101)k . The main assumption in physical dependence is that
+δ = sup (cid:107)X − X (cid:107) → 0 (B.8)
+j,p k k|{k−j} p
+k
+at a certain rate. Let ∆ = (cid:80)∞ δ and Ψ = ( (cid:80)∞ δ2 )1/2. The above definition
+m,p j=m+1 j,p m,p j=m+1 j,p
+matches with equation (5) in Dahlhaus et. al. (2019) (https://arxiv.org/pdf/1704.02860.pdf).
+There are several examples in time series where the difference X − X will be close in
+k k|{k−j}
+L -norm (see the papers by Wei Bao Wu and his collaborators). The benefit of the coupled version
+p
+X is that is the conditional expectation of X given the conditioning set ε can be transfered
+k|{k−j} k t
+to the conditional expectation of X . Define the sigma-algebras F = σ(ε , . . . , ε )
+k|{k−j} k−j,k k−j k
+and F = σ(ε , ε , . . .). It is important to observe that neither the sigma-algebras F or F
+k k k−1 k−j,k k
+contain the coupled random variables {ε } .
+(cid:101)t t
+Using the m-dependent approximation of X and representing X as the sum of martingales,
+k k
+we can apply classical m-dependent and martingale methods to physical dependent processes.
+Useful identities:
+(A) Linking X
+k
+to m-dependence: X
+k
+∈ F
+k
+and for m-dependence X(cid:101)k = E[X
+k
+|F
+k−m,k
+].
+(B) Linking X to its coupled version X through conditioning:
+k k|{k−j}
+E[X |F ] = E[X |F ]
+k|{k−j} k−j k k−j+1
+E[X |F ] = E[X |F ].
+k k−j+1,k k|{k−j} k−j,k
+The above holds because ε ∈/ F and ε ∈/ F .
+(cid:101)k−j k−j,k (cid:101)k−j k−j
+Linking X(cid:101)k to its m-dependent coupled version through conditioning
+X(cid:101)k|{k−j} = E[X
+k|{k−j}
+|F
+k−m
+, ε
+(cid:101)k−j
+].
+514
+
+--- physical page 516 ---
+(C) Linking the X
+k
+and X(cid:101)k through the conditioning set F
+k−j,k
+: Using (D), below, we have
+∞
+(cid:88)
+X
+k
+− X(cid:101)k = (E[X
+k
+|F
+k−j,k
+] − E[X
+k
+|F
+k−j+1,k
+]) .
+j=m+1
+To reduce cumbersome notation we define D = E[X |F ] − E[X |F ], then the
+k−j,k k k−j,k k k−j+1,k
+above is
+∞
+(cid:88)
+X
+k
+− X(cid:101)k = D
+k−j,k
+.
+j=m+1
+(D) Useful telescope sums: Almost surely we have the representations
+∞
+(cid:88)
+X = (E[X |F ] − E[X |F ])
+t t t−j t t−j−1
+j=0
+∞
+(cid:88)
+= (E[X |F ] − E[X |F ]) .
+t t−j,t t t−j+1,t
+j=0
+The latter telescope sum is not possible using the more classical conditioning set based on
+{X } . Note that the second sum gives the equality in (C).
+t−j j
+(E) Commonly used inequalities:
+Jensen’s inequality for p ≥ 1: (cid:107)E[Y |F ](cid:107) ≤ [E(E(|Y |p|F ))]1/p = (cid:107)Y (cid:107) .
+p p
+Burkholder’s inequality: If {Y } are martingale differences, then for p ≥ 2 we have
+k k
+(cid:13) n (cid:13) (cid:32) n (cid:33)1/2
+(cid:13)(cid:88) (cid:13) (cid:88)
+(cid:13) Y (cid:13) ≤ (cid:107)Y (cid:107)2 .
+(cid:13) k(cid:13) k p
+(cid:13) (cid:13)
+k=1 p k=1
+We use the above to obtain useful bounds between X
+k
+and X(cid:101)k , these bounds and the techniques
+used are widely in physical dependence related methods.
+Important norming techniques:
+515
+
+--- physical page 517 ---
+(I) Bound on a martingale difference
+(cid:107)D (cid:107) = (cid:107)E[X |F ] − E[X |F ](cid:107)
+k−j,k p k k−j,k k k−j+1,k p
+(cid:13) (cid:13)
+= (cid:13)E[X
+k
+|F
+k−j,k
+] − E[X
+k|{k−j}
+|F
+k−j,k
+](cid:13)
+p
+(by (B))
+(cid:13) (cid:13)
+≤ (cid:13)X k − X k|{k−j}(cid:13) p ≤ δ j,p (by (E)).
+Thus
+sup (cid:107)D (cid:107) ≤ δ .
+k−j,k j,p
+k
+(II) Difference between X
+k
+and X(cid:101)k . Assuming p ≥ 2 and using Burkholder’s inequality we have
+ 1/2
+∞
+(cid:88)
+(cid:107)X k − X(cid:101)k (cid:107) p ≤  (cid:107)E[X k |F k−j,k ] − E[X k |F k−j+1,k ](cid:107)2 p  (by (C))
+j=m+1
+ 1/2
+∞
+(cid:88) (cid:13) (cid:13)2
+=  (cid:13)E[X k |F k−j,k ] − E[X k|{k−j} |F k−j,k ](cid:13) p  (by (B))
+j=m+1
+ 1/2
+∞
+(cid:88) (cid:13) (cid:13)2
+≤  (cid:13)X k − X k|{k−j}(cid:13) p  (by (E))
+j=m+1
+∞
+(cid:88)
+≤ ( δ2 )1/2 = Ψ ,
+j,p m+1,p
+j=m+1
+The above shows that in (cid:96) -norm the difference between X and its m-dependent approxi-
+p k
+mation decreases as m grows.
+As ε and ε are identically distributed then
+k−j (cid:101)k−j
+(cid:107)X
+k
+− X(cid:101)k (cid:107)
+p
+= (cid:107)X
+k|{k−j}
+− X(cid:101)k|{k−j} (cid:107)
+p
+≤ Ψ
+m,p
+.
+(III) Difference between X(cid:101)k and its coupled version (if j ≤ m, otherwise X(cid:101)k = X(cid:101)k|{k−j} )
+(cid:107)X(cid:101)k − X(cid:101)k|{k−j} (cid:107)
+p
+= (cid:107)E(X
+k
+− X
+k|{k−j}
+|F
+k−m
+, ε
+(cid:101)t−j
+)(cid:107)
+p
+(by identity (B))
+≤ E(|X − X |p|F , ε ) (by (D))
+k k|{k−j} k−m (cid:101)t−j
+≤ (cid:107)X − X (cid:107) ≤ δ
+k k|{k−j} p j,p
+516
+
+--- physical page 518 ---
+Hence in general
+
+ δ j ≤ m
+j,p
+(cid:107)X(cid:101)k − X(cid:101)k|{k−j} (cid:107)
+p
+≤
+ 0 j > m.
+(IV) Bound on martingale difference E[X |F ]−E[X |F ] = E[X −X X −X |F ].
+t t−j t t−j−1 t t|{t−j} t t|{t−j} t−j
+Thus by Jensen’s inequality for p ≥ 1 we have
+(E|E[X |F ] − E[X |F ]|p)1/p ≤ (E|X − X |p)1/p ≤ δ .
+t t−j t t−j−1 t t|{t−j} p,j
+One important advantage of physical dependence is that it allows us to bound the difference
+between an estimator and its m-dependent analogue. Define the weighted average
+n
+(cid:88)
+µ = a X
+(cid:98)n k k
+k=1
+and the m-dependent weighted average
+n
+(cid:88)
+µ(cid:101)
+(cid:98)n
+= a
+k
+X
+k,m
+k=1
+in the following lemma we bound the difference between the two.
+Lemma B.3.1 Suppose (B.8) holds. If p ≥ 2, then
+(cid:13) n (cid:13) (cid:32) n (cid:33)1/2
+(cid:13)(cid:88) (cid:13) (cid:88)
+(cid:13)
+(cid:13)
+a
+k
+(X
+k
+− X(cid:101)k )(cid:13)
+(cid:13)
+≤ |a
+k
+|2 ∆
+m,p
+(B.9)
+(cid:13) (cid:13)
+k=1 p k=1
+and for p ≥ 1
+(cid:13) (cid:13)(cid:88) n (cid:13) (cid:13) (cid:32) (cid:88) n (cid:33) (cid:18) (cid:19)
+(cid:13)
+(cid:13)
+a
+k
+(X
+k
+2 − X(cid:101)
+k
+2)(cid:13)
+(cid:13)
+≤ 2 |a
+k
+| sup (cid:107)X
+k
+(cid:107)
+2p
+Ψ
+m,2p
+. (B.10)
+(cid:13) (cid:13) k
+k=1 p k=1
+PROOF By simply using (II) we obtain the sub-optimal bound
+(cid:13) n (cid:13) n (cid:32) n (cid:33)
+(cid:13)(cid:88) (cid:13) (cid:88) (cid:88)
+(cid:13)
+(cid:13)
+a
+k
+(X
+k
+− X(cid:101)k )(cid:13)
+(cid:13)
+≤ |a
+k
+|(cid:107)X
+k
+− X(cid:101)k (cid:107)
+p
+≤ |a
+k
+| Ψ
+m,p
+. (B.11)
+(cid:13) (cid:13)
+k=1 p k=1 k=1
+This bound simply uses m-dependent approximation of a time series, but does not exploit that
+517
+
+--- physical page 519 ---
+sums of weakly dependent variables tend to concentrate more about zero (if the mean is zero).
+We would expect that bounds for X
+k
+− X(cid:101)k together with the sum of weakly dependent random
+variables could improve the bound. Physical dependence gives a bound on margingale differences
+(see (I)) using this bound together with Burkholder’s inequality a tighter bound can be achieved
+(which would be similar to one obtained for linear time series). By using (C) we have
+(cid:13) (cid:13) (cid:13)  (cid:13)
+n (cid:13) n ∞ (cid:13)
+(cid:13)(cid:88) (cid:13) (cid:13)(cid:88) (cid:88) (cid:13)
+(cid:13) (cid:13) a k (X k − X(cid:101)k )(cid:13) (cid:13) = (cid:13) a k  D k−j,k(cid:13) (B.12)
+(cid:13) (cid:13)
+(cid:13) (cid:13)
+k=1 p (cid:13)k=1 j=m+1 (cid:13) p
+Next we use that {D }n is a martingale difference when conditioned on F , thus by
+k−j,k k=1 k−j,k
+Burkholder’s inequality we have
+n (cid:32) n (cid:33)1/2
+(cid:88) (cid:88)
+(cid:107) a D (cid:107) ≤ |a |2 · (cid:107)D (cid:107)2
+k k−j,k p k k−j,k p
+k=1 k=1
+(cid:32) n (cid:33)1/2
+(cid:88)
+≤ δ |a |2 (by (I)).
+j,p k
+k=1
+Substituting the above into (B.12) gives
+(cid:13) n (cid:13) ∞ (cid:32) n (cid:33)1/2 (cid:32) n (cid:33)1/2
+(cid:13)(cid:88) (cid:13) (cid:88) (cid:88) (cid:88)
+(cid:13)
+(cid:13)
+a
+k
+(X
+k
+− X(cid:101)k )(cid:13)
+(cid:13)
+≤ δ
+j,p
+|a
+k
+|2 = |a
+k
+|2 ∆
+m+1,p
+. (B.13)
+(cid:13) (cid:13)
+k=1 p j=m+1 k=1 k=1
+This proves (B.9).
+Unlike mixing bounds, the bound in (B.8) does not easily transfer over to transformations of
+functions of X . For example, unlike (I), I could not find a simple bound for
+k
+(cid:13) (cid:13)
+(cid:13) (cid:13)E[X k 2|F k−j,k ] − E[X k 2|F k−j+1,k ] (cid:13) (cid:13) p = (cid:13) (cid:13) E[X k 2|F k−j,k ] − E[X k 2 |{k−j} |F k−j,k ](cid:13) (cid:13)
+p
+≤ (cid:107)X2 − X2 (cid:107) .
+k k|{k−j} p
+Of course, X(cid:101)
+k
+2 (cid:54)= E[X
+k
+2|F
+k−m,k
+], but this is a separate issue.
+Thus the only bound I think that is feasible is to simply use a bound between difference between
+X and its m-approximation. Since
+k
+n n
+(cid:88) (cid:88)
+a
+k
+(X
+k
+2 − X(cid:101)
+k
+2) = a
+k
+(X
+k
+− X(cid:101)k )(X
+k
++ X(cid:101)k ),
+k=1 k=1
+518
+
+--- physical page 520 ---
+we have
+n n
+(cid:88) (cid:88)
+(cid:107) a
+k
+(X
+k
+2 − X(cid:101)
+k
+2)(cid:107)
+p
+≤ |a
+k
+| · (cid:107)X
+k
+− X(cid:101)k (cid:107)
+2p
+((cid:107)X
+k
+(cid:107) + (cid:107)X(cid:101)k (cid:107)
+2p
+)
+k=1 k=1
+(cid:32) n (cid:33) (cid:18) (cid:19)
+(cid:88)
+≤ 2 |a | sup (cid:107)X (cid:107) Ψ .
+k k 2p m,2p
+k
+k=1
+This gives (B.10). (cid:3)
+The lemma above can be used as an intermediate step for proving Gaussian approximations/central
+limit theorems.
+519
+
+--- physical page 521 ---
+Bibliography
+Hong-Zhi An, Zhao-Guo. Chen, and E.J. Hannan. Autocorrelation, autoregression and autoregres-
+sive approximation. Ann. Statist., 10:926–936, 1982.
+D. W. K. Andrews. Heteroskedasticity and autocorrelation consistent covariance matrix estimation.
+Econometrica, 59:817–858, 1990.
+R. B. Ash. Real Analysis and Probability. Academic Press, 1972.
+A. Aue, L. Horvath, and J. Steinbach. Estimation in random coefficient autoregressive models.
+Journal of Time Series Analysis, 27:61–76, 2006.
+K. I. Beltrao and P. Bloomfield. Determining the bandwidth of a kernel spectrum estimate. Journal
+of Time Series Analysis, 8:23–38, 1987.
+I. Berkes, L. Horv´ath, and P. Kokoskza. GARCH processes: Structure and estimation. Bernoulli,
+9:2001–2007, 2003.
+I. Berkes, L. Horvath, P. Kokoszka, and Q. Shao. On discriminating between long range dependence
+and changes in mean. Ann. Statist., 34:1140–1165, 2006.
+R.N. Bhattacharya, V.K. Gupta, and E. Waymire. The hurst effect under trend. J. Appl. Probab.,
+20:649–662, 1983.
+P.J. Bickel and D.A. Freedman. Some asymptotic theory for the bootstrap. Ann. Statist., pages
+1196–1217, 1981.
+P. Billingsley. Probability and Measure. Wiley, New York, 1995.
+T Bollerslev. Generalized autoregressive conditional heteroscedasticity. J. Econometrics, 31:301–
+327, 1986.
+520
+
+--- physical page 522 ---
+P. Bougerol and N. Picard. Stationarity of GARCH processes and some nonnegative time series.
+J. Econometrics, 52:115–127, 1992a.
+P. Bougerol and N Picard. Strict stationarity of generalised autoregressive processes. Ann. Probab.,
+20:1714–1730, 1992b.
+G. E. P. Box and G. M. Jenkins. Time Series Analysis, Forecasting and Control. Cambridge
+University Press, Oakland, 1970.
+A. Brandt. The stochastic equation Y = A Y + B with stationary coefficients. Adv. in Appl.
+n+1 n n n
+Probab., 18:211–220, 1986.
+W.L. Briggs and V. E. Henson. The DFT: An Owner’s manual for the Discrete Fourier Transform.
+SIAM, Philadelphia, 1997.
+D.R. Brillinger. Time Series: Data Analysis and Theory. SIAM Classics, 2001.
+P. Brockwell and R. Davis. Time Series: Theory and Methods. Springer, New York, 1998.
+P. Brockwell and R. Davis. Introduction to Time Series and Forecasting. Springer, 2002.
+R. Dahlhaus and D. Janas. A frequency domain bootstrap for ratio statistics in time series analysis.
+Annals of Statistics, 24:1934–1963, 1996.
+R. Dahlhaus and S. Subba Rao. A recursive online algorithm for the estimation of time-varying
+arch parameters. Bernoulli, 13:389–422, 2007.
+V. Dalla, L. Giraitis, and P. C.B. Philips. Robust tels for white noise and cross correlation. Preprint,
+2019.
+J Davidson. Stochastic Limit Theory. Oxford University Press, Oxford, 1994.
+J´erˆome Dedecker and Paul Doukhan. A new covariance inequality and applications. Stochastic
+Process. Appl., 106(1):63–80, 2003.
+H. Dette and E. Paparoditis. Bootstrapping frequency domain tests in multivariate time series
+with an application to comparing spectral densities. J. Royal Statistical Society (B), 71:831–857,
+2009.
+521
+
+--- physical page 523 ---
+R. Douc, E. Moulines, and D. Stoffer. Nonlinear Time Series: Theory, Methods and Applications
+with R Examples. Chapman and Hall, 2014.
+Y. Dwivedi and S. Subba Rao. A test for second order stationarity based on the discrete fourier
+transform. Journal of Time Series Analysis, 32:68–91, 2011.
+R. Engle. Autoregressive conditional heteroscedasticity with estimates of the variance of the United
+Kingdom inflation. Econometrica, 50:987–1006, 1982.
+Philip A. Ernst and Paul Shaman. The bias mapping of the Yule-Walker estimator is a contraction.
+Statist. Sinica, 29:1831–1849, 2019.
+J. C. Escanciano and I. N Lobato. An automatic Portmanteau test for serial correlation. Journal
+of Econometrics, 151:140–149, 2009.
+J. Fan and Q. Yao. Nonlinear time series: Nonparametric and parametric methods. Springer,
+Berlin, 2003.
+J. Franke and W. H¨ardle. On bootstrapping kernel spectral estimates. Ann. Statist., 20:121–145,
+1992.
+J. Franke and J-P. Kreiss. Bootstrapping stationary autoregressive moving average models. J.
+Time Ser. Anal., pages 297–317, 1992.
+W. Fuller. Introduction to Statistical Time Series. Wiley, New York, 1995.
+C. W. J. Granger and A. P. Andersen. An introduction to Bilinear Time Series models. Vandenhoek
+and Ruprecht, G¨ottingen, 1978.
+U. Grenander and G. Szeg¨o. Toeplitz forms and Their applications. Univ. California Press, Berkeley,
+1958.
+P Hall and C.C. Heyde. Martingale Limit Theory and its Application. Academic Press, New York,
+1980.
+E.J. Hannan and Rissanen. Recursive estimation of ARMA order. Biometrika, 69:81–94, 1982.
+J. Hart. Kernel regression estimation with time series errors. Journal of the Royal Statistical
+Society, 53:173–187, 1991.
+522
+
+--- physical page 524 ---
+C. Hurvich and S. Zeger. Frequency domain bootstrap methods for time series. New York Univer-
+sity, Graduate School of Business Adminstration, 1987.
+C. Jentsch and S. Subba Rao. A test for second order stationarity of multivariate time series.
+Journal of Econometrics, 2014.
+D. A. Jones. Nonlinear autoregressive processes. Proceedings of the Royal Society (A), 360:71–95,
+1978.
+R. H. Jones. Maximum likelihood fitting of arma models to time series with missing observations.
+Technometrics, 22:389–395, 1980.
+J. Krampe, J-P. Kreiss, and Paparoditis. Estimated wold representation and spectral density driven
+bootstrap for time series. Technical Report, 2016.
+J.-P. Kreiss. Bootstrapping and Related Techniques, chapter Bootstrap procedures for AR(∞)-
+processes, pages 107–113. Springer, 1992.
+J.-P. Kreiss. Asymptotical properties of residual bootstrap for autoregression. Technical report
+www.math.tu-bs.de/stochastik/kreiss.htm, 1997.
+Jens-Peter Kreiss, Efstathios Paparoditis, and Dimitris N. Politis. On the range of validity of the
+autoregressive sieve bootstrap. Ann. Statist., 39, 2011.
+Hans R. Ku¨nsch. The jackknife and the bootstrap for general stationary observations. Ann. Statist.,
+17(3):1217–1241, 1989.
+S. N. Lahiri. Resampling methods for dependent data. Springer Series in Statistics. Springer-Verlag,
+New York, 2003.
+W. K. Li. On the asymptotic standard errors of residual autocorrelations in nonlinear time series
+modelling. Biometrika, 79:435–437, 1992.
+Regina Y. Liu and Kesar Singh. Moving blocks jackknife and bootstrap capture weak dependence.
+In Exploring the limits of bootstrap (East Lansing, MI, 1990), Wiley Ser. Probab. Math. Statist.
+Probab. Math. Statist., pages 225–248. Wiley, New York, 1992.
+I. N. Lobato. Testing that a dependent process is uncorrelated. Journal of the American Statistical
+Association, 96:1066–1076, 2001.
+523
+
+--- physical page 525 ---
+H. Lu¨tkepohl. A new introduction to multiple time series analysis. Springer, Berlin, 2005.
+T. Mikosch. Elementary Stochastic Calculus With Finance in View. World Scientific, 1999.
+T. Mikosch and C. St˘aric˘a. Is it really long memory we see in financial returns? In P. Embrechts,
+editor, Extremes and Integrated Risk Management, pages 149–168. Risk Books, London, 2000.
+T. Mikosch and C. St˘aric˘a. Long-range dependence effects and arch modelling. In P. Doukhan,
+G. Oppenheim, and M.S. Taqqu, editors, Theory and Applications of Long Range Dependence,
+pages 439–459. Birkh¨auser, Boston, 2003.
+F. M´oricz. Moment inequalities and the strong law of large numbers. Z. Wahrsch. verw. Gebiete,
+35:298–314, 1976.
+D.F. Nicholls and B.G. Quinn. Random Coefficient Autoregressive Models, An Introduction.
+Springer-Verlag, New York, 1982.
+E. Parzen. On consistent estimates of the spectrum of a stationary process. Ann. Math. Statist.,
+1957.
+E. Parzen. On estimation of the probability density function and the mode. Ann. Math. Statist.,
+1962.
+D. N. Politis, J. P. Romano, and M. Wolf. Subsampling. Springer, New York, 1999.
+D.N. Politis and J. P. Romano. The stationary bootstrap. Journal of the American Statistical
+Association, 89:1303–1313, 1994.
+M. Pourahmadi. Foundations of Time Series Analysis and Prediction Theory. Wiley, 2001.
+M. B. Priestley. Spectral Analysis and Time Series: Volumes I and II. Academic Press, London,
+1983.
+B.G. Quinn and E.J. Hannan. The Estimation and Tracking of Frequency. Cambridge University
+Press, 2001.
+M. Rosenblatt and U. Grenander. Statistical Analysis of Stationary Time Series. Chelsea Publishing
+Co, 1997.
+524
+
+--- physical page 526 ---
+Paul Shaman and Robert A. Stine. The bias of autoregressive coefficient estimators. J. Amer.
+Statist. Assoc., 83(403):842–848, 1988.
+X. Shao. A self-normalized approacj to confidence interval construction in time series. Journal of
+the Royal Statistical Society (B), 72:343–366, 2010.
+Xiaofeng Shao and Wei Biao Wu. Local Whittle estimation of fractional integration for nonlinear
+processes. Econometric Theory, 23(5):899–929, 2007.
+R. Shumway and D. Stoffer. Time Series Analysis and Its applications: With R examples. Springer,
+New York, 2006.
+V. Statulevicius and Jakimavicius. Estimates of semiivariant and centered moments of stochastic
+processes with mixing: I. Lithuanian Math. J., 28:226–238, 1988.
+D. S. Stoffer and K. D. Wall. Bootstrappping state space models: Gaussian maximum likelihood
+estimation. Journal of the American Statistical Association, 86:1024–1033, 1991.
+D. S. Stoffer and K. D. Wall. Resampling in State Space Models. Cambridge University Press, 2004.
+D. Straumann. Estimation in Conditionally Heteroscedastic Time Series Models. Springer, Berlin,
+2005.
+S. Subba Rao. A note on uniform convergence of an arch(∞) estimator. Sankhya, pages 600–620,
+2006.
+S. Subba Rao and J. Yang. Reconciling the Gaussian and Whittle likelihood with an application
+to estimation in the frequency domain. arXiv preprint arXiv:2001.06966, 2020.
+T. Subba Rao. On the estimation of bilinear time series models. In Bull. Inst. Internat. Statist.
+(paper presented at 41st session of ISI, New Delhi, India), volume 41, 1977.
+T. Subba Rao. On the theory of bilinear time series models. Journal of the Royal Statistical
+Society(B), 43:244–255, 1981.
+T. Subba Rao and M. M. Gabr. A test for linearity of a stationary time series. J of Time Series
+Analysis, 1:145–158, 1980.
+525
+
+--- physical page 527 ---
+T. Subba Rao and M. M. Gabr. An Introduction to Bispectral Analysis and Bilinear Time Series
+Models. Lecture Notes in Statistics (24). Springer, New York, 1984.
+S. C. Taylor. Modelling Financial Time Series. John Wiley and Sons, Chichester, 1986.
+Gy. Terdik. Bilinear Stochastic Models and Related Problems of Nonlinear Time Series Analysis;
+A Frequency Domain Approach, volume 142 of Lecture Notes in Statistics. Springer Verlag, New
+York, 1999.
+McElroy. Tucker and Dimitris Politis. Time Series A first coourse with bootstrap starter. Chapman
+and Hall/CRC Press, 2021.
+M. Vogt. Nonparametric regression for locally stationary time series. Annals of Statistics, 40:
+2601–2633, 2013.
+A. M. Walker. On the estimation of a harmonic component in a time series with stationary
+independent residuals. Biometrika, 58:21–36, 1971.
+P. Whittle. Gaussian estimation in stationary time series. Bulletin of the International Statistical
+Institute, 39:105–129, 1962.
+Granville Wilson Tunnicliffe, Marco Reale, and John Haywood. Models for dependent time series.
+Chapman and Hall/CRS Press, 2020.
+526
