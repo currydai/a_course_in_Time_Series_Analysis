@@ -19,57 +19,119 @@
   backgroundcolor=\color{gray!7}
 }
 
-\title{Mixingales 与物理依赖 \\ \large Mixingales and physical dependence}
+\newtheorem{definition}{定义}[section]
+\newtheorem{theorem}{定理}[section]
+\newtheorem{lemma}{引理}[section]
+\newtheorem{proposition}{命题}[section]
+\newtheorem{example}{例}[section]
+
+\title{附录 B \quad Mixingales and physical dependence / Mixingales 与物理依赖}
 \author{基于 \textit{A Course in Time Series Analysis} 的中文讲义与 Python 实践}
 \date{}
 
 \begin{document}
 \maketitle
 
-\section*{本章定位}
+\section*{本章学习目标}
 
-本章对应原文 \textit{Mixingales and physical dependence}。首版讲义先按照原文的章节主线整理核心概念、教学解释和 Python 工程实践；后续精修时，可继续把原 PDF 中的证明、练习和细节推导逐节扩展进来。
+本章按照原文 \textit{Mixingales and physical dependence} 的小节顺序整理，保留主要定义、定理、模型公式和练习方向，并将原文中的 R 实践思路改写为 Python 工程实践。
 
-本章范围：Mixingales、几乎必然收敛速率和物理依赖性质。
-
-\section{核心知识点}
-
+完成本章后，应能够：
 \begin{itemize}
-  \item 依赖衰减条件用于证明时间序列估计的渐近性质。
-  \item 物理依赖度量关注一个早期冲击对未来过程的影响。
-  \item 几何衰减通常比多项式衰减带来更强的理论结果。
+  \item 定义 mixingale 并理解其依赖衰减含义；
+  \item 获得几乎必然收敛率；
+  \item 理解 Theorem 14.7.3 的证明结构；
+  \item 掌握物理依赖度量；
+  \item 把 ARMA 过程放入依赖衰减框架。
 \end{itemize}
 
-\section{教学说明}
+\section{Mixingale}
 
-学习本章时，建议先区分三个层次：第一，模型或概念试图刻画哪一种时间序列现象；第二，对应的数学对象是什么，例如均值函数、自协方差函数、谱密度或条件方差；第三，在 Python 中如何通过仿真、估计和图形诊断把抽象概念落到可观察对象上。
+\begin{definition}[Mixingale，原文 Definition B.0.1]
+设 \(\mathcal F_t\) 为过滤。若随机变量 \(X_t\) 满足对过去和未来条件期望的影响随滞后衰减，例如
+\[
+  \|E(X_t\mid\mathcal F_{t-m})\|_p\le c_t\psi_m,
+\]
+其中 \(\psi_m\to0\)，则称 \(\{X_t\}\) 为 mixingale。
+\end{definition}
 
-对于原文中的 R 代码，本项目统一改写为 Python。常用工具包括 \texttt{numpy}、\texttt{pandas}、\texttt{matplotlib}、\texttt{scipy} 和 \texttt{statsmodels}。这些库覆盖了数据组织、数值计算、图形生成、频域分析、ARMA 仿真和 ACF/PACF 诊断。
+\begin{lemma}[分解，原文 Lemma B.0.1]
+mixingale 可分解成若干近似鞅差项和可控余项，因此能使用鞅工具证明收敛。
+\end{lemma}
+
+\section{几乎必然收敛率}
+
+\begin{lemma}[原文 Lemma B.1.1]
+若随机序列 \(S_T\) 的最大二阶矩满足
+\[
+  E\left(\sup_{t\le T}|S_t|^2\right)\le \phi(T),
+\]
+则可通过分块和 Borel-Cantelli 引理得到几乎必然收敛率。
+\end{lemma}
+
+该节服务于第 14 章估计量收敛率证明：不仅要知道误差趋于 0，还要知道趋于 0 的速度。
+
+\section{Theorem 14.7.3 的证明}
+
+原文证明 ARMA 过程在根离单位圆条件下具有足够快的依赖衰减。若
+\[
+  X_t=\sum_{j=0}^{\infty}\psi_j\varepsilon_{t-j},
+\]
+且 \(|\psi_j|\) 几何衰减，则远过去创新对当前的影响迅速变小。
+
+\begin{lemma}[ARMA mixingale 性质，原文 Lemma B.2.1--B.2.2]
+满足因果可逆条件的 ARMA 过程可构造为 mixingale，并满足第 14 章所需的几乎必然界。
+\end{lemma}
+
+\section{物理依赖性质}
+
+物理依赖度量把过程写成
+\[
+  X_t=G(\ldots,\varepsilon_{t-1},\varepsilon_t).
+\]
+将某个过去创新 \(\varepsilon_{t-k}\) 替换为独立副本，得到耦合变量 \(X_t^{*(t-k)}\)。依赖度量定义为
+\[
+  \delta_p(k)=\|X_t-X_t^{*(t-k)}\|_p.
+\]
+若 \(\delta_p(k)\) 快速衰减，说明遥远冲击对当前影响很小。
+
+\begin{lemma}[原文 Lemma B.3.1]
+在适当 \(p\) 阶矩和物理依赖可和条件下，可得到部分和、样本协方差和估计量所需的矩界。
+\end{lemma}
 
 \section{Python 工程实践}
 
 在本章目录下运行：
-
 \begin{lstlisting}[language=bash]
 python scripts/appB_generate_figures.py
 \end{lstlisting}
 
-脚本会把图像写入本章 \texttt{figures/} 目录。图像既可用于教学解释，也可作为后续扩充案例的基础。
+脚本会把图像写入本章 \texttt{figures/} 目录。当前图像用于配合本章核心概念的仿真说明；若后续补齐原始数据文件，可把模拟数据替换为原文真实数据案例。
 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.86\textwidth]{appB_fig01_dependence_decay.png}
-  \caption{Mixingales 与物理依赖 Python 实践图：appB\_fig01\_dependence\_decay.png}
+  \caption{依赖衰减率：几何衰减通常比多项式衰减带来更强的渐近结果。}
 \end{figure}
 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.86\textwidth]{appB_fig02_physical_dependence.png}
-  \caption{Mixingales 与物理依赖 Python 实践图：appB\_fig02\_physical\_dependence.png}
+  \caption{物理依赖示意：替换一个早期冲击后，其影响随时间逐渐消失。}
 \end{figure}
 
-\section{本章小结}
+\section{练习提要}
 
-本章首版的重点是建立概念地图和可运行实践。后续精修建议按原文小节逐段扩展：先补齐定义和定理，再补证明思路，最后增加练习题解析和真实数据案例。
+原文练习主要围绕下列方向展开：
+\begin{itemize}
+  \item 验证简单 MA(q) 过程的 mixingale 条件；
+  \item 用分块法推出几乎必然收敛率；
+  \item 计算 AR(1) 的物理依赖度量；
+  \item 比较几何衰减和多项式衰减对定理条件的影响。
+\end{itemize}
+
+\section*{本章小结}
+
+附录 B 提供处理弱依赖过程的技术框架。Mixingale 和物理依赖都在量化“远处冲击影响变小”，它们是第 14 章渐近证明背后的依赖控制工具。
 
 \end{document}

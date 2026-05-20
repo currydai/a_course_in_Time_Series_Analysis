@@ -19,63 +19,441 @@
   backgroundcolor=\color{gray!7}
 }
 
-\title{时间序列中的趋势 \\ \large Trends in a time series}
+\newtheorem{definition}{定义}[section]
+\newtheorem{example}{例}[section]
+
+\title{第 2 章 \quad Trends in a time series / 时间序列中的趋势}
 \author{基于 \textit{A Course in Time Series Analysis} 的中文讲义与 Python 实践}
 \date{}
 
 \begin{document}
 \maketitle
 
-\section*{本章定位}
+\section*{本章学习目标}
 
-本章对应原文 \textit{Trends in a time series}。首版讲义先按照原文的章节主线整理核心概念、教学解释和 Python 工程实践；后续精修时，可继续把原 PDF 中的证明、练习和细节推导逐节扩展进来。
+本章研究时间序列中的均值函数或趋势项。原文把一个典型时间序列写成
+\[
+  Y_t=\mu_t+\varepsilon_t,
+\]
+其中 \(\mu_t=E(Y_t)\) 是不能由随机误差解释的系统性部分，\(\varepsilon_t\) 是残差或误差项。时间序列分析中常见的两类任务是：估计 \(\mu_t\)，或者对 \(\{Y_t\}\) 做变换，使趋势项在变换后尽量消失，从而集中研究残差的依赖结构。
 
-本章范围：趋势估计、差分、非参数平滑、周期函数和周期检测。
-
-\section{核心知识点}
-
+完成本章后，应能够：
 \begin{itemize}
-  \item 参数趋势可用最小二乘估计，但残差相关会影响标准误。
-  \item 差分用于削弱低频趋势，使序列更接近平稳。
-  \item 移动窗口、筛估计和傅里叶工具把趋势与周期放在统一框架中。
+  \item 使用参数模型描述线性、多项式、非线性和季节趋势；
+  \item 用最小二乘和非线性最小二乘估计趋势参数；
+  \item 理解差分如何移除确定性趋势和随机趋势，以及过度差分的风险；
+  \item 说明滚动窗口、筛估计等非参数趋势估计思想；
+  \item 掌握离散傅里叶变换、周期图和周期检测的基本公式；
+  \item 将原文中的 R 实践改写为 Python 图形与计算流程。
 \end{itemize}
 
-\section{教学说明}
+\section{参数趋势}
 
-学习本章时，建议先区分三个层次：第一，模型或概念试图刻画哪一种时间序列现象；第二，对应的数学对象是什么，例如均值函数、自协方差函数、谱密度或条件方差；第三，在 Python 中如何通过仿真、估计和图形诊断把抽象概念落到可观察对象上。
+在许多时间序列问题中，除了观测值 \(Y_t\) 外，还可以使用解释变量。解释变量可以是外生变量，也可以是时间 \(t\) 本身或时间的函数，因为时间下标具有明确顺序。所谓参数模型，是指除有限个未知参数外，其余结构都已知的模型。
 
-对于原文中的 R 代码，本项目统一改写为 Python。常用工具包括 \texttt{numpy}、\texttt{pandas}、\texttt{matplotlib}、\texttt{scipy} 和 \texttt{statsmodels}。这些库覆盖了数据组织、数值计算、图形生成、频域分析、ARMA 仿真和 ACF/PACF 诊断。
+最简单的参数趋势是线性模型。原文给出的两个常用形式为
+\begin{align}
+  Y_t &= \beta_0+\beta_1 t+\varepsilon_t, \tag{2.1}\\
+  Y_t &= \beta_0+\beta_1 t+\beta_2 t^2+\varepsilon_t. \tag{2.2}
+\end{align}
+这些模型称为线性模型，是因为它们对未知参数 \(\beta_0,\beta_1,\beta_2\) 是线性的，而不是因为趋势曲线一定是直线。
+
+参数也可以出现在非线性函数内部。例如平滑转移模型可写为
+\begin{equation}
+  Y_t=\frac{1}{1+\exp\{\beta_0(t-\beta_1)\}}+\varepsilon_t, \tag{2.3}
+\end{equation}
+其中 \(\beta_0\) 控制转移陡峭程度，\(\beta_1\) 控制转移位置。原文的 Figure 2.1 展示了在 \(\sigma=0.3\) 的独立噪声下，不同 \(\beta_0\) 对转移形状的影响。
+
+另一个非线性例子是用于刻画 ECG 数据的 burst signal 模型：
+\begin{equation}
+  Y_t=A\exp\{\beta_0(1-\cos(\beta_1 t))\}\cos(\theta t)+\varepsilon_t. \tag{2.4}
+\end{equation}
+这类例子可统一写成
+\begin{equation}
+  Y_t=g(x_t,\theta)+\varepsilon_t, \tag{2.5}
+\end{equation}
+其中 \(g\) 是已知函数，\(\theta\) 是未知参数。大多数趋势模型都会加入加性噪声项 \(\{\varepsilon_t\}\)，用来表示趋势无法解释的变化。
+
+季节行为常用正弦和余弦项描述。若周期长度为 \(P\)，则可写成
+\[
+  Y_t=\beta_0+\beta_1\sin\left(\frac{2\pi t}{P}\right)
+      +\beta_3\cos\left(\frac{2\pi t}{P}\right)+\varepsilon_t.
+\]
+当 \(P\) 已知时，例如月度数据取 \(P=12\)，该模型是线性回归：
+\begin{equation}
+  Y_t=\beta_0+\beta_1\sin\left(\frac{2\pi t}{12}\right)
+      +\beta_3\cos\left(\frac{2\pi t}{12}\right)+\varepsilon_t. \tag{2.6}
+\end{equation}
+如果 \(P\) 也需要由数据估计，则参数进入三角函数内部，问题变为非线性模型。
+
+\subsection{最小二乘估计}
+
+先回顾单解释变量最小二乘。设 \(X_i\) 被认为会影响响应变量 \(Y_i\)，将
+\[
+  Y_n=(Y_1,\ldots,Y_n)'
+\]
+投影到
+\[
+  X_n=(X_1,\ldots,X_n)'
+\]
+上，最小二乘估计量定义为
+\[
+  \hat{\alpha}_n
+  =\arg\min_\alpha \sum_{i=1}^n (Y_i-\alpha X_i)^2.
+\]
+它有解析解
+\[
+  \hat{\alpha}_n
+  =\frac{\langle Y_n,X_n\rangle}{\|X_n\|_2^2}
+  =\frac{\sum_{i=1}^n Y_iX_i}{\sum_{i=1}^n X_i^2}.
+\]
+几何上，这是把 \(Y_n\) 投影到 \(X_n\) 张成的一维空间，并得到
+\[
+  Y_n=\hat{\alpha}_n X_n+\varepsilon_n,
+  \qquad
+  \langle X_n,\varepsilon_n\rangle=\sum_{i=1}^n X_i\varepsilon_{i,n}=0.
+\]
+
+到这里为止还只是几何投影。只有假设真实数据生成过程为
+\[
+  Y_i=\alpha X_i+\varepsilon_i,
+\]
+并假设 \(X_i\) 与 \(\varepsilon_i\) 不相关，\(\hat{\alpha}_n\) 才成为总体参数 \(\alpha\) 的估计量。
+
+多元线性回归把 \(Y_n\) 投影到多个解释变量 \((X_{1,n},\ldots,X_{p,n})\) 张成的空间。若 \(X\) 是设计矩阵，则
+\[
+  \hat{\alpha}_n
+  =\arg\min_\alpha \sum_{i=1}^n
+  \left(Y_i-\sum_{j=1}^p\alpha_jX_{i,j}\right)^2
+  =(X'X)^{-1}X'Y.
+\]
+若各解释变量彼此正交，则 \(X'X\) 为对角矩阵，第 \(j\) 个系数可简化为
+\[
+  \hat{\alpha}_{j,n}
+  =\frac{\langle Y_n,X_{j,n}\rangle}{\|X_{j,n}\|_2^2}
+  =\frac{\sum_{i=1}^nY_iX_{i,j}}{\sum_{i=1}^nX_{i,j}^2}.
+\]
+正交性有两点好处：一是估计公式简单，二是可避免解释变量之间的共线性问题。
+
+对非线性模型 \(Y_i=g(X_i,\theta)+\varepsilon_i\)，仍可使用最小二乘：
+\[
+  \hat{\theta}_n
+  =\arg\min_{\theta\in\Theta}
+  \sum_{i=1}^n\{Y_i-g(X_i,\theta)\}^2.
+\]
+通常 \(\hat{\theta}_n\) 没有解析解，需要用数值优化求解。非线性优化对初始值敏感，尤其在参数较多时可能只找到局部最小值。
+
+\section{差分}
+
+差分是移除趋势的基本工具。以 Nasdaq 价格这类具有上升趋势的序列为例，若
+\[
+  Y_t=\beta_0+\beta_1t+\varepsilon_t,
+\]
+则一阶差分
+\[
+  Z_t=Y_{t+1}-Y_t=\beta_1+\varepsilon_{t+1}-\varepsilon_t
+\]
+会消去截距和时间线性项，只留下常数项与误差差分。
+
+一阶差分也适用于随机趋势。最简单的随机趋势模型为
+\begin{equation}
+  Y_t=Y_{t-1}+\varepsilon_t, \tag{2.7}
+\end{equation}
+其中 \(\{\varepsilon_t\}\) 独立同分布。此时
+\[
+  Z_t=Y_{t+1}-Y_t=\varepsilon_{t+1}.
+\]
+因此，差分把随机游走还原为创新序列。
+
+更高阶差分可以移除更高阶多项式趋势。若
+\[
+  Y_t=\beta_0+\beta_1t+\beta_2t^2+\varepsilon_t,
+\]
+则
+\[
+  Z_t^{(1)}=Y_{t+1}-Y_t=\beta_1+2\beta_2t+\varepsilon_{t+1}-\varepsilon_t,
+\]
+仍含线性趋势；继续做二阶差分：
+\[
+  Z_t^{(2)}=Z_t^{(1)}-Z_{t-1}^{(1)}
+  =2\beta_2+\varepsilon_{t+1}-2\varepsilon_t+\varepsilon_{t-1}.
+\]
+一般而言，多项式趋势的阶数决定需要差分的次数。类似地，若随机趋势为
+\[
+  Y_t=2Y_{t-1}-Y_{t-2}+\varepsilon_t,
+\]
+则二阶差分可回到创新项。
+
+\paragraph{警告：不要过度差分。}
+过多差分会人为引入不自然的依赖。例如在线性趋势模型中，如果原误差 \(\varepsilon_t\) 独立，则
+\[
+  Z_t=Y_t-Y_{t-1}=\beta_1+\varepsilon_t-\varepsilon_{t-1}
+\]
+与
+\[
+  Z_{t+1}=\beta_1+\varepsilon_{t+1}-\varepsilon_t
+\]
+共享同一个 \(\varepsilon_t\)，因而产生相关性。后续章节会把这种结构识别为一个不可逆的 MA(1) 表示。过度差分常导致负持续性，使后续建模更困难。
+
+\begin{example}[温度趋势练习对应原文 Exercise 2.1]
+原文要求对年度全球温度数据拟合式 (2.1)，检查残差图和一阶差分图，并思考：如果误差相关，普通线性回归输出的标准误为什么不可靠？核心原因是经典回归标准误通常依赖误差独立或弱相关假设；时间相关会改变
+\[
+  \widehat{\mathrm{Var}}(\hat{\beta})
+\]
+的结构，进而影响置信区间和显著性判断。
+\end{example}
+
+\section{非参数方法}
+
+参数方法假设均值函数具有已知形式。但很多数据并没有明确的先验形状，此时可假设均值来自某个平滑函数：
+\[
+  \mu_t=\mu\left(\frac{t}{n}\right),
+\]
+其中 \(\mu(\cdot)\) 未知但足够平滑。
+
+\subsection{滚动窗口}
+
+一种简单方法是滚动窗口。原文特别介绍指数窗口，因为它可以在线更新。设 \(t=1\) 时
+\[
+  \hat{\mu}_1=Y_1,
+\]
+对 \(t>1\) 定义
+\[
+  \hat{\mu}_t=(1-\lambda)\hat{\mu}_{t-1}+\lambda Y_t,
+  \qquad 0<\lambda<1.
+\]
+\(\lambda\) 控制当前观测的权重。递推展开可见
+\[
+  \hat{\mu}_t
+  =\sum_{j=1}^{t-1}(1-\lambda)^{t-j}\lambda Y_j+(1-\lambda)^{t-1}Y_1,
+\]
+因此越新的观测权重越大，越旧的观测权重指数衰减。
+
+\subsection{筛估计}
+
+另一类非参数估计是筛估计。基本思想是用有限个基函数近似未知函数：
+\[
+  \mu(u)\approx \sum_{k=0}^{K_n}\alpha_k\phi_k(u).
+\]
+常见基函数包括 Fourier 基、Haar 或其他小波基、样条基等。把 \(u=t/n\) 代入后，趋势估计变成一个高维回归问题：
+\[
+  Y_t=\sum_{k=0}^{K_n}\alpha_k\phi_k(t/n)+\varepsilon_t.
+\]
+\(K_n\) 随样本量增加而增长，因此筛估计介于参数模型和完全非参数模型之间。
+
+\section{什么是趋势，什么是噪声}
+
+原文提醒读者：趋势与噪声的区分并不总是由图形直接决定。一个平滑曲线既可能来自确定性均值，也可能是高度相关随机噪声的一次实现。特别是当误差存在强相关时，短样本图形中的缓慢变化可能被误读为趋势。
+
+因此，趋势分析不应只依赖视觉判断。通常需要结合：
+\begin{itemize}
+  \item 对均值结构的建模假设；
+  \item 残差的自相关诊断；
+  \item 差分后序列是否更接近平稳；
+  \item 频域中是否存在明显低频或周期峰值。
+\end{itemize}
+
+\section{周期函数}
+
+周期趋势是本章后半部分的重点。若月度均值每 12 个月重复一次，可以写成
+\[
+  \mu_t=\mu_{t+12}.
+\]
+更一般地，周期为 \(P\) 的函数满足
+\[
+  d_P(t+P)=d_P(t).
+\]
+
+\subsection{正弦和余弦变换}
+
+当 \(P=12\) 时，原文把周期函数写为有限 Fourier 展开：
+\[
+  d_{12}(t)
+  =a_0+\sum_{j=1}^{5}
+  \left[
+    a_j\cos\left(\frac{2\pi tj}{12}\right)
+    +b_j\sin\left(\frac{2\pi tj}{12}\right)
+  \right]
+  +a_6\cos(\pi t).
+\]
+其中正弦、余弦项构成一组正交基。正交性使得系数可以通过内积分别估计：
+\[
+  a_j=\frac{1}{12}\sum_{t=1}^{12}d_{12}(t)
+      \cos\left(\frac{2\pi tj}{12}\right),
+  \qquad
+  b_j=\frac{1}{12}\sum_{t=1}^{12}d_{12}(t)
+      \sin\left(\frac{2\pi tj}{12}\right),
+\]
+常数因子取决于所采用的归一化约定。
+
+\subsection{Fourier 变换}
+
+复指数形式把正弦和余弦统一起来。对周期为 \(P\) 的函数，可写成
+\[
+  d_P(t)=\sum_{j=0}^{P-1}D_j\exp\left(i\frac{2\pi tj}{P}\right),
+\]
+其中 Fourier 系数为
+\[
+  D_j=\frac{1}{P}\sum_{t=1}^P
+  d_P(t)\exp\left(-i\frac{2\pi tj}{P}\right).
+\]
+原文指出，当 \(d_P(t)\) 是纯正弦或纯余弦时，其 Fourier 系数只会在对应频率及其共轭频率处非零。这正是用频域寻找周期的基础。
+
+\subsection{离散 Fourier 变换}
+
+对有限样本 \(Y_1,\ldots,Y_n\)，离散 Fourier 变换通常定义为
+\[
+  J_n(\omega)
+  =\frac{1}{\sqrt{n}}\sum_{t=1}^n Y_t\exp(it\omega).
+\]
+当频率取 Fourier 频率
+\[
+  \omega_j=\frac{2\pi j}{n},\qquad j=0,\ldots,n-1,
+\]
+时，\(\{J_n(\omega_j)\}\) 给出序列在不同频率上的复数投影。
+
+\begin{definition}[周期图，原文 Definition 2.5.1]
+周期图是离散 Fourier 变换模平方的缩放版本：
+\[
+  I_n(\omega)
+  =\frac{1}{n}\left|\sum_{t=1}^nY_t\exp(it\omega)\right|^2
+  =|J_n(\omega)|^2.
+\]
+它刻画样本序列在频率 \(\omega\) 处的能量强度。
+\end{definition}
+
+\subsection{离散 Fourier 变换与周期信号}
+
+若信号中包含周期成分，周期图会在对应频率附近出现峰值。原文用周期为 4 的序列
+\[
+  d_4(s)=(1.125,-0.375,-0.375,-0.375)
+\]
+说明：即使叠加独立噪声，周期图仍可能在与周期相对应的位置产生明显峰值。
+
+对周期为 \(P\) 的正弦信号
+\[
+  \cos\left(\frac{2\pi t}{P}\right)
+\]
+或
+\[
+  \sin\left(\frac{2\pi t}{P}\right),
+\]
+主要能量集中在频率 \(2\pi/P\) 以及对称频率处。因此，如果周期图峰值出现在 \(\hat{\omega}\)，对应周期可粗略估计为
+\[
+  \hat{P}=\frac{2\pi}{\hat{\omega}}.
+\]
+
+\subsection{平滑趋势及其 DFT}
+
+平滑趋势通常表现为低频能量较强。比如二次趋势
+\[
+  Y_t=\left(\frac{t}{n}\right)^2+\varepsilon_t
+\]
+的周期图会在靠近零频率处有较大能量。由此可见，低频峰值未必意味着周期，也可能表示缓慢变化的趋势。
+
+\subsection{周期检测}
+
+原文考虑含周期信号和噪声的模型：
+\[
+  Y_t=A\cos\left(\frac{2\pi t}{P}\right)+\varepsilon_t.
+\]
+若 \(P\) 不大且样本量足够，周期图在 \(2\pi/P\) 附近会出现峰值。实际检测时可在 Fourier 频率上寻找最大周期图值：
+\[
+  \hat{\omega}
+  =\arg\max_{\omega_j} I_n(\omega_j),
+  \qquad
+  \hat{P}=\frac{2\pi}{\hat{\omega}}.
+\]
+这个估计思想简单，但受样本量、噪声强度、真实周期是否落在 Fourier 频率上等因素影响。
+
+\subsection{相关噪声下的周期检测}
+
+当噪声相关时，周期图不再像独立噪声那样“平坦”。相关噪声本身也可能在某些频率上有较高能量，从而掩盖或伪造周期峰值。原文通过较小样本 \(n=128\) 和较大样本 \(n=1024\) 的对比说明：样本量越大，真实周期峰值越容易从相关噪声背景中显现出来。
+
+\subsection{周期图简史}
+
+周期图最早与天文学和地球物理数据中的周期搜索密切相关。太阳黑子数据是经典例子：从 1749 年开始的月度太阳黑子数显示出约 11 年周期。原文 Figure 2.14 展示了太阳黑子数据及其周期图，峰值位置揭示了太阳活动的主要周期结构。
+
+\section{数据分析：EEG 数据}
+
+原文最后用 EEG 数据说明频率单位的转换和滤波实践。若时间序列以 \(F_s\) Hz 采样，即每秒 \(F_s\) 个观测，则数字频率 \(\omega\in[0,\pi]\) 与物理频率 \(f\)（Hz）的关系为
+\[
+  f=\frac{\omega}{2\pi}F_s.
+\]
+例如采样率为 \(36\) Hz 时，数字频率 \(\omega\) 对应
+\[
+  f=\frac{36\omega}{2\pi}.
+\]
+
+神经科学中常把 EEG 频段与认知状态联系起来，例如 \(\alpha\)、\(\beta\) 等频段。原文通过周期图比较原始 EEG 和 Butterworth 滤波后的 EEG，说明滤波可以保留感兴趣频段、削弱低频漂移和高频噪声。若滤波目标是 \(8\) 到 \(32\) Hz，在采样率已知时，需要先把这个频率区间转换到数字频率区间，再设计滤波器。
+
+\section{例题与练习补充}
+
+\begin{example}[原文 Example 2.5.1：纯正弦和纯余弦]
+若 \(d_P(t)=\cos(2\pi t/P)\) 或 \(d_P(t)=\sin(2\pi t/P)\)，其 Fourier 系数只集中在对应频率和共轭频率上。这说明周期图峰值可直接指示周期信号的频率。
+\end{example}
+
+\begin{example}[原文 Example 2.5.2：含噪周期信号]
+模型
+\[
+  Y_t=A\cos(2\pi t/P)+\varepsilon_t
+\]
+在样本量适中、噪声不太强时，会在 \(\omega=2\pi/P\) 附近产生周期图峰值。若噪声相关或样本很短，峰值可能被扰动。
+\end{example}
+
+\begin{example}[EEG 频率换算]
+若采样率为 \(36\) Hz，数字频率 \(\omega=\pi/2\) 对应物理频率
+\[
+  f=\frac{36}{2\pi}\cdot\frac{\pi}{2}=9\text{ Hz}.
+\]
+因此滤波器设计必须先把 Hz 区间转换为数字频率区间。
+\end{example}
+
+\begin{definition}[周期估计的基本规则]
+若周期图最大峰值位于 \(\hat\omega\)，则估计周期为 \(\hat P=2\pi/\hat\omega\)。该规则适用于单一强周期成分，但对多周期、趋势和相关噪声需要谨慎解释。
+\end{definition}
+
+Exercise 2.1 要求拟合温度趋势、检查残差和一阶差分；Exercise 2.2 用模拟说明相关噪声会被误认为趋势；Exercise 2.3 要求自造周期序列并观察周期图；Exercise 2.4--2.6 则围绕 Fourier 变换、周期估计和重复模拟展开。
 
 \section{Python 工程实践}
 
-在本章目录下运行：
+本项目把原文中的 R 绘图和模拟思想改写为 Python。当前脚本提供三张图：参数趋势拟合、一阶差分和去趋势后的周期图。它们对应本章的三条主线：趋势估计、差分处理和频域诊断。
 
+在本章目录下运行：
 \begin{lstlisting}[language=bash]
 python scripts/ch02_generate_figures.py
 \end{lstlisting}
 
-脚本会把图像写入本章 \texttt{figures/} 目录。图像既可用于教学解释，也可作为后续扩充案例的基础。
-
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.86\textwidth]{ch02_fig01_parametric_trend.png}
-  \caption{时间序列中的趋势 Python 实践图：ch02\_fig01\_parametric\_trend.png}
+  \caption{参数趋势估计示例：对含二次趋势、季节成分和噪声的序列拟合二次趋势。}
 \end{figure}
 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.86\textwidth]{ch02_fig02_differencing.png}
-  \caption{时间序列中的趋势 Python 实践图：ch02\_fig02\_differencing.png}
+  \caption{一阶差分示例：差分削弱慢趋势，但也会改变噪声的依赖结构。}
 \end{figure}
 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.86\textwidth]{ch02_fig03_periodogram.png}
-  \caption{时间序列中的趋势 Python 实践图：ch02\_fig03\_periodogram.png}
+  \caption{周期图示例：去除趋势后，用周期图观察残差中的周期能量。}
 \end{figure}
 
-\section{本章小结}
+\section{练习提要}
 
-本章首版的重点是建立概念地图和可运行实践。后续精修建议按原文小节逐段扩展：先补齐定义和定理，再补证明思路，最后增加练习题解析和真实数据案例。
+原文第 2.7 节的练习围绕三类任务展开：
+\begin{itemize}
+  \item 通过模拟和作图理解 Fourier 变换与周期图；
+  \item 推导周期图在简单周期信号下的峰值位置；
+  \item 反复模拟含周期信号的模型，研究样本量、噪声强度和相关噪声对周期估计的影响。
+\end{itemize}
+讲义使用时，可把每道练习继续拆成中文题面、公式提示和 Python 解答，作为课堂作业或附加讲解材料。
+
+\section*{本章小结}
+
+第 2 章把时间序列中的趋势分成几种处理方式：如果趋势形状已知，可用参数回归或非线性最小二乘；如果只知道趋势平滑，可用滚动窗口或筛估计；如果希望消去趋势，可做差分；如果趋势或信号具有周期性，可借助 Fourier 变换和周期图。需要始终记住的是：趋势、周期和相关噪声在有限样本图形中可能非常相似，因此建模假设、残差诊断和频域分析应结合使用。
 
 \end{document}
