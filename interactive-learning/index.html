@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>A Course in Time Series Analysis 交互学习实验室</title>
+    <meta
+      name="description"
+      content="面向 A Course in Time Series Analysis 中文讲义的全书交互学习体验。"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="chapter-rail" aria-label="章节导航">
+        <div class="brand-block">
+          <p class="eyebrow">Time Series Lab</p>
+          <h1>A Course in Time Series Analysis</h1>
+          <p class="brand-note">中文讲义 · 可交互实验版</p>
+        </div>
+        <nav id="chapterList" class="chapter-list" aria-label="全书章节"></nav>
+      </aside>
+
+      <main class="workspace">
+        <section class="lesson-head" aria-labelledby="chapterTitle">
+          <div>
+            <p id="chapterKicker" class="eyebrow">Chapter 01</p>
+            <h2 id="chapterTitle">导论</h2>
+            <p id="chapterSubtitle" class="subtitle"></p>
+          </div>
+          <div class="lesson-actions" aria-label="学习控制">
+            <button id="prevChapter" type="button" title="上一章" aria-label="上一章">‹</button>
+            <button id="playToggle" type="button" aria-pressed="true">暂停</button>
+            <button id="nextChapter" type="button" title="下一章" aria-label="下一章">›</button>
+          </div>
+        </section>
+
+        <section class="lab-grid" aria-label="交互演示">
+          <article class="visual-panel main-plot">
+            <div class="panel-title">
+              <span id="primaryTitle">时间序列</span>
+              <strong id="primaryReadout">n = 160</strong>
+            </div>
+            <canvas id="mainCanvas" width="1200" height="520"></canvas>
+          </article>
+
+          <article class="visual-panel side-plot">
+            <div class="panel-title">
+              <span id="secondaryTitle">诊断视图</span>
+              <strong id="secondaryReadout">实时</strong>
+            </div>
+            <canvas id="sideCanvas" width="780" height="520"></canvas>
+          </article>
+        </section>
+
+        <section class="learning-band" aria-label="本章学习内容">
+          <article>
+            <h3>核心知识点</h3>
+            <div id="conceptChips" class="chip-list"></div>
+          </article>
+          <article>
+            <h3>观察任务</h3>
+            <p id="observationText"></p>
+          </article>
+          <article>
+            <h3>数学锚点</h3>
+            <p id="formulaText" class="formula"></p>
+          </article>
+        </section>
+      </main>
+
+      <aside class="control-panel" aria-label="实验参数">
+        <section class="control-card">
+          <label for="demoSelect">知识点演示</label>
+          <select id="demoSelect"></select>
+        </section>
+
+        <section class="control-card">
+          <div class="label-row">
+            <label id="paramALabel" for="paramA">参数 A</label>
+            <output id="paramAOutput" for="paramA">0.50</output>
+          </div>
+          <input id="paramA" type="range" min="0" max="1" step="0.01" value="0.5" />
+        </section>
+
+        <section class="control-card">
+          <div class="label-row">
+            <label id="paramBLabel" for="paramB">参数 B</label>
+            <output id="paramBOutput" for="paramB">0.50</output>
+          </div>
+          <input id="paramB" type="range" min="0" max="1" step="0.01" value="0.5" />
+        </section>
+
+        <section class="control-card">
+          <div class="label-row">
+            <label for="sampleSize">样本长度</label>
+            <output id="sampleOutput" for="sampleSize">160</output>
+          </div>
+          <input id="sampleSize" type="range" min="40" max="420" step="10" value="160" />
+        </section>
+
+        <section class="control-card">
+          <div class="label-row">
+            <label for="noiseLevel">扰动强度</label>
+            <output id="noiseOutput" for="noiseLevel">12%</output>
+          </div>
+          <input id="noiseLevel" type="range" min="0" max="0.7" step="0.01" value="0.12" />
+        </section>
+
+        <section class="control-card toggles">
+          <label>
+            <input id="showTruth" type="checkbox" checked />
+            <span>显示理论曲线</span>
+          </label>
+          <label>
+            <input id="showBands" type="checkbox" checked />
+            <span>显示不确定性</span>
+          </label>
+          <label>
+            <input id="showNotes" type="checkbox" checked />
+            <span>显示课堂提示</span>
+          </label>
+        </section>
+
+        <section id="notePanel" class="note-panel">
+          <h3 id="noteTitle">实验提示</h3>
+          <p id="noteBody"></p>
+        </section>
+      </aside>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

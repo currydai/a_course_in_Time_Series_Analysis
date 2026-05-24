@@ -10,6 +10,7 @@
 - `TASKLIST.md`：章节整理与检查进度记录。
 - `translation_pedagogical_audit.md`：教学覆盖审计报告。
 - `A course in Time Series Analysis.pdf`：原始英文 PDF。
+- `interactive-learning/`：面向 GitHub Pages 或静态服务器部署的全书交互学习实验室。
 
 ## 内容范围
 
@@ -87,6 +88,32 @@ xelatex -interaction=nonstopmode -halt-on-error main.tex
 ```
 
 通常需要编译两次，以确保目录页和页码信息完整刷新。
+
+## 如何打开交互学习实验室
+
+交互版是纯静态网页，可直接打开：
+
+```text
+interactive-learning/index.html
+```
+
+也可以在根目录启动静态服务器：
+
+```powershell
+python -m http.server 8000
+```
+
+然后访问：
+
+```text
+http://localhost:8000/interactive-learning/
+```
+
+若部署到 GitHub Pages，访问路径通常是：
+
+```text
+https://用户名.github.io/仓库名/interactive-learning/
+```
 
 ## 如何重新生成 main.tex
 

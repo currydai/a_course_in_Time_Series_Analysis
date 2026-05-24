@@ -1,0 +1,426 @@
+:root {
+  color-scheme: dark;
+  --bg: #090b0d;
+  --surface: #111519;
+  --surface-2: #171c21;
+  --surface-3: #0d1013;
+  --ink: #f5f1e8;
+  --muted: #aeb8bd;
+  --line: #2c3840;
+  --accent: #f7d45c;
+  --blue: #62c7f2;
+  --red: #ff7f6e;
+  --green: #8bd46e;
+  --violet: #b6a1ff;
+  --radius: 8px;
+  font-family: "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  background:
+    linear-gradient(130deg, rgba(98, 199, 242, 0.08), transparent 36%),
+    linear-gradient(180deg, #060708 0%, var(--bg) 48%, #10120d 100%);
+  color: var(--ink);
+}
+
+button,
+select,
+input {
+  font: inherit;
+}
+
+.app-shell {
+  display: grid;
+  grid-template-columns: 286px minmax(0, 1fr) 310px;
+  gap: 14px;
+  height: 100vh;
+  min-height: 100vh;
+  overflow: hidden;
+  padding: 14px;
+}
+
+.chapter-rail,
+.workspace,
+.control-panel {
+  min-width: 0;
+}
+
+.chapter-rail,
+.control-panel {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(17, 21, 25, 0.94);
+}
+
+.chapter-rail {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  overflow: hidden;
+}
+
+.brand-block {
+  padding: 18px;
+  border-bottom: 1px solid var(--line);
+}
+
+.eyebrow {
+  margin: 0 0 7px;
+  color: var(--blue);
+  font-size: 0.73rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  margin-bottom: 7px;
+  font-size: 1.22rem;
+  line-height: 1.16;
+  letter-spacing: 0;
+}
+
+.brand-note,
+.subtitle {
+  margin-bottom: 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.chapter-list {
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  overflow: auto;
+  padding: 12px;
+}
+
+.chapter-button {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
+  gap: 10px;
+  width: 100%;
+  min-height: 58px;
+  padding: 9px 10px;
+  color: var(--ink);
+  text-align: left;
+  background: #0b0e11;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+.chapter-button:hover,
+.chapter-button[aria-current="true"] {
+  border-color: var(--accent);
+  background: #171a15;
+}
+
+.chapter-number {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  color: #14120a;
+  background: var(--accent);
+  border-radius: 50%;
+  font-weight: 750;
+  font-size: 0.8rem;
+  align-self: center;
+}
+
+.chapter-name {
+  display: block;
+  margin-bottom: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 650;
+}
+
+.chapter-topic {
+  display: block;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+.workspace {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 14px;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.lesson-head,
+.learning-band,
+.visual-panel,
+.control-card,
+.note-panel {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(17, 21, 25, 0.94);
+}
+
+.lesson-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  padding: 18px 20px;
+}
+
+h2 {
+  margin-bottom: 8px;
+  font-size: clamp(1.45rem, 2.2vw, 2.45rem);
+  line-height: 1.08;
+  letter-spacing: 0;
+}
+
+.lesson-actions {
+  display: grid;
+  grid-template-columns: 44px 86px 44px;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+
+button {
+  min-height: 42px;
+  color: var(--ink);
+  background: #20272c;
+  border: 1px solid #3b4850;
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+button:hover {
+  border-color: var(--accent);
+}
+
+button[aria-pressed="true"] {
+  color: #15130b;
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.lab-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(320px, 0.9fr);
+  gap: 14px;
+  min-height: 0;
+}
+
+.visual-panel {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+  background: #030506;
+}
+
+.panel-title {
+  position: absolute;
+  z-index: 2;
+  inset: 12px 14px auto 14px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.panel-title strong {
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.learning-band {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr 1fr;
+  gap: 14px;
+  padding: 16px;
+}
+
+.learning-band article {
+  min-width: 0;
+}
+
+.learning-band h3,
+.note-panel h3 {
+  margin-bottom: 10px;
+  color: var(--accent);
+  font-size: 0.9rem;
+}
+
+.chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  max-width: 100%;
+  padding: 6px 9px;
+  color: var(--ink);
+  background: #0b0e11;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 0.84rem;
+}
+
+.learning-band p {
+  margin-bottom: 0;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.formula {
+  font-family: "Cambria Math", "Times New Roman", "Microsoft YaHei", serif;
+}
+
+.control-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px;
+  overflow: auto;
+}
+
+.control-card,
+.note-panel {
+  padding: 14px;
+}
+
+.control-card {
+  display: grid;
+  gap: 9px;
+}
+
+label,
+.label-row {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.label-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+output {
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+select {
+  width: 100%;
+  min-height: 42px;
+  color: var(--ink);
+  background: #0b0e11;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 0 12px;
+}
+
+input[type="range"] {
+  width: 100%;
+  accent-color: var(--accent);
+}
+
+.toggles {
+  gap: 11px;
+}
+
+.toggles label {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 26px;
+}
+
+.toggles input {
+  accent-color: var(--blue);
+}
+
+.note-panel {
+  margin-top: auto;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.note-panel p {
+  margin-bottom: 0;
+}
+
+@media (max-width: 1180px) {
+  .app-shell {
+    grid-template-columns: 260px minmax(0, 1fr);
+  }
+
+  .control-panel {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(190px, 1fr));
+  }
+
+  .note-panel {
+    margin-top: 0;
+  }
+}
+
+@media (max-width: 860px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+    height: auto;
+    overflow: visible;
+    padding: 10px;
+  }
+
+  .chapter-rail {
+    max-height: 360px;
+  }
+
+  .lesson-head {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .lesson-actions {
+    grid-template-columns: 44px minmax(90px, 1fr) 44px;
+  }
+
+  .lab-grid,
+  .learning-band,
+  .control-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .main-plot,
+  .side-plot {
+    min-height: 360px;
+  }
+}
