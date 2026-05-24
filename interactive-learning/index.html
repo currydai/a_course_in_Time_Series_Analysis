@@ -17,6 +17,7 @@
           <p class="eyebrow">Time Series Lab</p>
           <h1>A Course in Time Series Analysis</h1>
           <p class="brand-note">中文讲义 · 可交互实验版</p>
+          <div id="courseStats" class="course-stats" aria-label="课程统计"></div>
         </div>
         <nav id="chapterList" class="chapter-list" aria-label="全书章节"></nav>
       </aside>
@@ -27,6 +28,7 @@
             <p id="chapterKicker" class="eyebrow">Chapter 01</p>
             <h2 id="chapterTitle">导论</h2>
             <p id="chapterSubtitle" class="subtitle"></p>
+            <div id="demoTabs" class="demo-tabs" aria-label="当前章节知识点"></div>
           </div>
           <div class="lesson-actions" aria-label="学习控制">
             <button id="prevChapter" type="button" title="上一章" aria-label="上一章">‹</button>
@@ -67,12 +69,59 @@
             <p id="formulaText" class="formula"></p>
           </article>
         </section>
+
+        <section class="knowledge-desk" aria-label="分层学习指导">
+          <article class="knowledge-card">
+            <h3>直觉入口</h3>
+            <p id="intuitionText"></p>
+          </article>
+          <article class="knowledge-card">
+            <h3>实验步骤</h3>
+            <ol id="experimentSteps"></ol>
+          </article>
+          <article class="knowledge-card">
+            <h3 id="levelTitle">本科掌握点</h3>
+            <ul id="levelPoints"></ul>
+          </article>
+          <article class="knowledge-card">
+            <h3>易错提醒</h3>
+            <ul id="pitfallList"></ul>
+          </article>
+          <article class="knowledge-card wide-card">
+            <h3>讨论与延伸</h3>
+            <p id="discussionText"></p>
+          </article>
+          <article class="knowledge-card self-check-card">
+            <h3>课堂自测</h3>
+            <p id="quizQuestion"></p>
+            <button id="revealAnswer" type="button" aria-expanded="false">显示答案</button>
+            <p id="quizAnswer" class="quiz-answer" hidden></p>
+          </article>
+        </section>
       </main>
 
       <aside class="control-panel" aria-label="实验参数">
         <section class="control-card">
           <label for="demoSelect">知识点演示</label>
           <select id="demoSelect"></select>
+        </section>
+
+        <section class="control-card">
+          <label for="levelSelect">学习层级</label>
+          <select id="levelSelect">
+            <option value="undergraduate">本科导学</option>
+            <option value="graduate">研究生深化</option>
+          </select>
+        </section>
+
+        <section class="control-card">
+          <label for="focusSelect">学习焦点</label>
+          <select id="focusSelect">
+            <option value="preview">预习概念</option>
+            <option value="experiment">实验探究</option>
+            <option value="theory">理论推导</option>
+            <option value="review">复习自测</option>
+          </select>
         </section>
 
         <section class="control-card">
